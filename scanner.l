@@ -1,24 +1,68 @@
-
+%option yylineno
 
 %{
+//{newline} {line_number++;}newline \n$
 #include <stdio.h>
 #include "tokens.h"
 int line_number = 1;
 %}
 
-newline \n
+
+letter [a-zA-z]
+digit [0-9]
+integer {digit}+
+alphanumeric [a-zA-z0-9]
+id {letter}{alphanumeric}+
+
+literal_char '{letter}'
+literal_int ([+|-]?){integer}
+literal_string "{letter}+"
 
 %%
 
+\n { }
+
 "," {return ',';}
 ";" {return ';';}
+"@" {return '@';}
 
-{newline} {line_number++;}
+
+"int " {return TK_PR_INT;}
+"float " {return TK_PR_FLOAT;}
+"bool " {return TK_PR_BOOL;}
+"char " {return TK_PR_CHAR;}
+"string " {return TK_PR_STRING;}
+"if " {return TK_PR_IF;}
+"then " {return TK_PR_THEN;}
+"else " {return TK_PR_ELSE;}
+
+"while " {return TK_PR_WHILE;}
+"do " {return TK_PR_DO;}
+"input " {return TK_PR_INPUT;}
+"output " {return TK_PR_OUTPUT;}
+"return " {return TK_PR_RETURN;}
+"const " {return TK_PR_CONST;}
+"static " {return TK_PR_STATIC;}
+
+"foreach " {return TK_PR_FOREACH;}
+"for " {return TK_PR_FOR;}
+"switch " {return TK_PR_SWITCH;}
+"case " {return TK_PR_CASE;}
+"break " {return TK_PR_BREAK;}
+"continue " {return TK_PR_CONTINUE;}
+"class " {return TK_PR_CLASS;}
+
+"private " {return TK_PR_PRIVATE;}
+"public " {return TK_PR_PUBLIC;}
+"protected " {return TK_PR_PROTECTED;}
+"end " {return TK_PR_END;}
+"default " {return TK_PR_DEFAULT;}
+{id} {return TK_IDENTIFICADOR;}
 
 
 %%
 
 int get_line_number(){
-    return line_number;
+    return yylineno;
 }
 

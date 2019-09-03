@@ -9,3 +9,6 @@
 ;
 ;
 ;
+int test;
+float realest;
+char letra;
