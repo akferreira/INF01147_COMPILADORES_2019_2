@@ -6,8 +6,13 @@
 ,
 ,
 ,
+/* isso é um comentário
+de teste
+abc
+*/
 ;
 ;
+//coment
 ;
 int test;
 float realest;

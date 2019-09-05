@@ -1,4 +1,6 @@
 %option yylineno
+%x BLOCK_COMMENT
+%x LINE_COMMENT
 
 %{
 //{newline} {line_number++;}newline \n$
@@ -19,6 +21,14 @@ literal_int ([+|-]?){integer}
 literal_string "{letter}+"
 
 %%
+"/*" {BEGIN(BLOCK_COMMENT);printf("Begin comment block\n");}
+"//" {BEGIN(LINE_COMMENT);printf("single line comment\n");}
+<BLOCK_COMMENT>"*/" { BEGIN(INITIAL); printf("end comment\n");}
+<BLOCK_COMMENT>\n   { }
+<BLOCK_COMMENT>.    { }
+
+<LINE_COMMENT>\n   { BEGIN(INITIAL);}
+<LINE_COMMENT>.    { }
 
 \n { }
 
