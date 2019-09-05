@@ -32,6 +32,7 @@ literal_string "{letter}+"
 
 \n { }
 
+	/* caracteres especiais */
 "," {return ',';}
 ";" {return ';';}
 ":" {return ':';}
@@ -61,9 +62,21 @@ literal_string "{letter}+"
 "~" {return '~';}
 "`" {return '`';}
 
+	/* operadores compostos */
+"<=" {return TK_OC_LE;}
+">=" {return TK_OC_GE;}
+"=="  {return TK_OC_EQ;}
+"!=" {return TK_OC_NE;}
+"&&"  {return TK_OC_AND;}
+"||"  {return TK_OC_OR;}
+">>"   {return TK_OC_SR;}
+"<<"    {return TK_OC_SL;}
+"%>%" {return TK_OC_FORWARD_PIPE;}
+"%|%" {return TK_OC_BASH_PIPE;}
 
 
 
+	/* palavras reservadas */
 "int " {return TK_PR_INT;}
 "float " {return TK_PR_FLOAT;}
 "bool " {return TK_PR_BOOL;}
