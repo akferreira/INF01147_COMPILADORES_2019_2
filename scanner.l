@@ -123,7 +123,7 @@ literal_float1 {integer}"."
 " false" {return TK_LIT_FALSE;}
 " true" {return TK_LIT_TRUE;}
 
-
+. {return TOKEN_ERRO; printf("Erro Linha %d\n", get_line_number());}
 %%
 
 int get_line_number(){
