@@ -10,10 +10,20 @@
 de teste
 abc
 */
+45.e-12;
+28.25e98;
 ;
 ;
 //coment
 ;
-int test;
+int test = 25;
+3.25;
+98.;
 float realest;
 char letra;
+
+int funcao(int entrada){
+	float x = 5.25;
+	int abc = -21;
+	float k = 12.4e-12;
+}

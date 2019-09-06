@@ -12,13 +12,20 @@ int line_number = 1;
 
 letter [a-zA-z]
 digit [0-9]
-integer {digit}+
+integer ([+|-]?){digit}+
 alphanumeric [a-zA-z0-9]
-id {letter}{alphanumeric}+
+id {letter}({alphanumeric}+?)
 
 literal_char '{letter}'
-literal_int ([+|-]?){integer}
+literal_int {integer}
 literal_string "{letter}+"
+
+power (["e"|"E"]{integer})
+literal_float0 {integer}"."({integer}?)({power}?)
+literal_float1 {integer}"."
+
+
+
 
 %%
 "/*" {BEGIN(BLOCK_COMMENT);printf("Begin comment block\n");}
@@ -107,8 +114,12 @@ literal_string "{letter}+"
 {id} {return TK_IDENTIFICADOR;}
 
 {literal_char} {return TK_LIT_CHAR;}
-{literal_int} {return TK_LIT_INT;}
+
 {literal_string} {return TK_LIT_STRING;}
+{literal_float0} {return TK_LIT_FLOAT;}
+
+{literal_int} {return TK_LIT_INT;}
+
 " false" {return TK_LIT_FALSE;}
 " true" {return TK_LIT_TRUE;}
 
