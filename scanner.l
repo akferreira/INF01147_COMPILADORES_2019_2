@@ -6,6 +6,7 @@
 //{newline} {line_number++;}newline \n$
 #include <stdio.h>
 #include "tokens.h"
+int get_line_number();
 int line_number = 1;
 %}
 
@@ -18,12 +19,13 @@ id {letter}({alphanumeric}+?)
 
 literal_char '{letter}'
 literal_int {integer}
-literal_string "{letter}+"
+literal_string \"{letter}+\"
 
 power (["e"|"E"]{integer})
-literal_float0 {integer}"."({integer}?)({power}?)
+literal_float {integer}"."({integer}?)({power}?)
 literal_float1 {integer}"."
 
+whitespace [ \n\t\r]+
 
 
 
@@ -38,6 +40,7 @@ literal_float1 {integer}"."
 <LINE_COMMENT>.    { }
 
 \n { }
+{whitespace} {}
 
 	/* caracteres especiais */
 "," {return ',';}
@@ -116,14 +119,16 @@ literal_float1 {integer}"."
 {literal_char} {return TK_LIT_CHAR;}
 
 {literal_string} {return TK_LIT_STRING;}
-{literal_float0} {return TK_LIT_FLOAT;}
+{literal_float} {return TK_LIT_FLOAT;}
 
 {literal_int} {return TK_LIT_INT;}
 
 " false" {return TK_LIT_FALSE;}
 " true" {return TK_LIT_TRUE;}
 
-. {return TOKEN_ERRO; printf("Erro Linha %d\n", get_line_number());}
+
+
+. {return TOKEN_ERRO; printf("Erro Linha: %d\n", get_line_number());}
 %%
 
 int get_line_number(){

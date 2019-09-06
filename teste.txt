@@ -21,9 +21,8 @@ int test = 25;
 98.;
 float realest;
 char letra;
-
-int funcao(int entrada){
-	float x = 5.25;
-	int abc = -21;
-	float k = 12.4e-12;
-}
+'ee';
+95abc;
+'';
+"asassa"
+""
