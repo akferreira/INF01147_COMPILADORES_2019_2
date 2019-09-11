@@ -1,0 +1,384 @@
+Terminals unused in grammar
+
+   TK_PR_STRING
+   TK_PR_IF
+   TK_PR_THEN
+   TK_PR_ELSE
+   TK_PR_WHILE
+   TK_PR_DO
+   TK_PR_INPUT
+   TK_PR_OUTPUT
+   TK_PR_RETURN
+   TK_PR_FOREACH
+   TK_PR_FOR
+   TK_PR_SWITCH
+   TK_PR_CASE
+   TK_PR_BREAK
+   TK_PR_CONTINUE
+   TK_PR_CLASS
+   TK_PR_PRIVATE
+   TK_PR_PUBLIC
+   TK_PR_PROTECTED
+   TK_PR_END
+   TK_PR_DEFAULT
+   TK_OC_LE
+   TK_OC_GE
+   TK_OC_EQ
+   TK_OC_NE
+   TK_OC_AND
+   TK_OC_OR
+   TK_OC_SL
+   TK_OC_SR
+   TK_OC_FORWARD_PIPE
+   TK_OC_BASH_PIPE
+   TK_LIT_INT
+   TK_LIT_FLOAT
+   TK_LIT_FALSE
+   TK_LIT_TRUE
+   TK_LIT_CHAR
+   TK_LIT_STRING
+   TOKEN_ERRO
+   '+'
+   '-'
+   '*'
+   '/'
+
+
+Grammar
+
+    0 $accept: Input $end
+
+    1 Input: %empty
+    2      | foo_declaration
+
+    3 foo_declaration: foo_modifire foo_type foo_nome '(' foo_parameters_list ')'
+
+    4 foo_modifire: %empty
+    5             | TK_PR_STATIC
+
+    6 foo_type: TK_PR_INT
+    7         | TK_PR_FLOAT
+    8         | TK_PR_CHAR
+    9         | TK_PR_BOOL
+
+   10 foo_nome: TK_IDENTIFICADOR
+
+   11 foo_parameters_list: %empty
+   12                    | foo_parameters_argument
+   13                    | foo_parameters_argument ','
+
+   14 foo_parameters_argument: foo_parameters_modifire foo_parameters_type foo_parameters_name
+
+   15 foo_parameters_modifire: TK_PR_CONST
+   16                        | %empty
+
+   17 foo_parameters_type: TK_PR_INT
+   18                    | TK_PR_FLOAT
+   19                    | TK_PR_CHAR
+   20                    | TK_PR_BOOL
+
+   21 foo_parameters_name: TK_IDENTIFICADOR
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 3
+')' (41) 3
+'*' (42)
+'+' (43)
+',' (44) 13
+'-' (45)
+'/' (47)
+error (256)
+TK_PR_INT (258) 6 17
+TK_PR_FLOAT (259) 7 18
+TK_PR_BOOL (260) 9 20
+TK_PR_CHAR (261) 8 19
+TK_PR_STRING (262)
+TK_PR_IF (263)
+TK_PR_THEN (264)
+TK_PR_ELSE (265)
+TK_PR_WHILE (266)
+TK_PR_DO (267)
+TK_PR_INPUT (268)
+TK_PR_OUTPUT (269)
+TK_PR_RETURN (270)
+TK_PR_CONST (271) 15
+TK_PR_STATIC (272) 5
+TK_PR_FOREACH (273)
+TK_PR_FOR (274)
+TK_PR_SWITCH (275)
+TK_PR_CASE (276)
+TK_PR_BREAK (277)
+TK_PR_CONTINUE (278)
+TK_PR_CLASS (279)
+TK_PR_PRIVATE (280)
+TK_PR_PUBLIC (281)
+TK_PR_PROTECTED (282)
+TK_PR_END (283)
+TK_PR_DEFAULT (284)
+TK_OC_LE (285)
+TK_OC_GE (286)
+TK_OC_EQ (287)
+TK_OC_NE (288)
+TK_OC_AND (289)
+TK_OC_OR (290)
+TK_OC_SL (291)
+TK_OC_SR (292)
+TK_OC_FORWARD_PIPE (293)
+TK_OC_BASH_PIPE (294)
+TK_LIT_INT (295)
+TK_LIT_FLOAT (296)
+TK_LIT_FALSE (297)
+TK_LIT_TRUE (298)
+TK_LIT_CHAR (299)
+TK_LIT_STRING (300)
+TK_IDENTIFICADOR (301) 10 21
+TOKEN_ERRO (302)
+
+
+Nonterminals, with rules where they appear
+
+$accept (55)
+    on left: 0
+Input (56)
+    on left: 1 2, on right: 0
+foo_declaration (57)
+    on left: 3, on right: 2
+foo_modifire (58)
+    on left: 4 5, on right: 3
+foo_type (59)
+    on left: 6 7 8 9, on right: 3
+foo_nome (60)
+    on left: 10, on right: 3
+foo_parameters_list (61)
+    on left: 11 12 13, on right: 3
+foo_parameters_argument (62)
+    on left: 14, on right: 12 13
+foo_parameters_modifire (63)
+    on left: 15 16, on right: 14
+foo_parameters_type (64)
+    on left: 17 18 19 20, on right: 14
+foo_parameters_name (65)
+    on left: 21, on right: 14
+
+
+State 0
+
+    0 $accept: . Input $end
+
+    TK_PR_STATIC  shift, and go to state 1
+
+    $end      reduce using rule 1 (Input)
+    $default  reduce using rule 4 (foo_modifire)
+
+    Input            go to state 2
+    foo_declaration  go to state 3
+    foo_modifire     go to state 4
+
+
+State 1
+
+    5 foo_modifire: TK_PR_STATIC .
+
+    $default  reduce using rule 5 (foo_modifire)
+
+
+State 2
+
+    0 $accept: Input . $end
+
+    $end  shift, and go to state 5
+
+
+State 3
+
+    2 Input: foo_declaration .
+
+    $default  reduce using rule 2 (Input)
+
+
+State 4
+
+    3 foo_declaration: foo_modifire . foo_type foo_nome '(' foo_parameters_list ')'
+
+    TK_PR_INT    shift, and go to state 6
+    TK_PR_FLOAT  shift, and go to state 7
+    TK_PR_BOOL   shift, and go to state 8
+    TK_PR_CHAR   shift, and go to state 9
+
+    foo_type  go to state 10
+
+
+State 5
+
+    0 $accept: Input $end .
+
+    $default  accept
+
+
+State 6
+
+    6 foo_type: TK_PR_INT .
+
+    $default  reduce using rule 6 (foo_type)
+
+
+State 7
+
+    7 foo_type: TK_PR_FLOAT .
+
+    $default  reduce using rule 7 (foo_type)
+
+
+State 8
+
+    9 foo_type: TK_PR_BOOL .
+
+    $default  reduce using rule 9 (foo_type)
+
+
+State 9
+
+    8 foo_type: TK_PR_CHAR .
+
+    $default  reduce using rule 8 (foo_type)
+
+
+State 10
+
+    3 foo_declaration: foo_modifire foo_type . foo_nome '(' foo_parameters_list ')'
+
+    TK_IDENTIFICADOR  shift, and go to state 11
+
+    foo_nome  go to state 12
+
+
+State 11
+
+   10 foo_nome: TK_IDENTIFICADOR .
+
+    $default  reduce using rule 10 (foo_nome)
+
+
+State 12
+
+    3 foo_declaration: foo_modifire foo_type foo_nome . '(' foo_parameters_list ')'
+
+    '('  shift, and go to state 13
+
+
+State 13
+
+    3 foo_declaration: foo_modifire foo_type foo_nome '(' . foo_parameters_list ')'
+
+    TK_PR_CONST  shift, and go to state 14
+
+    ')'       reduce using rule 11 (foo_parameters_list)
+    $default  reduce using rule 16 (foo_parameters_modifire)
+
+    foo_parameters_list      go to state 15
+    foo_parameters_argument  go to state 16
+    foo_parameters_modifire  go to state 17
+
+
+State 14
+
+   15 foo_parameters_modifire: TK_PR_CONST .
+
+    $default  reduce using rule 15 (foo_parameters_modifire)
+
+
+State 15
+
+    3 foo_declaration: foo_modifire foo_type foo_nome '(' foo_parameters_list . ')'
+
+    ')'  shift, and go to state 18
+
+
+State 16
+
+   12 foo_parameters_list: foo_parameters_argument .
+   13                    | foo_parameters_argument . ','
+
+    ','  shift, and go to state 19
+
+    $default  reduce using rule 12 (foo_parameters_list)
+
+
+State 17
+
+   14 foo_parameters_argument: foo_parameters_modifire . foo_parameters_type foo_parameters_name
+
+    TK_PR_INT    shift, and go to state 20
+    TK_PR_FLOAT  shift, and go to state 21
+    TK_PR_BOOL   shift, and go to state 22
+    TK_PR_CHAR   shift, and go to state 23
+
+    foo_parameters_type  go to state 24
+
+
+State 18
+
+    3 foo_declaration: foo_modifire foo_type foo_nome '(' foo_parameters_list ')' .
+
+    $default  reduce using rule 3 (foo_declaration)
+
+
+State 19
+
+   13 foo_parameters_list: foo_parameters_argument ',' .
+
+    $default  reduce using rule 13 (foo_parameters_list)
+
+
+State 20
+
+   17 foo_parameters_type: TK_PR_INT .
+
+    $default  reduce using rule 17 (foo_parameters_type)
+
+
+State 21
+
+   18 foo_parameters_type: TK_PR_FLOAT .
+
+    $default  reduce using rule 18 (foo_parameters_type)
+
+
+State 22
+
+   20 foo_parameters_type: TK_PR_BOOL .
+
+    $default  reduce using rule 20 (foo_parameters_type)
+
+
+State 23
+
+   19 foo_parameters_type: TK_PR_CHAR .
+
+    $default  reduce using rule 19 (foo_parameters_type)
+
+
+State 24
+
+   14 foo_parameters_argument: foo_parameters_modifire foo_parameters_type . foo_parameters_name
+
+    TK_IDENTIFICADOR  shift, and go to state 25
+
+    foo_parameters_name  go to state 26
+
+
+State 25
+
+   21 foo_parameters_name: TK_IDENTIFICADOR .
+
+    $default  reduce using rule 21 (foo_parameters_name)
+
+
+State 26
+
+   14 foo_parameters_argument: foo_parameters_modifire foo_parameters_type foo_parameters_name .
+
+    $default  reduce using rule 14 (foo_parameters_argument)
