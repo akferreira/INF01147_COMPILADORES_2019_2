@@ -81,7 +81,7 @@ int yyparse (void);
 //programa:
 program: /* empty */;
 program:grammars program;
-grammars:declaration|foo_declaration;
+grammars:declaration|function_declaration;
 /*Line: TK_PR_END
 Line: decl TK_PR_END*/
 
@@ -91,64 +91,70 @@ Line: decl TK_PR_END*/
 declaration : TK_PR_STATIC decl';';
 declaration : decl';';
 //decl: TK_PR_STATIC all_types struct list { printf("Success!\n");} ;
-decl: primitive_type struct list;
-decl: TK_PR_STRING struct list;
-decl: TK_PR_STRING struct
-list: ','decl;
-all_types: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
-primitive_type : TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL;
-//all_types:  TK_PR_STRING | primitive_type ;
-struct: TK_IDENTIFICADOR|TK_IDENTIFICADOR'['TK_LIT_INT']';
+decl: primitive_type identifier list_decl;
+list_decl: ','decl|;
+primitive_type : TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
+identifier: TK_IDENTIFICADOR|TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
 
 //Operaçoes basicasLALR
-expr: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT{ $$=$1; };
+expression_list: ','expression|;
+expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT{ $$=$1; };
+expression: '(' expression ')' { $$ = $2; };
+expression: expression '+' expression;
+expression: expression '-' expression;
+expression: expression '*' expression;
+expression: expression '/' expression;
 
-expr: '(' expr ')' { $$ = $2; };
-expr: expr '+' expr;
-expr: expr '-' expr;
-expr: expr '*' expr;
-expr: expr '/' expr;
-
-// expr: '(' expr ')' { $$ = $2; };
-// expr: expr '+' expr { $$ = $1 + $3;}{ printf("+s!\n"); } ;
-// expr: expr '-' expr { $$ = $1 - $3;}{ printf("-s!\n"); } ;
-// expr: expr '*' expr { $$ = $1 * $3;}{ printf("*s!\n"); };
-// expr: expr '/' expr { $$ = $1 / $3;}{ printf("/s!\n"); };
+// expression: '(' expression ')' { $$ = $2; };
+// expression: expression '+' expression { $$ = $1 + $3;}{ printf("+s!\n"); } ;
+// expression: expression '-' expression { $$ = $1 - $3;}{ printf("-s!\n"); } ;
+// expression: expression '*' expression { $$ = $1 * $3;}{ printf("*s!\n"); };
+// expression: expression '/' expression { $$ = $1 / $3;}{ printf("/s!\n"); };
 
 
 
 
 
 //Function Declaration
-foo_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR function_list command_block;
-foo_declaration: primitive_type TK_IDENTIFICADOR function_list command_block;
-function_list: '('foo_parameters_list')';
-foo_parameters_list: |foo_parameters_argument|foo_parameters_argument','foo_parameters_list;
-	foo_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
-	foo_parameters_argument:primitive_type TK_IDENTIFICADOR;
+function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
+function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
+
+//function_list: '('function_parameters_list')';
+function_parameters_list: |function_parameters_argument|function_parameters_argument','function_parameters_list;
+function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
+function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 command_block: '{'command_block'}'
 command_block: '{''}'
-command_block: local_var_declaration| TK_PR_RETURN| TK_PR_BREAK|TK_PR_CONTINUE;
+command_block: local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call |TK_PR_RETURN| TK_PR_BREAK|TK_PR_CONTINUE;
 
-//input_command: ;
-
-
+//
 
 
+shift: TK_OC_SL | TK_OC_SR
+assignment_command: identifier '=' expression;
+shift_command: identifier shift expression;
+input_command: TK_PR_INPUT expression;
+output_command: TK_PR_OUTPUT expression expression_list;
+
+function_call: TK_IDENTIFICADOR '(' call_parameter_list ')'';';
+call_parameter_list:expression ',' call_parameter_list | expression;
 
 
-local_var_declaration:  TK_PR_STATIC TK_PR_CONST all_types TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: TK_PR_STATIC all_types TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: TK_PR_CONST all_types TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: all_types TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: all_types TK_IDENTIFICADOR';';
-// local_var_declaration: TK_PR_STATIC TK_PR_CONST TK_PR_STRING TK_IDENTIFICADOR local_var_initialization;
-// local_var_declaration: TK_PR_STATIC TK_PR_STRING  TK_IDENTIFICADOR local_var_initialization;
-// local_var_declaration: TK_PR_CONST TK_PR_STRING  TK_IDENTIFICADOR local_var_initialization;
-// local_var_declaration: TK_PR_STRING  TK_IDENTIFICADOR local_var_initialization;
+
+
+
+
+
+
+
+local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization';';
+local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization';';
+local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization';';
+local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization';';
+local_var_declaration: primitive_type TK_IDENTIFICADOR';';
 local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
 
 
