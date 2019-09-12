@@ -128,7 +128,8 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 command_block: '{'command_block'}'
 command_block: '{''}'
-command_block: local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call |TK_PR_RETURN| TK_PR_BREAK|TK_PR_CONTINUE;
+command_block: command';';
+command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call |TK_PR_RETURN| TK_PR_BREAK|TK_PR_CONTINUE;
 
 //
 
@@ -139,7 +140,7 @@ shift_command: identifier shift expression;
 input_command: TK_PR_INPUT expression;
 output_command: TK_PR_OUTPUT expression expression_list;
 
-function_call: TK_IDENTIFICADOR '(' call_parameter_list ')'';';
+function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
 call_parameter_list:expression ',' call_parameter_list | expression;
 
 
@@ -150,17 +151,21 @@ call_parameter_list:expression ',' call_parameter_list | expression;
 
 
 
-local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization';';
-local_var_declaration: primitive_type TK_IDENTIFICADOR';';
+local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
+local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization;
+local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
+local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization;
+local_var_declaration: primitive_type TK_IDENTIFICADOR;
 local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
 
 
 
 
 
+
+
+if_statement: TK_PR_IF '(' expression ')' command_block;
+if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block;
 
 
 
