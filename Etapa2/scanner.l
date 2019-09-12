@@ -23,7 +23,7 @@ literal_int {integer}
 literal_string \"{letter}+\"
 
 power (["e"|"E"]{integer})
-literal_float {integer}"."({integer}?)({power}?)
+literal_float {integer}"."({integer})({power}?)
 literal_float1 {integer}"."
 
 whitespace [ \n\t\r]+
