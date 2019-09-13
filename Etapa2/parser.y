@@ -95,7 +95,7 @@ int yyparse (void);
 //programa:
 program: /* empty */;
 program:grammars program;
-grammars:global_var_declaration|function_global_var_declaration;
+grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
 global_var_declaration: TK_PR_STATIC decl';';
