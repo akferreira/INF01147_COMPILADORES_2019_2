@@ -95,35 +95,35 @@ int yyparse (void);
 //programa:
 program: /* empty */;
 program:grammars program;
-grammars:declaration|function_declaration;
+grammars:global_var_declaration|function_global_var_declaration;
 	
 //Declaração de variaveis globais
-declaration : TK_PR_STATIC decl';';
-declaration : decl';';
+global_var_global_var_declaration: TK_PR_STATIC decl';';
+global_var_global_var_declaration: decl';';
 decl: primitive_type identifier;
-primitive_type : TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
+primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
 identifier: TK_IDENTIFICADOR|TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
-//Function Declaration
-function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
-function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
+//Function global_var_declaration
+function_global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
+function_global_var_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
 	function_parameters_list: |function_parameters_argument|function_parameters_argument','function_parameters_list;
 	function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
 	function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 //Command Block
-command_block: '{'command_block'}'
-command_block: '{''}'
+command_block: '{'command_block'}';
+command_block: '{''}';
 command_block: command';';
 
 
 //command
-command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call |command_return| TK_PR_BREAK|TK_PR_CONTINUE|loop_while;
+command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call |command_return| TK_PR_BREAK|TK_PR_CONTINUE|loop_while|loop_for;
 
 
 
-//Local Var Declaration
+//Local Var declaration
 local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
@@ -144,7 +144,7 @@ call_parameter_list:expression ',' call_parameter_list | expression;
 
 
 //shift
-shift: TK_OC_SL | TK_OC_SR
+shift: TK_OC_SL | TK_OC_SR;
 shift_command: identifier shift expression;
 
 //Retorno
@@ -155,11 +155,15 @@ if_statement: TK_PR_IF '(' expression ')' command_block;
 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block;
 
 //Loops
-command_block_loop: '{'command_block_loop'}'
-command_block_loop: '{''}'
+command_block_loop: '{'command_block_loop'}';
+command_block_loop: '{''}';
 command_block_loop: command;
 	//While
 	loop_while:TK_PR_WHILE'('expression')'command_block_loop;
+    //For
+    loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
+    loop_for_command_list:loop_for_command','loop_for_command_list|loop_for_command;
+    loop_for_command: local_var_declaration| shift_command | assignment_command;
 
 
 
@@ -168,10 +172,13 @@ expression_list: ','expression|;
 expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT{ $$=$1; };
 expression: '(' expression ')' { $$ = $2; };
 //Unários
-
-
-
-
+expression:'+'expression;
+expression:'-'expression;
+expression:'!'expression;
+expression:'&'expression;
+expression:'*'expression;
+expression:'?'expression;
+expression:'#'expression;
 //Binários
 expression: expression '+' expression;
 expression: expression '-' expression;
