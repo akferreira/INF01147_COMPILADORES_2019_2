@@ -98,16 +98,16 @@ program:grammars program;
 grammars:global_var_declaration|function_global_var_declaration;
 	
 //Declaração de variaveis globais
-global_var_global_var_declaration: TK_PR_STATIC decl';';
-global_var_global_var_declaration: decl';';
+global_var_declaration: TK_PR_STATIC decl';';
+global_var_declaration: decl';';
 decl: primitive_type identifier;
 primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
 identifier: TK_IDENTIFICADOR|TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
-//Function global_var_declaration
-function_global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
-function_global_var_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
+//Function declaration
+function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
+function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
 	function_parameters_list: |function_parameters_argument|function_parameters_argument','function_parameters_list;
 	function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
 	function_parameters_argument:primitive_type TK_IDENTIFICADOR;
