@@ -71,13 +71,13 @@ int yyparse (void);
        '*'
        '&'
 */
+%right '!''#'
 
-
-%left '*' '/' '%'
-      '+' '-'
-      TK_OC_SR TK_OC_SL
-      '&'
-      '|'
+%left  '*' '/' '%'
+       '+' '-'
+       TK_OC_SR TK_OC_SL
+       '&'
+       '|'
 
 %right '^'
        '?' ':'
@@ -160,10 +160,10 @@ command_block_loop: '{''}';
 command_block_loop: command;
 	//While
 	loop_while:TK_PR_WHILE'('expression')'command_block_loop;
-    //For
-    loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
-    loop_for_command_list:loop_for_command','loop_for_command_list|loop_for_command;
-    loop_for_command: local_var_declaration| shift_command | assignment_command;
+    	//For
+    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
+    	loop_for_command_list:loop_for_command','loop_for_command_list|loop_for_command;
+    	loop_for_command: local_var_declaration| shift_command | assignment_command;
 
 
 
@@ -191,28 +191,6 @@ expression: expression '^' expression;
 //Ternários
 expression: expression'?'expression':'expression;
       
-
-
-
-
-
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //Local Var Initialization
 local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
