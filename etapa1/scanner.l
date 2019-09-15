@@ -30,9 +30,9 @@ whitespace [ \n\t\r]+
 
 
 %%
-"/*" {BEGIN(BLOCK_COMMENT);printf("Begin comment block\n");}
-"//" {BEGIN(LINE_COMMENT);printf("single line comment\n");}
-<BLOCK_COMMENT>"*/" { BEGIN(INITIAL); printf("end comment\n");}
+"/*" {BEGIN(BLOCK_COMMENT);}
+"//" {BEGIN(LINE_COMMENT);}
+<BLOCK_COMMENT>"*/" { BEGIN(INITIAL);}
 <BLOCK_COMMENT>\n   { }
 <BLOCK_COMMENT>.    { }
 
@@ -128,7 +128,7 @@ whitespace [ \n\t\r]+
 
 
 
-. {return TOKEN_ERRO; printf("Erro Linha: %d\n", get_line_number());}
+. {return TOKEN_ERRO;}
 %%
 
 int get_line_number(){

@@ -113,15 +113,15 @@ function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_lis
 	function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 //Command Block
-command_block: '{'command_block'}';
+//command_block: '{'command_block'}';
 command_block: '{'command_list'}';
 //command_block: command_list';';
 
-command_list: command';' command_list | ;
+command_list: command command_list |;
 
 
 //command
-command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call |command_return| TK_PR_BREAK|TK_PR_CONTINUE|loop_while|loop_for;
+command: if_statement';' | local_var_declaration';'| shift_command';' | assignment_command';'| input_command';'| output_command';'| function_call';' |command_return';'| TK_PR_BREAK';'|TK_PR_CONTINUE';'|loop_while';'|loop_for';'|command_block;
 
 
 
@@ -157,13 +157,13 @@ if_statement: TK_PR_IF '(' expression ')' command_block;
 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block;
 
 //Loops
-command_block_loop: '{'command_block_loop'}';
-command_block_loop: '{''}';
-command_block_loop: command;
+// command_block_loop: '{'command_block_loop'}';
+// command_block_loop: '{''}';
+// command_block_loop: command;
 	//While
-	loop_while:TK_PR_WHILE'('expression')'command_block_loop;
+	loop_while:TK_PR_WHILE'('expression')'command_block;
     	//For
-    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
+    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block;
     	loop_for_command_list:loop_for_command','loop_for_command_list|loop_for_command;
     	loop_for_command: local_var_declaration| shift_command | assignment_command;
 
