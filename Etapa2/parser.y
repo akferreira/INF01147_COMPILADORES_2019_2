@@ -7,7 +7,7 @@ extern int get_line_number (void);
 void yyerror (char const *s)
 {
 
-	 fprintf (stderr, "Line:%d : %s\n", get_line_number(),s);
+	 fprintf (stderr, "Line %d : %s\n", get_line_number(),s);
 }
 extern int yylex (void);
 int yyparse (void);
@@ -114,8 +114,10 @@ function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_lis
 
 //Command Block
 command_block: '{'command_block'}';
-command_block: '{''}';
-command_block: command';';
+command_block: '{'command_list'}';
+//command_block: command_list';';
+
+command_list: command';' command_list | ;
 
 
 //command
