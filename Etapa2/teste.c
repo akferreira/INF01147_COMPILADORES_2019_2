@@ -3,6 +3,6 @@ int main(){
     xac = 12;
     {
         int abc;
-        int sd
+        int sd;
     }
 } 

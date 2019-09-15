@@ -11,6 +11,5 @@ int main (int argc, char **argv)
 {
   int ret = yyparse();
   yylex_destroy();
-  printf("ret %d",ret);
   return ret;
 }
