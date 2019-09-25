@@ -31,8 +31,8 @@ whitespace [ \n\t\r]+
 
 
 %%
-"/*" {BEGIN(BLOCK_COMMENT);printf("Begin comment block\n");}
-"//" {BEGIN(LINE_COMMENT);printf("single line comment\n");}
+"/*" {BEGIN(BLOCK_COMMENT);}
+"//" {BEGIN(LINE_COMMENT);}
 <BLOCK_COMMENT>"*/" { BEGIN(INITIAL); printf("end comment\n");}
 <BLOCK_COMMENT>\n   { }
 <BLOCK_COMMENT>.    { }
