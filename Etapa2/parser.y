@@ -161,9 +161,15 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
  command_block_loop: '{''}';
  command_block_loop: command;
 	//While
+
+	loop_while:TK_PR_WHILE'('expression')'command_block_loop;
+    	//For
+    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
+=======
 	loop_while:TK_PR_WHILE'('expression')' command_block_loop;
     	//For
     	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')' command_block_loop;
+>>>>>>> 66b046c7490dd0c7e3eb3c8a1a154fe688694a6a
     	loop_for_command_list:loop_for_command','loop_for_command_list|loop_for_command;
     	loop_for_command: local_var_declaration| shift_command | assignment_command;
 

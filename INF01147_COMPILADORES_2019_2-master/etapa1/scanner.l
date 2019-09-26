@@ -123,8 +123,8 @@ whitespace [ \n\t\r]+
 
 {literal_int} {return TK_LIT_INT;}
 
-" false" {return TK_LIT_FALSE;}
-" true" {return TK_LIT_TRUE;}
+"false" {return TK_LIT_FALSE;}
+"true" {return TK_LIT_TRUE;}
 
 
 

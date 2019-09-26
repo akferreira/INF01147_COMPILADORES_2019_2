@@ -5,7 +5,8 @@
 %{
 //{newline} {line_number++;}newline \n$
 #include <stdio.h>
-#include "tokens.h"
+#include "parser.tab.h"
+
 int get_line_number();
 int line_number = 1;
 %}
@@ -22,7 +23,7 @@ literal_int {integer}
 literal_string \"{letter}+\"
 
 power (["e"|"E"]{integer})
-literal_float {integer}"."({integer}?)({power}?)
+literal_float {integer}"."({integer})({power}?)
 literal_float1 {integer}"."
 
 whitespace [ \n\t\r]+
@@ -30,9 +31,9 @@ whitespace [ \n\t\r]+
 
 
 %%
-"/*" {BEGIN(BLOCK_COMMENT);}
-"//" {BEGIN(LINE_COMMENT);}
-<BLOCK_COMMENT>"*/" { BEGIN(INITIAL);}
+"/*" {BEGIN(BLOCK_COMMENT);printf("Begin comment block\n");}
+"//" {BEGIN(LINE_COMMENT);printf("single line comment\n");}
+<BLOCK_COMMENT>"*/" { BEGIN(INITIAL); printf("end comment\n");}
 <BLOCK_COMMENT>\n   { }
 <BLOCK_COMMENT>.    { }
 
@@ -114,7 +115,7 @@ whitespace [ \n\t\r]+
 "protected" {return TK_PR_PROTECTED;}
 "end" {return TK_PR_END;}
 "default" {return TK_PR_DEFAULT;}
-{id} {return TK_IDENTIFICADOR;}
+
 
 {literal_char} {return TK_LIT_CHAR;}
 
@@ -123,12 +124,12 @@ whitespace [ \n\t\r]+
 
 {literal_int} {return TK_LIT_INT;}
 
-" false" {return TK_LIT_FALSE;}
-" true" {return TK_LIT_TRUE;}
+"false" {return TK_LIT_FALSE;}
+"true" {return TK_LIT_TRUE;}
 
+{id} {return TK_IDENTIFICADOR;}
 
-
-. {return TOKEN_ERRO;}
+. {return TOKEN_ERRO; printf("Erro Linha: %d\n", get_line_number());}
 %%
 
 int get_line_number(){
