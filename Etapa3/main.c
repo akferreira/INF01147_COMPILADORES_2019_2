@@ -21,3 +21,7 @@ int main (int argc, char **argv)
   yylex_destroy();
   return ret;
 }
+
+
+void libera (void *arvore){}
+void exporta (void *arvore){}

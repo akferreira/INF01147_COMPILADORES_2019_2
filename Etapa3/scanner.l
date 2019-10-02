@@ -3,12 +3,85 @@
 %x LINE_COMMENT
 
 %{
-//{newline} {line_number++;}newline \n$
 #include <stdio.h>
+#include <stdlib.h>
 #include "parser.tab.h"
+#include "tokens.h"
 
 int get_line_number();
 int line_number = 1;
+
+
+void integer_lexical(){
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.intvalue = atoi(yytext);
+yylval.valor_lexico.var_type = TK_PR_INT;
+}
+
+void char_lexical(){
+char *literal_char = strdup(yytext);
+literal_char[strlen(literal_char) - 1] = 0;
+literal_char = literal_char + 1;
+
+
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.charvalue = literal_char[0];
+yylval.valor_lexico.var_type = TK_LIT_CHAR;
+}
+
+void string_lexical(){
+char *literal_char = strdup(yytext);
+literal_char[strlen(literal_char) - 1] = 0;
+literal_char = literal_char + 1;
+
+
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.value = literal_char ;
+yylval.valor_lexico.var_type = TK_LIT_STRING;
+}
+
+
+
+void float_lexical(){
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.fvalue = atof(yytext);
+yylval.valor_lexico.var_type = TK_LIT_FLOAT;
+}
+
+void bool_lexical(int bool_value){
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.intvalue = bool_value;
+yylval.valor_lexico.var_type = TK_PR_BOOL;
+}
+
+int keyword_lexical(int var_type){
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
+yylval.valor_lexico.value = strdup(yytext);
+yylval.valor_lexico.var_type = var_type;
+
+return var_type;
+
+
+}
+
+
+int identifier_lexical(int var_type){
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
+yylval.valor_lexico.value = strdup(yytext);
+yylval.valor_lexico.var_type = var_type;
+
+return var_type;
+
+
+}
+
 %}
 
 
@@ -18,7 +91,9 @@ integer ([+|-]?){digit}+
 alphanumeric [a-zA-z0-9]
 id {letter}({alphanumeric}+?)
 
-literal_char '{letter}'
+ascii [\x00-\x7f]
+
+literal_char '{ascii}'
 literal_int {integer}
 literal_string \"{letter}+\"
 
@@ -31,9 +106,9 @@ whitespace [ \n\t\r]+
 
 
 %%
-"/*" {BEGIN(BLOCK_COMMENT);printf("Begin comment block\n");}
-"//" {BEGIN(LINE_COMMENT);printf("single line comment\n");}
-<BLOCK_COMMENT>"*/" { BEGIN(INITIAL); printf("end comment\n");}
+"/*" {BEGIN(BLOCK_COMMENT);}
+"//" {BEGIN(LINE_COMMENT);}
+<BLOCK_COMMENT>"*/" { BEGIN(INITIAL);}
 <BLOCK_COMMENT>\n   { }
 <BLOCK_COMMENT>.    { }
 
@@ -85,51 +160,80 @@ whitespace [ \n\t\r]+
 "%>%" {return TK_OC_FORWARD_PIPE;}
 "%|%" {return TK_OC_BASH_PIPE;}
 
+"false" {
+bool_lexical(0);
 
+return TK_LIT_FALSE;}
+
+
+"true" {
+bool_lexical(1);
+
+
+return TK_LIT_TRUE;}
 
 	/* palavras reservadas */
-"int" {return TK_PR_INT;}
-"float" {return TK_PR_FLOAT;}
-"bool" {return TK_PR_BOOL;}
-"char" {return TK_PR_CHAR;}
-"string" {return TK_PR_STRING;}
-"if" {return TK_PR_IF;}
-"then" {return TK_PR_THEN;}
-"else" {return TK_PR_ELSE;}
-"while" {return TK_PR_WHILE;}
-"do" {return TK_PR_DO;}
-"input" {return TK_PR_INPUT;}
-"output" {return TK_PR_OUTPUT;}
-"return" {return TK_PR_RETURN;}
-"const" {return TK_PR_CONST;}
-"static" {return TK_PR_STATIC;}
-"foreach" {return TK_PR_FOREACH;}
-"for" {return TK_PR_FOR;}
-"switch" {return TK_PR_SWITCH;}
-"case" {return TK_PR_CASE;}
-"break" {return TK_PR_BREAK;}
-"continue" {return TK_PR_CONTINUE;}
-"class" {return TK_PR_CLASS;}
-"private" {return TK_PR_PRIVATE;}
-"public" {return TK_PR_PUBLIC;}
-"protected" {return TK_PR_PROTECTED;}
-"end" {return TK_PR_END;}
-"default" {return TK_PR_DEFAULT;}
-{id} {return TK_IDENTIFICADOR;}
+"int" {
 
-{literal_char} {return TK_LIT_CHAR;}
+return keyword_lexical(TK_PR_INT);
 
-{literal_string} {return TK_LIT_STRING;}
-{literal_float} {return TK_LIT_FLOAT;}
-
-{literal_int} {return TK_LIT_INT;}
-
-"false" {return TK_LIT_FALSE;}
-"true" {return TK_LIT_TRUE;}
+return TK_PR_INT;}
 
 
+"float" { return keyword_lexical(TK_PR_FLOAT);}
+"bool" {return keyword_lexical(TK_PR_BOOL);}
+"char" {return keyword_lexical(TK_PR_CHAR);}
+"string" {return keyword_lexical( TK_PR_STRING);}
+"if" {return keyword_lexical(TK_PR_IF);}
+"then" {return keyword_lexical(TK_PR_THEN);}
+"else" {return keyword_lexical(TK_PR_ELSE);}
+"while" {return keyword_lexical(TK_PR_WHILE);}
+"do" {return keyword_lexical(TK_PR_DO);}
+"input" {return keyword_lexical(TK_PR_INPUT);}
+"output" {return keyword_lexical(TK_PR_OUTPUT);}
+"return" {return keyword_lexical(TK_PR_RETURN);}
+"const" {return keyword_lexical(TK_PR_CONST);}
+"static" {return keyword_lexical(TK_PR_STATIC);}
+"foreach" {return keyword_lexical(TK_PR_FOREACH);}
+"for" {return keyword_lexical(TK_PR_FOR);}
+"switch" {return keyword_lexical(TK_PR_SWITCH);}
+"case" {return keyword_lexical(TK_PR_CASE);}
+"break" {return keyword_lexical(TK_PR_BREAK);}
+"continue" {return keyword_lexical(TK_PR_CONTINUE);}
+"class" {return keyword_lexical(TK_PR_CLASS);}
+"private" {return keyword_lexical(TK_PR_PRIVATE);}
+"public" {return keyword_lexical(TK_PR_PUBLIC);}
+"protected" {return keyword_lexical(TK_PR_PROTECTED);}
+"end" {return keyword_lexical(TK_PR_END);}
+"default" {return keyword_lexical(TK_PR_DEFAULT);}
 
-. {return TOKEN_ERRO; printf("Erro Linha: %d\n", get_line_number());}
+
+{id} {return identifier_lexical(TK_IDENTIFICADOR);}
+
+{literal_char} {
+
+char_lexical();
+
+
+
+return TK_LIT_CHAR;}
+
+{literal_string} {
+string_lexical();
+return TK_LIT_STRING;}
+{literal_float} {
+float_lexical();
+return TK_LIT_FLOAT;}
+
+{literal_int} {
+integer_lexical();
+return TK_LIT_INT;}
+
+
+
+
+
+. {return TOKEN_ERRO; }
 %%
 
 int get_line_number(){

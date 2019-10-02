@@ -1,3 +1,20 @@
+%union {
+  struct _VALOR_LEXICO{
+    int line;
+    int token_type;
+    int var_type;
+    char charvalue;
+    char *value;
+    int intvalue;
+    double fvalue;
+    
+    
+  } valor_lexico;
+  
+  
+}
+
+
 %{
 
 //#include "main.c"
@@ -113,9 +130,7 @@ function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_lis
 	function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 //Command Block
-//command_block: '{'command_block'}';
 command_block: '{'command_list'}';
-//command_block: command_list';';
 
 command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block|;
 
@@ -134,7 +149,7 @@ local_var_declaration: primitive_type TK_IDENTIFICADOR;
 
 
 //Comando de Atribuição
-assignment_command: identifier '=' expression;
+assignment_command: identifier '=' expression {}
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression;
@@ -162,12 +177,9 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
  command_block_loop: command;
 	//While
 
-	loop_while:TK_PR_WHILE'('expression')'command_block_loop;
-    	//For
-    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
 	loop_while:TK_PR_WHILE'('expression')' command_block_loop;
-    	//For
-    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')' command_block_loop;
+    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
+    
     	loop_for_command_list:loop_for_command','loop_for_command_list|loop_for_command;
     	loop_for_command: local_var_declaration| shift_command | assignment_command;
 
@@ -175,25 +187,25 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 //Operaçoes basicasLALR
 expression_list: ','expression|;
-expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT{ $$=$1; };
-expression: '(' expression ')' { $$ = $2; };
+expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT|TK_LIT_CHAR|TK_LIT_STRING|TK_LIT_TRUE|TK_LIT_FALSE { $$ = create_leaf($1);}
+expression: '(' expression ')';
 //Unários
-expression:'+'expression { $$ = $1;};
-expression:'-'expression { $$ = -$1;};
-expression:'!'expression { $$ = !$1;};
+expression:'+'expression;
+expression:'-'expression;
+expression:'!'expression;
 expression:'&'expression /*{ $$ = &$1;}*/;
 expression:'*'expression /*{ $$ = *$1;}*/;
 expression:'?'expression;
 expression:'#'expression;
 //Binários
-expression: expression '+' expression { $$ = $1 + $2;};
-expression: expression '-' expression { $$ = $1 - $2;};
-expression: expression '*' expression { $$ = $1 * $2;};
-expression: expression '/' expression { $$ = $1 / $2;};
-expression: expression '%' expression { $$ = $1 % $2;};
-expression: expression '|' expression { $$ = $1 || $2;};
-expression: expression '&' expression { $$ = $1 && $2;};
-expression: expression '^' expression /*{ $$ = $1 pow($2);}*/;
+expression: expression '+' expression;
+expression: expression '-' expression;
+expression: expression '*' expression;
+expression: expression '/' expression;
+expression: expression '%' expression;
+expression: expression '|' expression;
+expression: expression '&' expression;
+expression: expression '^' expression;
 //Ternários
 expression: expression'?'expression':'expression;
       
