@@ -2,6 +2,22 @@
 #include <stdio.h>
 #include "ast.h"
 
+ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
+    if(left == NULL || right == NULL){
+        return NULL;
+    }
+    
+    ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
+    
+    new_node->node_type = node_type;
+    new_node->first_child = left;
+    new_node->first_child->next_sibling = right;
+    new_node->next_sibling = NULL;
+    
+    
+    return new_node;
+}
+
 
 
 

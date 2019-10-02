@@ -7,15 +7,17 @@ enum TOKEN_TYPE {
     TK_TYPE_OPERATOR, 
     TK_TYPE_ID, 
     TK_TYPE_LITERAL 
-}
+};
 
 enum NODE_TYPE{
-    UNARY_EXPRESSION,
-    BINARY_EXPRESSION,
-    TERNARY_EXPRESSION,
-    LEAF_NODE
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    MOD,
+    INVERT
     
-}
+};
 
 
 
