@@ -56,11 +56,26 @@ typedef struct _ast_node {
     
 } ast_node;
 
-ast_node* new_unary_expression(int node_type, ast_node *exp);
+
+    
+    
+int insert_child_ast_node(ast_node *node,ast_node *child);
+
+int insert_ast_node_sibling_list(ast_node *node,ast_node *sibling);
+
+void print_tree(ast_node *root);
+
+ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico);
+
+ast_node* new_unary_expression(int node_type, ast_node *expression);
 
 ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right);
 
-ast_node* new_ternary_expression(int node_type, ast_node *test_exp,ast_node *false_exp, ast_node *true_exp);
+ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *false_expression, ast_node *true_expression);
+
+
+
+
 
 
 #endif // AST_H_INCLUDED
