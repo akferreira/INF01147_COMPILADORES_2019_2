@@ -68,8 +68,15 @@ int insert_ast_node_sibling_list(ast_node *node,ast_node *sibling);
 
 void print_tree(ast_node *root);
 
-ast_node* new_empty_node();
+int get_child_count(ast_node *node);
 
+int get_sibling_count(ast_node *node);
+
+ast_node* get_nth_child_ast_node(int position);
+
+ast_node* get_nth_sibling_ast_node(int position);
+
+ast_node* new_empty_node();
 
 ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico);
 
@@ -91,3 +98,6 @@ ast_node* new_global_grammar_node(int node_type, ast_node *global_scope_node);
 
 
 #endif // AST_H_INCLUDED
+
+
+

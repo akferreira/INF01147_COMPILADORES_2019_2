@@ -122,13 +122,18 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 }
 
 ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *false_expression, ast_node *true_expression){
-    ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
+    if(test_expression == NULL || false_expression == NULL || true_expression == NULL){
+        return NULL;
+    }
     
-    new_node->node_type = node_type;
-    new_node->first_child = test_expression;
-    insert_ast_node_sibling_list(new_node->first_child,false_expression);
-    insert_ast_node_sibling_list(new_node->first_child,true_expression);
+    ast_node *new_node = new_empty_node();
     
+    if(new_node != NULL){
+        new_node->node_type = node_type;
+        new_node->first_child = test_expression;
+        insert_ast_node_sibling_list(new_node->first_child,false_expression);
+        insert_ast_node_sibling_list(new_node->first_child,true_expression);
+    }
     
     
     return new_node;
@@ -156,10 +161,7 @@ void erase_tree(ast_node *root){
     if(root == NULL) return;
     
     erase_tree(root->first_child);
-    
-    if(root->next_sibling != NULL){
-        erase_tree(root->next_sibling);
-    }
+    erase_tree(root->next_sibling);
     
     free(root);
     
