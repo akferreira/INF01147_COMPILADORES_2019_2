@@ -2,6 +2,33 @@
 #include <stdio.h>
 #include "ast.h"
 
+extern void *arvore;
+
+void libera (void *arvore){
+    printf("Liberating %p",arvore);
+    
+    
+}
+void exporta (void *arvore){
+    printf("Exporting %p",arvore);
+    
+}
+
+ast_node* new_empty_node(){
+    ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
+    
+    if(new_node != NULL){
+        new_node->node_type = UNINITIALIZED;
+        new_node->first_child = NULL;
+        new_node->next_sibling = NULL;
+    }
+    
+    
+    return new_node;
+    
+    
+}
+
 int insert_child_ast_node(ast_node *node,ast_node *child){
     if(node == NULL) return -1;
     
@@ -83,13 +110,13 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
         return NULL;
     }
     
-    ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
+    ast_node *new_node = new_empty_node();
     
-    new_node->node_type = node_type;
-    new_node->first_child = left;
-    new_node->first_child->next_sibling = right;
-    new_node->next_sibling = NULL;
-    
+    if(new_node != NULL){
+        new_node->node_type = node_type;
+        insert_child_ast_node(new_node,left);
+        insert_child_ast_node(new_node,right);
+    }
     
     return new_node;
 }
@@ -115,17 +142,26 @@ void print_node_info(ast_node *node){
 void print_tree(ast_node *root){
     if(root == NULL) return;
     
-    print_tree(root->first_child);
-    
     print_node_info(root);
     
-    if(root->next_sibling != NULL){
-        print_tree(root->next_sibling);
-        //current_sibling = current_sibling->next_sibling;
-    }
+    print_tree(root->first_child);
+    print_tree(root->next_sibling);
     
    
     
+    
+}
+
+void erase_tree(ast_node *root){
+    if(root == NULL) return;
+    
+    erase_tree(root->first_child);
+    
+    if(root->next_sibling != NULL){
+        erase_tree(root->next_sibling);
+    }
+    
+    free(root);
     
 }
 
@@ -158,6 +194,7 @@ insert_child_ast_node(test->first_child,new_leaf_node(7,a));
 
 printf("\n\n");
 print_tree(test);
+erase_tree(test);
     
     
 return 0;
