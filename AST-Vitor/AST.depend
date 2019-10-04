@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1570211519 source:/home/grad/vcmatias/Desktop/Etapa3/AST/AST/ast.c
+	"ast.h"
+
+1570211505 /home/grad/vcmatias/Desktop/Etapa3/AST/AST/ast.h
+	<stdlib.h>
+	<stdio.h>
+
+1570211390 source:/home/grad/vcmatias/Desktop/Etapa3/AST/AST/Main.c
+	"ast.h"
+
+1570211519 source:/home/grad/vcmatias/Desktop/Etapa3/AST/AST-Vitor/ast.c
+	"ast.h"
+
+1570211505 /home/grad/vcmatias/Desktop/Etapa3/AST/AST-Vitor/ast.h
+	<stdlib.h>
+	<stdio.h>
+
+1570211390 source:/home/grad/vcmatias/Desktop/Etapa3/AST/AST-Vitor/Main.c
+	"ast.h"
+
