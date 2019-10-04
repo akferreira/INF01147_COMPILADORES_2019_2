@@ -10,13 +10,22 @@ enum TOKEN_TYPE {
 };
 
 enum NODE_TYPE{
+    TERMINAL,
     UNINITIALIZED,
     ADD,
     SUB,
     MUL,
     DIV,
+    OR,
+    AND,
     MOD,
-    INVERT
+    MINUS,
+    POWER,
+    ADDRESS,
+    CONTENT,
+    INVERT,
+    HASH,
+    BOOL_EVAL
     
 };
 
@@ -27,13 +36,17 @@ typedef struct  _valor_lexico{
     int line;
     int token_type;
     int var_type;
+    char charvalue;
+    char *value;
+    int intvalue;
+    double fvalue;
     
-    union{
-        char charvalue;
-        char *value;
-        int intvalue;
-        double fvalue;
-    } value;
+//     union{
+//         char charvalue;
+//         char *value;
+//         int intvalue;
+//         double fvalue;
+//     } value;
     
     
 } VALOR_LEXICO;

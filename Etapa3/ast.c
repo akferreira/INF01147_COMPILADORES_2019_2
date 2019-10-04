@@ -33,8 +33,8 @@ int insert_child_ast_node(ast_node *node,ast_node *child){
     if(node == NULL) return -1;
     
     if(node->first_child == NULL) {
-        printf("First child\n");
-        printf("%d\n",child->node_type);
+//         printf("First child\n");
+//         printf("%d\n",child->node_type);
         node->first_child = child;
         return 0;
     }
@@ -45,15 +45,15 @@ int insert_child_ast_node(ast_node *node,ast_node *child){
 }
 
 int insert_ast_node_sibling_list(ast_node *node,ast_node *sibling){
-    printf("Inserting Sibling\n");
+//     printf("Inserting Sibling\n");
     
     if(node == NULL){
         return -1;
     }
     
     if(node->next_sibling == NULL) {
-        printf("Inserting first sibling\n");
-        printf("%d\n",sibling->node_type);
+//         printf("Inserting first sibling\n");
+//         printf("%d\n",sibling->node_type);
         node->next_sibling = sibling;
         return 0;
     }
@@ -77,12 +77,16 @@ int insert_ast_node_sibling_list(ast_node *node,ast_node *sibling){
 
 ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
+    
+    if(new_node != NULL){
 
     new_node->node_type = node_type;
     new_node->first_child = NULL;
     new_node->next_sibling = NULL;
     new_node->ast_valor_lexico = ast_valor_lexico;
     
+    printf("Sucessfully allocated leaf_node : %d\n",node_type);
+    }
     
     
     return new_node;
@@ -113,6 +117,8 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
     ast_node *new_node = new_empty_node();
     
     if(new_node != NULL){
+        printf("\nLine : %d \t Binary : %d\n", left->ast_valor_lexico.line, node_type);
+        
         new_node->node_type = node_type;
         insert_child_ast_node(new_node,left);
         insert_child_ast_node(new_node,right);
@@ -174,7 +180,7 @@ void erase_tree(ast_node *root){
 
 
 
-
+/*
 int main(){
 VALOR_LEXICO a;
 a.line = 0;
@@ -200,4 +206,4 @@ erase_tree(test);
     
     
 return 0;
-}
+}*/

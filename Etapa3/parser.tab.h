@@ -43,6 +43,12 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 1 "parser.y"
+
+    #include "ast.h"
+
+#line 52 "parser.tab.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -101,23 +107,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 1 "parser.y"
+#line 6 "parser.y"
 
-  struct _VALOR_LEXICO{
-    int line;
-    int token_type;
-    int var_type;
-    char charvalue;
-    char *value;
-    int intvalue;
-    double fvalue;
-    
-    
-  } valor_lexico;
+  ast_node* ast_node;
+  VALOR_LEXICO valor_lexico;
   
   
 
-#line 121 "parser.tab.h"
+#line 118 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

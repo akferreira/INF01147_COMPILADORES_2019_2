@@ -1,15 +1,11 @@
+%code requires {
+    #include "ast.h"
+}
+
+
 %union {
-  struct _VALOR_LEXICO{
-    int line;
-    int token_type;
-    int var_type;
-    char charvalue;
-    char *value;
-    int intvalue;
-    double fvalue;
-    
-    
-  } valor_lexico;
+  ast_node* ast_node;
+  VALOR_LEXICO valor_lexico;
   
   
 }
@@ -20,6 +16,7 @@
 //#include "main.c"
 #include <stdio.h>
 #include <stdlib.h>
+#include "ast.h"
 extern int get_line_number (void);
 void yyerror (char const *s)
 {
@@ -31,6 +28,7 @@ int yyparse (void);
 
 
 %}
+
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -88,6 +86,8 @@ int yyparse (void);
        '*'
        '&'
 */
+
+
 %right '!''#'
 
 %left  '*' '/' '%'
@@ -153,11 +153,15 @@ assignment_command: identifier '=' expression {}
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression;
-output_command: TK_PR_OUTPUT expression expression_list;
 
+output_command: TK_PR_OUTPUT expression;
+output_command: TK_PR_OUTPUT expression_list;
+//expression
 //Chamada de Função
-function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
-call_parameter_list:expression ',' call_parameter_list | expression;
+function_call: TK_IDENTIFICADOR '(' expression_list ')';
+function_call: TK_IDENTIFICADOR '(' expression ')';
+//function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
+//call_parameter_list:expression ',' call_parameter_list | expression;
 
 
 //shift
@@ -185,29 +189,45 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 
 
-//Operaçoes basicasLALR
-expression_list: ','expression|;
-expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT|TK_LIT_CHAR|TK_LIT_STRING|TK_LIT_TRUE|TK_LIT_FALSE { $$ = create_leaf($1);}
-expression: '(' expression ')';
+//Expressions
+
+
+
+%type <ast_node> expression expression_list ;
+
+
+expression_list:  expression ',' expression_list { printf("aaaaa\n");};
+|  ',' expression {printf("aaaaa\n");};
+
+expression: terminal_expression{ 
+$$ = new_leaf_node(TERMINAL,$<valor_lexico>1);
+};
+
+terminal_expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT|TK_LIT_CHAR|TK_LIT_STRING|TK_LIT_TRUE|TK_LIT_FALSE;
+
+//expression: expression_unary | expression_binary| expression_ternary;
+
+
+expression: '(' expression ')'{ printf("aaaaa\n");};
 //Unários
-expression:'+'expression;
-expression:'-'expression;
-expression:'!'expression;
-expression:'&'expression /*{ $$ = &$1;}*/;
-expression:'*'expression /*{ $$ = *$1;}*/;
-expression:'?'expression;
-expression:'#'expression;
+expression:'+'expression{ $$ = $2;};
+expression:'-'expression{ $$ = new_unary_expression(MINUS,$2);};
+expression:'!'expression{ $$ = new_unary_expression(INVERT,$2); };
+expression:'&'expression { $$ = new_unary_expression(ADDRESS,$2); };
+expression:'*'expression {$$ = new_unary_expression(CONTENT,$2); };
+expression:'?'expression{$$ = new_unary_expression(BOOL_EVAL,$2); };
+expression:'#'expression{$$ = new_unary_expression(HASH,$2); };
 //Binários
-expression: expression '+' expression;
-expression: expression '-' expression;
-expression: expression '*' expression;
-expression: expression '/' expression;
-expression: expression '%' expression;
-expression: expression '|' expression;
-expression: expression '&' expression;
-expression: expression '^' expression;
+expression: expression '+' expression {$$ = new_binary_expression(ADD,$1,$3);};
+expression: expression '-' expression{$$ = new_binary_expression(SUB,$1,$3); };
+expression: expression '*' expression{$$ = new_binary_expression(MUL,$1,$3);};
+expression: expression '/' expression{$$ = new_binary_expression(DIV,$1,$3); };
+expression: expression '%' expression{$$ = new_binary_expression(MOD,$1,$3); };
+expression: expression '|' expression{$$ = new_binary_expression(OR,$1,$3); };
+expression: expression '&' expression{$$ = new_binary_expression(AND,$1,$3);};
+expression: expression '^' expression{$$ = new_binary_expression(POWER,$1,$3); };
 //Ternários
-expression: expression'?'expression':'expression;
+expression: expression'?'expression':'expression{printf("\nhey = "); printf("%d",$<valor_lexico.intvalue>1); };
       
 
 //Local Var Initialization
