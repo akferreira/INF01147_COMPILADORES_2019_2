@@ -616,6 +616,7 @@ yylval.valor_lexico.line = get_line_number();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.intvalue = atoi(yytext);
 yylval.valor_lexico.var_type = TK_PR_INT;
+yylval.valor_lexico.value = NULL;
 }
 
 void char_lexical(){
@@ -627,7 +628,9 @@ literal_char = literal_char + 1;
 yylval.valor_lexico.line = get_line_number();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.charvalue = literal_char[0];
+yylval.valor_lexico.intvalue = literal_char[0];
 yylval.valor_lexico.var_type = TK_LIT_CHAR;
+yylval.valor_lexico.value = NULL;
 }
 
 void string_lexical(){
@@ -649,6 +652,7 @@ yylval.valor_lexico.line = get_line_number();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.fvalue = atof(yytext);
 yylval.valor_lexico.var_type = TK_LIT_FLOAT;
+yylval.valor_lexico.value = NULL;
 }
 
 void bool_lexical(int bool_value){
@@ -681,8 +685,8 @@ return var_type;
 
 }
 
-#line 684 "lex.yy.c"
-#line 685 "lex.yy.c"
+#line 688 "lex.yy.c"
+#line 689 "lex.yy.c"
 
 #define INITIAL 0
 #define BLOCK_COMMENT 1
@@ -901,9 +905,9 @@ YY_DECL
 		}
 
 	{
-#line 108 "scanner.l"
+#line 112 "scanner.l"
 
-#line 906 "lex.yy.c"
+#line 910 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -972,248 +976,248 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 109 "scanner.l"
+#line 113 "scanner.l"
 {BEGIN(BLOCK_COMMENT);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 110 "scanner.l"
+#line 114 "scanner.l"
 {BEGIN(LINE_COMMENT);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 111 "scanner.l"
+#line 115 "scanner.l"
 { BEGIN(INITIAL);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 112 "scanner.l"
+#line 116 "scanner.l"
 { }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 113 "scanner.l"
+#line 117 "scanner.l"
 { }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 115 "scanner.l"
+#line 119 "scanner.l"
 { BEGIN(INITIAL);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 116 "scanner.l"
+#line 120 "scanner.l"
 { }
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 118 "scanner.l"
+#line 122 "scanner.l"
 { }
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 119 "scanner.l"
+#line 123 "scanner.l"
 {}
 	YY_BREAK
 /* caracteres especiais */
 case 10:
 YY_RULE_SETUP
-#line 122 "scanner.l"
+#line 126 "scanner.l"
 {return ',';}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 123 "scanner.l"
+#line 127 "scanner.l"
 {return ';';}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 124 "scanner.l"
+#line 128 "scanner.l"
 {return ':';}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 125 "scanner.l"
+#line 129 "scanner.l"
 {return '(';}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 126 "scanner.l"
+#line 130 "scanner.l"
 {return ')';}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 127 "scanner.l"
+#line 131 "scanner.l"
 {return '[';}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 128 "scanner.l"
+#line 132 "scanner.l"
 {return ']';}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 129 "scanner.l"
+#line 133 "scanner.l"
 {return '{';}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 130 "scanner.l"
+#line 134 "scanner.l"
 {return '}';}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 131 "scanner.l"
+#line 135 "scanner.l"
 {return '+';}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 132 "scanner.l"
+#line 136 "scanner.l"
 {return '-';}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 133 "scanner.l"
+#line 137 "scanner.l"
 {return '|';}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 134 "scanner.l"
+#line 138 "scanner.l"
 {return '?';}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 135 "scanner.l"
+#line 139 "scanner.l"
 {return '@';}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 136 "scanner.l"
+#line 140 "scanner.l"
 {return '*';}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 137 "scanner.l"
+#line 141 "scanner.l"
 {return '/';}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 138 "scanner.l"
+#line 142 "scanner.l"
 {return '<';}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 139 "scanner.l"
+#line 143 "scanner.l"
 {return '>';}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 140 "scanner.l"
+#line 144 "scanner.l"
 {return '=';}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 141 "scanner.l"
+#line 145 "scanner.l"
 {return '!';}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 142 "scanner.l"
+#line 146 "scanner.l"
 {return '&';}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 143 "scanner.l"
+#line 147 "scanner.l"
 {return '%';}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 144 "scanner.l"
+#line 148 "scanner.l"
 {return '#';}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 145 "scanner.l"
+#line 149 "scanner.l"
 {return '^';}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 146 "scanner.l"
+#line 150 "scanner.l"
 {return '.';}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 147 "scanner.l"
+#line 151 "scanner.l"
 {return '$';}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 148 "scanner.l"
+#line 152 "scanner.l"
 {return '~';}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 149 "scanner.l"
+#line 153 "scanner.l"
 {return '`';}
 	YY_BREAK
 /* operadores compostos */
 case 38:
 YY_RULE_SETUP
-#line 152 "scanner.l"
+#line 156 "scanner.l"
 {return TK_OC_LE;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 153 "scanner.l"
+#line 157 "scanner.l"
 {return TK_OC_GE;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 154 "scanner.l"
+#line 158 "scanner.l"
 {return TK_OC_EQ;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 155 "scanner.l"
+#line 159 "scanner.l"
 {return TK_OC_NE;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 156 "scanner.l"
+#line 160 "scanner.l"
 {return TK_OC_AND;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 157 "scanner.l"
+#line 161 "scanner.l"
 {return TK_OC_OR;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 158 "scanner.l"
+#line 162 "scanner.l"
 {return TK_OC_SR;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 159 "scanner.l"
+#line 163 "scanner.l"
 {return TK_OC_SL;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 160 "scanner.l"
+#line 164 "scanner.l"
 {return TK_OC_FORWARD_PIPE;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 161 "scanner.l"
+#line 165 "scanner.l"
 {return TK_OC_BASH_PIPE;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 163 "scanner.l"
+#line 167 "scanner.l"
 {
 bool_lexical(0);
 
@@ -1221,7 +1225,7 @@ return TK_LIT_FALSE;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 169 "scanner.l"
+#line 173 "scanner.l"
 {
 bool_lexical(1);
 
@@ -1231,7 +1235,7 @@ return TK_LIT_TRUE;}
 /* palavras reservadas */
 case 50:
 YY_RULE_SETUP
-#line 176 "scanner.l"
+#line 180 "scanner.l"
 {
 
 return keyword_lexical(TK_PR_INT);
@@ -1240,143 +1244,143 @@ return TK_PR_INT;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 183 "scanner.l"
+#line 187 "scanner.l"
 { return keyword_lexical(TK_PR_FLOAT);}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 184 "scanner.l"
+#line 188 "scanner.l"
 {return keyword_lexical(TK_PR_BOOL);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 185 "scanner.l"
+#line 189 "scanner.l"
 {return keyword_lexical(TK_PR_CHAR);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 186 "scanner.l"
+#line 190 "scanner.l"
 {return keyword_lexical( TK_PR_STRING);}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 187 "scanner.l"
+#line 191 "scanner.l"
 {return keyword_lexical(TK_PR_IF);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 188 "scanner.l"
+#line 192 "scanner.l"
 {return keyword_lexical(TK_PR_THEN);}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 189 "scanner.l"
+#line 193 "scanner.l"
 {return keyword_lexical(TK_PR_ELSE);}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 190 "scanner.l"
+#line 194 "scanner.l"
 {return keyword_lexical(TK_PR_WHILE);}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 191 "scanner.l"
+#line 195 "scanner.l"
 {return keyword_lexical(TK_PR_DO);}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 192 "scanner.l"
+#line 196 "scanner.l"
 {return keyword_lexical(TK_PR_INPUT);}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 193 "scanner.l"
+#line 197 "scanner.l"
 {return keyword_lexical(TK_PR_OUTPUT);}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 194 "scanner.l"
+#line 198 "scanner.l"
 {return keyword_lexical(TK_PR_RETURN);}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 195 "scanner.l"
+#line 199 "scanner.l"
 {return keyword_lexical(TK_PR_CONST);}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 196 "scanner.l"
+#line 200 "scanner.l"
 {return keyword_lexical(TK_PR_STATIC);}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 197 "scanner.l"
+#line 201 "scanner.l"
 {return keyword_lexical(TK_PR_FOREACH);}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 198 "scanner.l"
+#line 202 "scanner.l"
 {return keyword_lexical(TK_PR_FOR);}
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 199 "scanner.l"
+#line 203 "scanner.l"
 {return keyword_lexical(TK_PR_SWITCH);}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 200 "scanner.l"
+#line 204 "scanner.l"
 {return keyword_lexical(TK_PR_CASE);}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 201 "scanner.l"
+#line 205 "scanner.l"
 {return keyword_lexical(TK_PR_BREAK);}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 202 "scanner.l"
+#line 206 "scanner.l"
 {return keyword_lexical(TK_PR_CONTINUE);}
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 203 "scanner.l"
+#line 207 "scanner.l"
 {return keyword_lexical(TK_PR_CLASS);}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 204 "scanner.l"
+#line 208 "scanner.l"
 {return keyword_lexical(TK_PR_PRIVATE);}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 205 "scanner.l"
+#line 209 "scanner.l"
 {return keyword_lexical(TK_PR_PUBLIC);}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 206 "scanner.l"
+#line 210 "scanner.l"
 {return keyword_lexical(TK_PR_PROTECTED);}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 207 "scanner.l"
+#line 211 "scanner.l"
 {return keyword_lexical(TK_PR_END);}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 208 "scanner.l"
+#line 212 "scanner.l"
 {return keyword_lexical(TK_PR_DEFAULT);}
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 211 "scanner.l"
+#line 215 "scanner.l"
 {return identifier_lexical(TK_IDENTIFICADOR);}
 	YY_BREAK
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 213 "scanner.l"
+#line 217 "scanner.l"
 {
 
 char_lexical();
@@ -1387,36 +1391,36 @@ return TK_LIT_CHAR;}
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 221 "scanner.l"
+#line 225 "scanner.l"
 {
 string_lexical();
 return TK_LIT_STRING;}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 224 "scanner.l"
+#line 228 "scanner.l"
 {
 float_lexical();
 return TK_LIT_FLOAT;}
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 228 "scanner.l"
+#line 232 "scanner.l"
 {
 integer_lexical();
 return TK_LIT_INT;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 236 "scanner.l"
+#line 240 "scanner.l"
 {return TOKEN_ERRO; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 237 "scanner.l"
+#line 241 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1419 "lex.yy.c"
+#line 1423 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(BLOCK_COMMENT):
 case YY_STATE_EOF(LINE_COMMENT):
@@ -2435,7 +2439,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 237 "scanner.l"
+#line 241 "scanner.l"
 
 
 int get_line_number(){

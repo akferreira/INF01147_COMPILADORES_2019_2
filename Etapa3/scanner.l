@@ -17,6 +17,7 @@ yylval.valor_lexico.line = get_line_number();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.intvalue = atoi(yytext);
 yylval.valor_lexico.var_type = TK_PR_INT;
+yylval.valor_lexico.value = NULL;
 }
 
 void char_lexical(){
@@ -28,7 +29,9 @@ literal_char = literal_char + 1;
 yylval.valor_lexico.line = get_line_number();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.charvalue = literal_char[0];
+yylval.valor_lexico.intvalue = literal_char[0];
 yylval.valor_lexico.var_type = TK_LIT_CHAR;
+yylval.valor_lexico.value = NULL;
 }
 
 void string_lexical(){
@@ -50,6 +53,7 @@ yylval.valor_lexico.line = get_line_number();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.fvalue = atof(yytext);
 yylval.valor_lexico.var_type = TK_LIT_FLOAT;
+yylval.valor_lexico.value = NULL;
 }
 
 void bool_lexical(int bool_value){

@@ -79,6 +79,10 @@ int insert_child_ast_node(ast_node *node,ast_node *child);
 
 int insert_ast_node_sibling_list(ast_node *node,ast_node *sibling);
 
+void print_node_info_csv(ast_node * node);
+
+void print_node_info(ast_node *node);
+
 void print_tree(ast_node *root);
 
 int get_child_count(ast_node *node);
@@ -88,6 +92,8 @@ int get_sibling_count(ast_node *node);
 ast_node* get_nth_child_ast_node(int position);
 
 ast_node* get_nth_sibling_ast_node(int position);
+
+ast_node* new_assignment_node(ast_node *dest, ast_node *source);
 
 ast_node* new_empty_node();
 

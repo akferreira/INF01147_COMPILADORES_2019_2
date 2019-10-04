@@ -119,7 +119,10 @@ global_var_declaration: TK_PR_STATIC decl';';
 global_var_declaration: decl';';
 decl: primitive_type identifier;
 primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
-identifier: TK_IDENTIFICADOR|TK_IDENTIFICADOR'['TK_LIT_INT']';
+identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
+|vector {$$ = new_leaf_node('I',$<valor_lexico>1);};
+vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
+
 
 
 //Function declaration
@@ -136,7 +139,7 @@ command_list: command';' command_list | loop_while command_list|loop_for command
 
 
 //command
-command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
+command: if_statement | local_var_declaration| shift_command; | assignment_command {print_node_info_csv($1);} | input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
 
 
 
@@ -149,7 +152,7 @@ local_var_declaration: primitive_type TK_IDENTIFICADOR;
 
 
 //Comando de Atribuição
-assignment_command: identifier '=' expression {}
+assignment_command: identifier '=' expression { $$ = new_assignment_node($1,$3);};
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression;
@@ -193,17 +196,33 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 
 
-%type <ast_node> expression expression_list ;
+%type <ast_node> expression expression_list identifier assignment_command TK_IDENTIFICADOR vector;
 
 
 expression_list:  expression ',' expression_list { printf("aaaaa\n");};
 |  ',' expression {printf("aaaaa\n");};
 
-expression: terminal_expression{ 
-$$ = new_leaf_node(TERMINAL,$<valor_lexico>1);
+expression: TK_IDENTIFICADOR{ 
+$$ = new_leaf_node('I',$<valor_lexico>1);
+}
+|TK_LIT_INT{ 
+$$ = new_leaf_node('d',$<valor_lexico>1);
+}
+|TK_LIT_FLOAT{ 
+$$ = new_leaf_node('f',$<valor_lexico>1);
+}
+|TK_LIT_CHAR{ 
+$$ = new_leaf_node('c',$<valor_lexico>1);
+}
+|TK_LIT_STRING{ 
+$$ = new_leaf_node('s',$<valor_lexico>1);
+}
+|TK_LIT_TRUE{ 
+$$ = new_leaf_node('T',$<valor_lexico>1);
+}
+|TK_LIT_FALSE{ 
+$$ = new_leaf_node('F',$<valor_lexico>1);
 };
-
-terminal_expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT|TK_LIT_CHAR|TK_LIT_STRING|TK_LIT_TRUE|TK_LIT_FALSE;
 
 //expression: expression_unary | expression_binary| expression_ternary;
 
@@ -218,10 +237,10 @@ expression:'*'expression {$$ = new_unary_expression(CONTENT,$2); };
 expression:'?'expression{$$ = new_unary_expression(BOOL_EVAL,$2); };
 expression:'#'expression{$$ = new_unary_expression(HASH,$2); };
 //Binários
-expression: expression '+' expression {$$ = new_binary_expression(ADD,$1,$3);};
-expression: expression '-' expression{$$ = new_binary_expression(SUB,$1,$3); };
-expression: expression '*' expression{$$ = new_binary_expression(MUL,$1,$3);};
-expression: expression '/' expression{$$ = new_binary_expression(DIV,$1,$3); };
+expression: expression '+' expression {$$ = new_binary_expression('+',$1,$3);};
+expression: expression '-' expression{$$ = new_binary_expression('-',$1,$3); };
+expression: expression '*' expression{$$ = new_binary_expression('*',$1,$3);};
+expression: expression '/' expression{$$ = new_binary_expression('/',$1,$3); };
 expression: expression '%' expression{$$ = new_binary_expression(MOD,$1,$3); };
 expression: expression '|' expression{$$ = new_binary_expression(OR,$1,$3); };
 expression: expression '&' expression{$$ = new_binary_expression(AND,$1,$3);};

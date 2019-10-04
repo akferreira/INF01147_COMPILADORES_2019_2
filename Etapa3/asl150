@@ -1,10 +1,10 @@
 int main() {
   int x;
+  int p;
   bool y;
   y = false;
-  x = 5 + 4;
-  x = 7 * 7 + 3;
-  x = 9 / 5;
+  x = 7 * 15 + 3 * 8;
+  p = 2 + 5 + 9;
   char d;
   d = '1';
 }
