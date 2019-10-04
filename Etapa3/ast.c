@@ -7,6 +7,8 @@ extern void *arvore;
 void libera (void *arvore){
     printf("Liberating %p\n",arvore);
     
+    erase_tree(arvore);
+    
     
 }
 void exporta (void *arvore){
@@ -170,6 +172,38 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
     return new_node;
 }
 
+ast_node* new_command_block_node(int node_type,ast_node *command_list){
+    if(command_list == NULL) return NULL;
+    
+    ast_node *command_block = new_empty_node();
+    
+    if(command_block == NULL){
+        command_block->node_type = node_type;
+        insert_child_ast_node(command_block,command_list);
+    }
+    return command_block;
+}
+
+ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* parameter_list, ast_node* command_block){
+    ast_node *function_node = new_empty_node();
+    
+    if(function_node != NULL){
+        function_node->node_type = node_type;
+        
+        if(modifier_static != NULL){
+            insert_child_ast_node(function_node,modifier_static);
+        }
+        
+        
+        insert_child_ast_node(function_node,var_type);
+        insert_child_ast_node(function_node,parameter_list);
+        insert_child_ast_node(function_node,command_block);
+    }
+    
+    
+    return function_node;
+}
+
 ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *false_expression, ast_node *true_expression){
     if(test_expression == NULL || false_expression == NULL || true_expression == NULL){
         return NULL;
@@ -245,6 +279,8 @@ void print_tree(ast_node *root){
 }
 
 void erase_tree(ast_node *root){
+    printf("erasing\n");
+    
     if(root == NULL) return;
     
     erase_tree(root->first_child);
