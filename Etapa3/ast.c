@@ -9,6 +9,8 @@ void libera (void *arvore){
     
     erase_tree(arvore);
     
+
+    
     
 }
 void exporta (void *arvore){
@@ -43,6 +45,8 @@ ast_node* new_empty_node(){
         new_node->node_type = UNINITIALIZED;
         new_node->first_child = NULL;
         new_node->next_sibling = NULL;
+        new_node->father = NULL;
+        
         VALOR_LEXICO new_valor_lexico;
         new_valor_lexico.line =0;
         new_valor_lexico.intvalue = 0;
@@ -70,17 +74,17 @@ ast_node* insert_child_ast_node(ast_node *node, ast_node *child)
         //printf("First child\n");
         //printf("%d\n",child->node_type);
         node->first_child = child;
-        node->first_child->node_father = node;
-        printf("bbbbaaa\n");
+        node->first_child->father = node;
+        
 
         return node;
     }
     
-    printf("aaa\n");
+    
 
     insert_ast_node_sibling_list(node->first_child, child);
     
-    printf("aaaeeee\n");
+    
     return node;
 
 }
@@ -93,13 +97,12 @@ ast_node* insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
 
     if(node->next_sibling == NULL)
     {
-        printf("Inserting first sibling\n");
         //printf("%d\n",sibling->node_type);
         node->next_sibling = sibling;
         
-        printf("%p| %c | %p \n",node,node->next_sibling->node_type,node->node_father);
         
-        node->next_sibling->node_father = node->node_father;
+        
+        node->next_sibling->father = node->father;
         
         
         
@@ -117,11 +120,27 @@ ast_node* insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
     }
 
     current_sibling->next_sibling = sibling;
-    current_sibling->next_sibling->node_father = current_sibling->node_father;
+    current_sibling->next_sibling->father = current_sibling->father;
 
 
     return node;
 }
+ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression){
+    ast_node* io_node = new_leaf_node(node_type,lexico_io);
+    ast_node* io_command_node = new_empty_node();
+    
+    
+    
+    if(io_node != NULL){
+        
+    }
+    
+    
+    return NULL;
+    
+}
+
+
 ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
     
@@ -130,7 +149,7 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     new_node->node_type = node_type;
     new_node->first_child = NULL;
     new_node->next_sibling = NULL;
-    new_node->node_father = NULL;
+    new_node->father = NULL;
     new_node->ast_valor_lexico = ast_valor_lexico;
     
     
@@ -262,21 +281,17 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
     
     ast_node *new_node = new_empty_node();
     
-    printf("local var 1\n");
     
     if(new_node != NULL){
         new_node->node_type = node_type;
         
-        printf("local var 2\n");
         
         if(modifiers != NULL) insert_child_ast_node(new_node, modifiers);
         
         insert_child_ast_node(new_node,var_type);
         
-        printf("local var 3 %p %p \n" , new_node,identifier);
         insert_child_ast_node(new_node,identifier);
         
-        printf("local var 4\n");
         
         if(initialization != NULL) insert_child_ast_node(new_node,initialization);
         
@@ -319,7 +334,7 @@ void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
     if(Tree == NULL)
         return;
     Percorrer_imprimir_file_DFS(Tree->first_child,arq);
-    fprintf(arq,"\n%p, %p [%c] \n",Tree->node_father, Tree,Tree->node_type);
+    fprintf(arq,"\n%p, %p [%c] \n",Tree->father, Tree,Tree->node_type);
     //printf("%p %d\n",Tree->node_node_father, Tree->node_type);
     Percorrer_imprimir_file_DFS(Tree->next_sibling,arq);
 

@@ -36,6 +36,7 @@ enum NODE_TYPE{
 
 typedef struct  _valor_lexico{
     int line;
+    int column;
     int token_type;
     int var_type;
     char charvalue;
@@ -69,7 +70,7 @@ typedef struct _ast_node {
     
     struct _ast_node *first_child;
     struct _ast_node *next_sibling;
-    struct _ast_node *node_father;
+    struct _ast_node *father;
     
 } ast_node;
 
@@ -116,6 +117,8 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
 ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *global_scope_node);
 
 ast_node* new_ifelse_node(int node_type, ast_node* true_expression, ast_node *true_command_block , ast_node *false_command_block);
+
+ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression);
 
 ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico);
 

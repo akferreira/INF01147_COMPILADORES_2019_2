@@ -1,12 +1,12 @@
 int main() {
-  int x;
-  int p;
-  bool y;
-  y = false;
-  x = 7 * 15 + 3 * 8;
-  p = 2 + 5 + 9;
-  char d;
-  d = '1';
-  
-  int kmt <= 45;
+int x;
+int p;
+bool y;
+y = false;
+x = 7 * 15 + 3 * 8;
+p = 2 + 5 + 9;
+char d;
+d = '1';
+
+int kmt <= 45;
 }

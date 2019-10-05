@@ -1,3 +1,8 @@
+
+
+
+
+
 %option yylineno
 %x BLOCK_COMMENT
 %x LINE_COMMENT
@@ -8,12 +13,46 @@
 #include "parser.tab.h"
 #include "tokens.h"
 
-int get_line_number();
-int line_number = 1;
+int offset;
+extern YYLTYPE yylloc;
+
+#define YY_USER_ACTION token_location();
+
+
+
+int get_line_number(){
+    return yylineno;
+}
+
+int get_column_number(){
+    return yylloc.first_column;
+}
+
+void update_lexical_location(){
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.column = get_column_number();
+}
+
+
+void token_location(){
+
+    yylloc.first_column = yylloc.last_column; 
+    yylloc.first_line = yylloc.last_line;
+    for(int i = 0; yytext[i] != '\0'; i++) { 
+        if(yytext[i] == '\n') { 
+            yylloc.last_column = 0; 
+            yylloc.last_line = yylineno;
+        } 
+        else { 
+            yylloc.last_column++; 
+        } 
+    }
+
+}
 
 
 void integer_lexical(){
-yylval.valor_lexico.line = get_line_number();
+update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.intvalue = atoi(yytext);
 yylval.valor_lexico.var_type = TK_PR_INT;
@@ -26,7 +65,7 @@ literal_char[strlen(literal_char) - 1] = 0;
 literal_char = literal_char + 1;
 
 
-yylval.valor_lexico.line = get_line_number();
+update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.charvalue = literal_char[0];
 yylval.valor_lexico.intvalue = literal_char[0];
@@ -40,7 +79,7 @@ literal_char[strlen(literal_char) - 1] = 0;
 literal_char = literal_char + 1;
 
 
-yylval.valor_lexico.line = get_line_number();
+update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value = literal_char ;
 yylval.valor_lexico.var_type = TK_LIT_STRING;
@@ -49,7 +88,7 @@ yylval.valor_lexico.var_type = TK_LIT_STRING;
 
 
 void float_lexical(){
-yylval.valor_lexico.line = get_line_number();
+update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.fvalue = atof(yytext);
 yylval.valor_lexico.var_type = TK_LIT_FLOAT;
@@ -57,14 +96,14 @@ yylval.valor_lexico.value = NULL;
 }
 
 void bool_lexical(int bool_value){
-yylval.valor_lexico.line = get_line_number();
+update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.intvalue = bool_value;
 yylval.valor_lexico.var_type = TK_PR_BOOL;
 }
 
 int keyword_lexical(int var_type){
-yylval.valor_lexico.line = get_line_number();
+update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
 yylval.valor_lexico.value = strdup(yytext);
 yylval.valor_lexico.var_type = var_type;
@@ -76,7 +115,7 @@ return var_type;
 
 
 int identifier_lexical(int var_type){
-yylval.valor_lexico.line = get_line_number();
+update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
 yylval.valor_lexico.value = strdup(yytext);
 yylval.valor_lexico.var_type = var_type;
@@ -240,7 +279,5 @@ return TK_LIT_INT;}
 . {return TOKEN_ERRO; }
 %%
 
-int get_line_number(){
-    return yylineno;
-}
+
 

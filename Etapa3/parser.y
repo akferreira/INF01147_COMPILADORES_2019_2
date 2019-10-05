@@ -108,6 +108,7 @@ int yyparse (void);
 
 %define parse.error verbose
 %start program
+%locations
 
 %%
 %type <ast_node> expression expression_list identifier  simple_identifier assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node;
@@ -146,11 +147,11 @@ function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_lis
 //Command Block
 command_block: '{'command_list'}';
 
-command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block|;
+command_list: command command_list | loop_while command_list|loop_for command_list |command_block|;
 
 
 //command
-command: if_statement | local_var_declaration {exporta($1);}| shift_command; | assignment_command {exporta($1);} | input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
+command: if_statement | local_var_declaration';' {exporta($1);}| shift_command';'; | assignment_command';' {exporta($1);} | input_command';'| output_command';'| function_call';'|command_return';'| TK_PR_BREAK';' |TK_PR_CONTINUE';';
 
 
 
@@ -174,7 +175,8 @@ $$ = new_local_var_declaration_node('<', NULL ,$1,$2,$3 ) ;
 
 };
 local_var_declaration: primitive_type simple_identifier null_node{
-printf("oh no\n");
+printf("%d || %d\n",@1.first_line,@1.last_line);
+printf("%d || %d\n",@2.first_column,@2.last_column);
 $$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;
 };
 
