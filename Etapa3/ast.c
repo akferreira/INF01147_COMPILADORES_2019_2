@@ -30,6 +30,12 @@ void exporta (void *arvore){
     
 }
 
+ast_node* get_null(){
+    return NULL;
+    
+}
+
+
 ast_node* new_empty_node(){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
     
@@ -55,10 +61,9 @@ ast_node* new_empty_node(){
 
 
 
-int insert_child_ast_node(ast_node *node, ast_node *child)
+ast_node* insert_child_ast_node(ast_node *node, ast_node *child)
 {
-    if(node == NULL)
-        return -1;
+    if(node == NULL) return NULL;
 
     if(node->first_child == NULL)
     {
@@ -66,31 +71,40 @@ int insert_child_ast_node(ast_node *node, ast_node *child)
         //printf("%d\n",child->node_type);
         node->first_child = child;
         node->first_child->node_father = node;
+        printf("bbbbaaa\n");
 
-        return 0;
+        return node;
     }
+    
+    printf("aaa\n");
 
     insert_ast_node_sibling_list(node->first_child, child);
-    return 0;
+    
+    printf("aaaeeee\n");
+    return node;
 
 }
 
 
 //Adiciona o siobling (irmao), percorrendo a arvore ate achar um vazio.
-int insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
+ast_node* insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
 {
-    if(node == NULL)
-    {
-        return -1;
-    }
+    if(node == NULL) return NULL;
 
     if(node->next_sibling == NULL)
     {
-        //printf("Inserting first sibling\n");
+        printf("Inserting first sibling\n");
         //printf("%d\n",sibling->node_type);
         node->next_sibling = sibling;
+        
+        printf("%p| %c | %p \n",node,node->next_sibling->node_type,node->node_father);
+        
         node->next_sibling->node_father = node->node_father;
-        return 0;
+        
+        
+        
+        
+        return node;
     }
 
     
@@ -106,7 +120,7 @@ int insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
     current_sibling->next_sibling->node_father = current_sibling->node_father;
 
 
-    return 0;
+    return node;
 }
 ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
@@ -116,6 +130,7 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     new_node->node_type = node_type;
     new_node->first_child = NULL;
     new_node->next_sibling = NULL;
+    new_node->node_father = NULL;
     new_node->ast_valor_lexico = ast_valor_lexico;
     
     
@@ -229,7 +244,52 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
     return function_node;
 }
 
-ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *false_expression, ast_node *true_expression){
+ast_node* new_modifier_node(int node_type1, int node_type2, VALOR_LEXICO lexico1, VALOR_LEXICO lexico2){
+    ast_node* modifier1 = new_leaf_node(node_type1,lexico1);
+    
+    if(node_type2){
+        ast_node* modifier2 = new_leaf_node(node_type2,lexico2);
+        insert_ast_node_sibling_list(modifier1 , modifier2);
+    }
+    
+    return modifier1;
+    
+    
+}
+
+ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_node* var_type, ast_node* identifier, ast_node* initialization){
+    if(var_type == NULL || identifier == NULL) return NULL;
+    
+    ast_node *new_node = new_empty_node();
+    
+    printf("local var 1\n");
+    
+    if(new_node != NULL){
+        new_node->node_type = node_type;
+        
+        printf("local var 2\n");
+        
+        if(modifiers != NULL) insert_child_ast_node(new_node, modifiers);
+        
+        insert_child_ast_node(new_node,var_type);
+        
+        printf("local var 3 %p %p \n" , new_node,identifier);
+        insert_child_ast_node(new_node,identifier);
+        
+        printf("local var 4\n");
+        
+        if(initialization != NULL) insert_child_ast_node(new_node,initialization);
+        
+        
+    }
+    
+    
+    return new_node;
+    
+    
+}
+
+ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *true_expression, ast_node *false_expression){
     if(test_expression == NULL || false_expression == NULL || true_expression == NULL){
         return NULL;
     }
@@ -259,7 +319,7 @@ void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
     if(Tree == NULL)
         return;
     Percorrer_imprimir_file_DFS(Tree->first_child,arq);
-    fprintf(arq,"\n%p, %p\n",Tree->node_father, Tree);
+    fprintf(arq,"\n%p, %p [%c] \n",Tree->node_father, Tree,Tree->node_type);
     //printf("%p %d\n",Tree->node_node_father, Tree->node_type);
     Percorrer_imprimir_file_DFS(Tree->next_sibling,arq);
 
@@ -271,14 +331,16 @@ void print_node_info_csv(ast_node * node, FILE *arq){
     
     ast_node *root = node;
     
+    fprintf(arq,"Node type %c \t[%d] \t | Address: %p|\n",node->node_type,node->ast_valor_lexico.intvalue,node);
+    
     
     if(node->first_child != NULL){
-        fprintf(arq,"%p, %p\n",root,node->first_child);
+        fprintf(arq,"%p, %p [%c]\n",root,node->first_child,node->node_type);
         
         ast_node *next = node->first_child->next_sibling;
         
         while(next != NULL){
-            fprintf(arq,"%p,%p\n",root,next);
+            fprintf(arq,"%p,%p [%c]\n",root,next,next->node_type);
             next = next->next_sibling;
         }
     print_node_info_csv(node->first_child,arq);

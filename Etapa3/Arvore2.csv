@@ -1,18 +1,60 @@
-0x559defe804b0, 0x559defe80410 [=]
-0x559defe804b0,0x559defe80460 [F]
-0x559defe80de0, 0x559defe80b60 [=]
-0x559defe80de0,0x559defe80d90 [*]
-0x559defe80d90, 0x559defe80cf0 [*]
-0x559defe80d90,0x559defe80d40 [d]
-0x559defe80cf0, 0x559defe80c50 [+]
-0x559defe80cf0,0x559defe80ca0 [d]
-0x559defe80c50, 0x559defe80bb0 [*]
-0x559defe80c50,0x559defe80c00 [d]
-0x559defe81030, 0x559defe80e50 [=]
-0x559defe81030,0x559defe80fe0 [+]
-0x559defe80fe0, 0x559defe80f40 [+]
-0x559defe80fe0,0x559defe80f90 [d]
-0x559defe80f40, 0x559defe80ea0 [+]
-0x559defe80f40,0x559defe80ef0 [d]
-0x559defe811a0, 0x559defe810e0 [=]
-0x559defe811a0,0x559defe81150 [c]
+Node type < 	[0] 	 | Address: 0x56334b00f870|
+0x56334b00f870, 0x56334b00f3a0 [<]
+0x56334b00f870,0x56334b00f410 [I]
+Node type t 	[0] 	 | Address: 0x56334b00f3a0|
+Node type I 	[0] 	 | Address: 0x56334b00f410|
+Node type < 	[0] 	 | Address: 0x56334b00fbd0|
+0x56334b00fbd0, 0x56334b00fb10 [<]
+0x56334b00fbd0,0x56334b00fb80 [I]
+Node type t 	[0] 	 | Address: 0x56334b00fb10|
+Node type I 	[0] 	 | Address: 0x56334b00fb80|
+Node type < 	[0] 	 | Address: 0x56334b00fd00|
+0x56334b00fd00, 0x56334b00fc40 [<]
+0x56334b00fd00,0x56334b00fcb0 [I]
+Node type t 	[0] 	 | Address: 0x56334b00fc40|
+Node type I 	[0] 	 | Address: 0x56334b00fcb0|
+Node type = 	[0] 	 | Address: 0x56334b00fe10|
+0x56334b00fe10, 0x56334b00fd70 [=]
+0x56334b00fe10,0x56334b00fdc0 [F]
+Node type I 	[0] 	 | Address: 0x56334b00fd70|
+Node type F 	[0] 	 | Address: 0x56334b00fdc0|
+Node type = 	[0] 	 | Address: 0x56334b010100|
+0x56334b010100, 0x56334b00fe80 [=]
+0x56334b010100,0x56334b0100b0 [*]
+Node type I 	[0] 	 | Address: 0x56334b00fe80|
+Node type * 	[0] 	 | Address: 0x56334b0100b0|
+0x56334b0100b0, 0x56334b010010 [*]
+0x56334b0100b0,0x56334b010060 [d]
+Node type + 	[0] 	 | Address: 0x56334b010010|
+0x56334b010010, 0x56334b00ff70 [+]
+0x56334b010010,0x56334b00ffc0 [d]
+Node type * 	[0] 	 | Address: 0x56334b00ff70|
+0x56334b00ff70, 0x56334b00fed0 [*]
+0x56334b00ff70,0x56334b00ff20 [d]
+Node type d 	[7] 	 | Address: 0x56334b00fed0|
+Node type d 	[15] 	 | Address: 0x56334b00ff20|
+Node type d 	[3] 	 | Address: 0x56334b00ffc0|
+Node type d 	[8] 	 | Address: 0x56334b010060|
+Node type = 	[0] 	 | Address: 0x56334b010350|
+0x56334b010350, 0x56334b010170 [=]
+0x56334b010350,0x56334b010300 [+]
+Node type I 	[8] 	 | Address: 0x56334b010170|
+Node type + 	[0] 	 | Address: 0x56334b010300|
+0x56334b010300, 0x56334b010260 [+]
+0x56334b010300,0x56334b0102b0 [d]
+Node type + 	[0] 	 | Address: 0x56334b010260|
+0x56334b010260, 0x56334b0101c0 [+]
+0x56334b010260,0x56334b010210 [d]
+Node type d 	[2] 	 | Address: 0x56334b0101c0|
+Node type d 	[5] 	 | Address: 0x56334b010210|
+Node type d 	[9] 	 | Address: 0x56334b0102b0|
+Node type < 	[0] 	 | Address: 0x56334b010480|
+0x56334b010480, 0x56334b0103c0 [<]
+0x56334b010480,0x56334b010430 [I]
+Node type t 	[9] 	 | Address: 0x56334b0103c0|
+Node type I 	[9] 	 | Address: 0x56334b010430|
+Node type = 	[0] 	 | Address: 0x56334b0105b0|
+0x56334b0105b0, 0x56334b0104f0 [=]
+0x56334b0105b0,0x56334b010560 [c]
+Node type I 	[9] 	 | Address: 0x56334b0104f0|
+Node type c 	[49] 	 | Address: 0x56334b010560|

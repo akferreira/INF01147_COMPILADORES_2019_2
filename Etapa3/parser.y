@@ -110,6 +110,8 @@ int yyparse (void);
 %start program
 
 %%
+%type <ast_node> expression expression_list identifier  simple_identifier assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node;
+
 //programa:
 program: /* empty */;
 program:grammars program;
@@ -119,9 +121,17 @@ grammars:global_var_declaration|function_declaration;
 global_var_declaration: TK_PR_STATIC decl';';
 global_var_declaration: decl';';
 decl: primitive_type identifier;
-primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
-identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
+
+primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}
+|TK_PR_FLOAT{$$ = new_leaf_node('t',$<valor_lexico>1);}
+|TK_PR_CHAR{$$ = new_leaf_node('t',$<valor_lexico>1);}
+|TK_PR_BOOL{$$ = new_leaf_node('t',$<valor_lexico>1);}
+|TK_PR_STRING{$$ = new_leaf_node('t',$<valor_lexico>1);};
+
+identifier: simple_identifier {$$ = $1;}
 |vector {$$ = new_leaf_node('I',$<valor_lexico>1);};
+
+simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
 vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
@@ -140,16 +150,35 @@ command_list: command';' command_list | loop_while command_list|loop_for command
 
 
 //command
-command: if_statement | local_var_declaration| shift_command; | assignment_command {exporta($1);} | input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
+command: if_statement | local_var_declaration {exporta($1);}| shift_command; | assignment_command {exporta($1);} | input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
 
+
+
+
+modifiers: TK_PR_STATIC TK_PR_CONST { $$ = new_modifier_node('S','C',$<valor_lexico>1,$<valor_lexico>2);}
+| TK_PR_STATIC { $$ = new_modifier_node('S', 0 ,$<valor_lexico>1,$<valor_lexico>1);}
+| TK_PR_CONST{ $$ = new_modifier_node('C',0,$<valor_lexico>1,$<valor_lexico>1);};
 
 
 //Local Var declaration
-local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
-local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization;
-local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
-local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization;
-local_var_declaration: primitive_type TK_IDENTIFICADOR;
+local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
+$$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;
+
+};
+// local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization{
+// };
+// local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization{
+//};
+local_var_declaration: primitive_type simple_identifier local_var_initialization{
+$$ = new_local_var_declaration_node('<', NULL ,$1,$2,$3 ) ;
+
+};
+local_var_declaration: primitive_type simple_identifier null_node{
+printf("oh no\n");
+$$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;
+};
+
+null_node: {$$ = get_null();};
 
 
 //Comando de Atribuição
@@ -197,13 +226,42 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 
 
-%type <ast_node> expression expression_list identifier assignment_command TK_IDENTIFICADOR vector;
 
 
-expression_list:  expression ',' expression_list { printf("aaaaa\n");};
-|  ',' expression {printf("aaaaa\n");};
 
-expression: TK_IDENTIFICADOR{ 
+expression_list:  expression ',' expression_list { $$ = insert_ast_node_sibling_list($1,$3);};
+|  ',' expression { $$ = $2;};
+
+expression: literal { $$ = $1;};
+//expression: expression_unary | expression_binary| expression_ternary;
+
+
+expression: '(' expression ')'{ printf("aaaaa\n");};
+//Unários
+expression:'+'expression{ $$ = $2;};
+expression:'-'expression{ $$ = new_unary_expression('-',$2);};
+expression:'!'expression{ $$ = new_unary_expression('!',$2); };
+expression:'&'expression { $$ = new_unary_expression('@',$2); };
+expression:'*'expression {$$ = new_unary_expression('$',$2); };
+expression:'?'expression{$$ = new_unary_expression('~',$2); };
+expression:'#'expression{$$ = new_unary_expression('#',$2); };
+//Binários
+expression: expression '+' expression {$$ = new_binary_expression('+',$1,$3);};
+expression: expression '-' expression{$$ = new_binary_expression('-',$1,$3); };
+expression: expression '*' expression{$$ = new_binary_expression('*',$1,$3);};
+expression: expression '/' expression{$$ = new_binary_expression('/',$1,$3); };
+expression: expression '%' expression{$$ = new_binary_expression('%',$1,$3); };
+expression: expression '|' expression{$$ = new_binary_expression('|',$1,$3); };
+expression: expression '&' expression{$$ = new_binary_expression('&',$1,$3);};
+expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
+//Ternários
+expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
+      
+
+//Local Var Initialization
+local_var_initialization: TK_OC_LE literal { $$ = $2;};
+
+literal:  TK_IDENTIFICADOR{ 
 $$ = new_leaf_node('I',$<valor_lexico>1);
 }
 |TK_LIT_INT{ 
@@ -225,33 +283,7 @@ $$ = new_leaf_node('T',$<valor_lexico>1);
 $$ = new_leaf_node('F',$<valor_lexico>1);
 };
 
-//expression: expression_unary | expression_binary| expression_ternary;
 
-
-expression: '(' expression ')'{ printf("aaaaa\n");};
-//Unários
-expression:'+'expression{ $$ = $2;};
-expression:'-'expression{ $$ = new_unary_expression(MINUS,$2);};
-expression:'!'expression{ $$ = new_unary_expression(INVERT,$2); };
-expression:'&'expression { $$ = new_unary_expression(ADDRESS,$2); };
-expression:'*'expression {$$ = new_unary_expression(CONTENT,$2); };
-expression:'?'expression{$$ = new_unary_expression(BOOL_EVAL,$2); };
-expression:'#'expression{$$ = new_unary_expression(HASH,$2); };
-//Binários
-expression: expression '+' expression {$$ = new_binary_expression('+',$1,$3);};
-expression: expression '-' expression{$$ = new_binary_expression('-',$1,$3); };
-expression: expression '*' expression{$$ = new_binary_expression('*',$1,$3);};
-expression: expression '/' expression{$$ = new_binary_expression('/',$1,$3); };
-expression: expression '%' expression{$$ = new_binary_expression(MOD,$1,$3); };
-expression: expression '|' expression{$$ = new_binary_expression(OR,$1,$3); };
-expression: expression '&' expression{$$ = new_binary_expression(AND,$1,$3);};
-expression: expression '^' expression{$$ = new_binary_expression(POWER,$1,$3); };
-//Ternários
-expression: expression'?'expression':'expression{printf("\nhey = "); printf("%d",$<valor_lexico.intvalue>1); };
-      
-
-//Local Var Initialization
-local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
 
 
 
