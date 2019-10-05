@@ -192,6 +192,7 @@ int yyparse (void);
 #include <stdlib.h>
 #include "ast.h"
 extern int get_line_number (void);
+extern void exporta (void *arvore);
 void yyerror (char const *s)
 {
 
@@ -202,7 +203,7 @@ int yyparse (void);
 
 
 
-#line 206 "parser.tab.c"
+#line 207 "parser.tab.c"
 
 
 #ifdef short
@@ -498,16 +499,16 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   113,   113,   114,   115,   115,   118,   119,   120,   121,
-     121,   121,   121,   121,   122,   123,   124,   129,   130,   131,
-     131,   131,   132,   133,   136,   138,   138,   138,   138,   138,
-     142,   142,   142,   142,   142,   142,   142,   142,   142,   142,
-     147,   148,   149,   150,   151,   155,   158,   160,   161,   164,
-     165,   171,   171,   172,   175,   178,   179,   182,   183,   184,
-     187,   188,   190,   190,   191,   191,   191,   202,   203,   205,
-     208,   211,   214,   217,   220,   223,   230,   232,   233,   234,
-     235,   236,   237,   238,   240,   241,   242,   243,   244,   245,
-     246,   247,   249,   253,   253,   253,   253,   253
+       0,   114,   114,   115,   116,   116,   119,   120,   121,   122,
+     122,   122,   122,   122,   123,   124,   125,   130,   131,   132,
+     132,   132,   133,   134,   137,   139,   139,   139,   139,   139,
+     143,   143,   143,   143,   143,   143,   143,   143,   143,   143,
+     148,   149,   150,   151,   152,   156,   159,   161,   162,   165,
+     166,   172,   172,   173,   176,   179,   180,   183,   184,   185,
+     188,   189,   191,   191,   192,   192,   192,   203,   204,   206,
+     209,   212,   215,   218,   221,   224,   231,   233,   234,   235,
+     236,   237,   238,   239,   241,   242,   243,   244,   245,   246,
+     247,   248,   250,   254,   254,   254,   254,   254
 };
 #endif
 
@@ -1453,201 +1454,201 @@ yyreduce:
   switch (yyn)
     {
   case 14:
-#line 122 "parser.y"
+#line 123 "parser.y"
     {(yyval.ast_node) = new_leaf_node('I',(yyvsp[0].valor_lexico));}
-#line 1459 "parser.tab.c"
+#line 1460 "parser.tab.c"
     break;
 
   case 15:
-#line 123 "parser.y"
+#line 124 "parser.y"
     {(yyval.ast_node) = new_leaf_node('I',(yyvsp[0].valor_lexico));}
-#line 1465 "parser.tab.c"
+#line 1466 "parser.tab.c"
     break;
 
   case 33:
-#line 142 "parser.y"
-    {print_node_info_csv((yyvsp[0].ast_node));}
-#line 1471 "parser.tab.c"
+#line 143 "parser.y"
+    {exporta((yyvsp[0].ast_node));}
+#line 1472 "parser.tab.c"
     break;
 
   case 45:
-#line 155 "parser.y"
+#line 156 "parser.y"
     { (yyval.ast_node) = new_assignment_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 1477 "parser.tab.c"
+#line 1478 "parser.tab.c"
     break;
 
   case 67:
-#line 202 "parser.y"
+#line 203 "parser.y"
     { printf("aaaaa\n");}
-#line 1483 "parser.tab.c"
+#line 1484 "parser.tab.c"
     break;
 
   case 68:
-#line 203 "parser.y"
+#line 204 "parser.y"
     {printf("aaaaa\n");}
-#line 1489 "parser.tab.c"
+#line 1490 "parser.tab.c"
     break;
 
   case 69:
-#line 205 "parser.y"
+#line 206 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('I',(yyvsp[0].valor_lexico));
 }
-#line 1497 "parser.tab.c"
+#line 1498 "parser.tab.c"
     break;
 
   case 70:
-#line 208 "parser.y"
+#line 209 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('d',(yyvsp[0].valor_lexico));
 }
-#line 1505 "parser.tab.c"
+#line 1506 "parser.tab.c"
     break;
 
   case 71:
-#line 211 "parser.y"
+#line 212 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('f',(yyvsp[0].valor_lexico));
 }
-#line 1513 "parser.tab.c"
+#line 1514 "parser.tab.c"
     break;
 
   case 72:
-#line 214 "parser.y"
+#line 215 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('c',(yyvsp[0].valor_lexico));
 }
-#line 1521 "parser.tab.c"
+#line 1522 "parser.tab.c"
     break;
 
   case 73:
-#line 217 "parser.y"
+#line 218 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('s',(yyvsp[0].valor_lexico));
 }
-#line 1529 "parser.tab.c"
+#line 1530 "parser.tab.c"
     break;
 
   case 74:
-#line 220 "parser.y"
+#line 221 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('T',(yyvsp[0].valor_lexico));
 }
-#line 1537 "parser.tab.c"
+#line 1538 "parser.tab.c"
     break;
 
   case 75:
-#line 223 "parser.y"
+#line 224 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('F',(yyvsp[0].valor_lexico));
 }
-#line 1545 "parser.tab.c"
+#line 1546 "parser.tab.c"
     break;
 
   case 76:
-#line 230 "parser.y"
+#line 231 "parser.y"
     { printf("aaaaa\n");}
-#line 1551 "parser.tab.c"
+#line 1552 "parser.tab.c"
     break;
 
   case 77:
-#line 232 "parser.y"
+#line 233 "parser.y"
     { (yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 1557 "parser.tab.c"
+#line 1558 "parser.tab.c"
     break;
 
   case 78:
-#line 233 "parser.y"
+#line 234 "parser.y"
     { (yyval.ast_node) = new_unary_expression(MINUS,(yyvsp[0].ast_node));}
-#line 1563 "parser.tab.c"
+#line 1564 "parser.tab.c"
     break;
 
   case 79:
-#line 234 "parser.y"
+#line 235 "parser.y"
     { (yyval.ast_node) = new_unary_expression(INVERT,(yyvsp[0].ast_node)); }
-#line 1569 "parser.tab.c"
+#line 1570 "parser.tab.c"
     break;
 
   case 80:
-#line 235 "parser.y"
+#line 236 "parser.y"
     { (yyval.ast_node) = new_unary_expression(ADDRESS,(yyvsp[0].ast_node)); }
-#line 1575 "parser.tab.c"
+#line 1576 "parser.tab.c"
     break;
 
   case 81:
-#line 236 "parser.y"
+#line 237 "parser.y"
     {(yyval.ast_node) = new_unary_expression(CONTENT,(yyvsp[0].ast_node)); }
-#line 1581 "parser.tab.c"
+#line 1582 "parser.tab.c"
     break;
 
   case 82:
-#line 237 "parser.y"
+#line 238 "parser.y"
     {(yyval.ast_node) = new_unary_expression(BOOL_EVAL,(yyvsp[0].ast_node)); }
-#line 1587 "parser.tab.c"
+#line 1588 "parser.tab.c"
     break;
 
   case 83:
-#line 238 "parser.y"
+#line 239 "parser.y"
     {(yyval.ast_node) = new_unary_expression(HASH,(yyvsp[0].ast_node)); }
-#line 1593 "parser.tab.c"
+#line 1594 "parser.tab.c"
     break;
 
   case 84:
-#line 240 "parser.y"
+#line 241 "parser.y"
     {(yyval.ast_node) = new_binary_expression('+',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 1599 "parser.tab.c"
+#line 1600 "parser.tab.c"
     break;
 
   case 85:
-#line 241 "parser.y"
+#line 242 "parser.y"
     {(yyval.ast_node) = new_binary_expression('-',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 1605 "parser.tab.c"
+#line 1606 "parser.tab.c"
     break;
 
   case 86:
-#line 242 "parser.y"
+#line 243 "parser.y"
     {(yyval.ast_node) = new_binary_expression('*',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 1611 "parser.tab.c"
+#line 1612 "parser.tab.c"
     break;
 
   case 87:
-#line 243 "parser.y"
+#line 244 "parser.y"
     {(yyval.ast_node) = new_binary_expression('/',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 1617 "parser.tab.c"
+#line 1618 "parser.tab.c"
     break;
 
   case 88:
-#line 244 "parser.y"
+#line 245 "parser.y"
     {(yyval.ast_node) = new_binary_expression(MOD,(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 1623 "parser.tab.c"
+#line 1624 "parser.tab.c"
     break;
 
   case 89:
-#line 245 "parser.y"
+#line 246 "parser.y"
     {(yyval.ast_node) = new_binary_expression(OR,(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 1629 "parser.tab.c"
+#line 1630 "parser.tab.c"
     break;
 
   case 90:
-#line 246 "parser.y"
+#line 247 "parser.y"
     {(yyval.ast_node) = new_binary_expression(AND,(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 1635 "parser.tab.c"
+#line 1636 "parser.tab.c"
     break;
 
   case 91:
-#line 247 "parser.y"
+#line 248 "parser.y"
     {(yyval.ast_node) = new_binary_expression(POWER,(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 1641 "parser.tab.c"
+#line 1642 "parser.tab.c"
     break;
 
   case 92:
-#line 249 "parser.y"
+#line 250 "parser.y"
     {printf("\nhey = "); printf("%d",(yyvsp[-4].valor_lexico.intvalue)); }
-#line 1647 "parser.tab.c"
+#line 1648 "parser.tab.c"
     break;
 
 
-#line 1651 "parser.tab.c"
+#line 1652 "parser.tab.c"
 
       default: break;
     }
@@ -1879,5 +1880,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 258 "parser.y"
+#line 259 "parser.y"
 

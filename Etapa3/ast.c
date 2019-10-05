@@ -14,6 +14,20 @@ void libera (void *arvore){
 void exporta (void *arvore){
     printf("Exporting %p\n",arvore);
     
+     FILE *arq1;
+     arq1=fopen("Arvore1.csv","a+");
+     Percorrer_imprimir_file_DFS(arvore,arq1);
+     fclose(arq1);
+        
+     FILE *arq2;
+     arq2=fopen("Arvore2.csv","a+");
+     
+    
+    print_node_info_csv(arvore,arq2);
+
+    
+    fclose(arq2);
+    
 }
 
 ast_node* new_empty_node(){
@@ -39,50 +53,61 @@ ast_node* new_empty_node(){
     
 }
 
-int insert_child_ast_node(ast_node *node,ast_node *child){
-    if(node == NULL) return -1;
-    
-    if(node->first_child == NULL) {
+
+
+int insert_child_ast_node(ast_node *node, ast_node *child)
+{
+    if(node == NULL)
+        return -1;
+
+    if(node->first_child == NULL)
+    {
+        //printf("First child\n");
+        //printf("%d\n",child->node_type);
         node->first_child = child;
+        node->first_child->node_father = node;
+
         return 0;
     }
-    
-    insert_ast_node_sibling_list(node->first_child,child);
+
+    insert_ast_node_sibling_list(node->first_child, child);
     return 0;
-    
+
 }
 
-int insert_ast_node_sibling_list(ast_node *node,ast_node *sibling){
-//     printf("Inserting Sibling\n");
-    
-    if(node == NULL){
+
+//Adiciona o siobling (irmao), percorrendo a arvore ate achar um vazio.
+int insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
+{
+    if(node == NULL)
+    {
         return -1;
     }
-    
-    if(node->next_sibling == NULL) {
-//         printf("Inserting first sibling\n");
-//         printf("%d\n",sibling->node_type);
+
+    if(node->next_sibling == NULL)
+    {
+        //printf("Inserting first sibling\n");
+        //printf("%d\n",sibling->node_type);
         node->next_sibling = sibling;
+        node->next_sibling->node_father = node->node_father;
         return 0;
     }
+
     
-    printf("%p\n",node->next_sibling);
-    printf("%d\n",node->next_sibling->node_type);
-    printf("%d\n",sibling->node_type);
-    
-    
+
     ast_node *current_sibling =  node->next_sibling;
-    
-    while(current_sibling->next_sibling != NULL){
+
+    while(current_sibling->next_sibling != NULL)
+    {
         current_sibling = current_sibling->next_sibling;
     }
-    
+
     current_sibling->next_sibling = sibling;
-    
-    
+    current_sibling->next_sibling->node_father = current_sibling->node_father;
+
+
     return 0;
 }
-
 ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
     
@@ -229,25 +254,35 @@ void print_node_info(ast_node *node){
 }
 
 
-void print_node_info_csv(ast_node * node){
+void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
+{
+    if(Tree == NULL)
+        return;
+    Percorrer_imprimir_file_DFS(Tree->first_child,arq);
+    fprintf(arq,"\n%p, %p\n",Tree->node_father, Tree);
+    //printf("%p %d\n",Tree->node_node_father, Tree->node_type);
+    Percorrer_imprimir_file_DFS(Tree->next_sibling,arq);
+
+}
+
+
+void print_node_info_csv(ast_node * node, FILE *arq){
     if(node == NULL) return;
     
     ast_node *root = node;
     
-    printf("\nNode type %c \t[%d] \t | Address: %p|\n",node->node_type,node->ast_valor_lexico.intvalue,node);
-    
     
     if(node->first_child != NULL){
-        printf("%p,%p\n",root,node->first_child);
+        fprintf(arq,"%p, %p\n",root,node->first_child);
         
         ast_node *next = node->first_child->next_sibling;
         
         while(next != NULL){
-            printf("%p,%p\n",root,next);
+            fprintf(arq,"%p,%p\n",root,next);
             next = next->next_sibling;
         }
-    print_node_info_csv(node->first_child);
-    print_node_info_csv(node->first_child->next_sibling);    
+    print_node_info_csv(node->first_child,arq);
+    print_node_info_csv(node->first_child->next_sibling,arq);    
         
     }
     

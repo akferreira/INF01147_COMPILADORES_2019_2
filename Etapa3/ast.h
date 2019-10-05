@@ -1,6 +1,8 @@
 #ifndef AST_H
 #define AST_H
 
+#include <stdio.h>
+
 enum TOKEN_TYPE {
     TK_TYPE_RESERVED_WORD, 
     TK_TYPE_SPECIAL_CHAR, 
@@ -67,6 +69,7 @@ typedef struct _ast_node {
     
     struct _ast_node *first_child;
     struct _ast_node *next_sibling;
+    struct _ast_node *node_father;
     
 } ast_node;
 
@@ -79,7 +82,9 @@ int insert_child_ast_node(ast_node *node,ast_node *child);
 
 int insert_ast_node_sibling_list(ast_node *node,ast_node *sibling);
 
-void print_node_info_csv(ast_node * node);
+void print_node_info_csv(ast_node * node,FILE *arq);
+
+void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq);
 
 void print_node_info(ast_node *node);
 

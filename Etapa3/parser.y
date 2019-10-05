@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include "ast.h"
 extern int get_line_number (void);
+extern void exporta (void *arvore);
 void yyerror (char const *s)
 {
 
@@ -139,7 +140,7 @@ command_list: command';' command_list | loop_while command_list|loop_for command
 
 
 //command
-command: if_statement | local_var_declaration| shift_command; | assignment_command {print_node_info_csv($1);} | input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
+command: if_statement | local_var_declaration| shift_command; | assignment_command {exporta($1);} | input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
 
 
 
