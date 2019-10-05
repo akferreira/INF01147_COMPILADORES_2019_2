@@ -315,6 +315,35 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
     
     
 }
+ast_node* new_shift_command_node(int node_type,ast_node *identifier, ast_node *shift_type, ast_node *expression){
+    ast_node* shift_node = new_empty_node();
+    
+    if(shift_node != NULL){
+        shift_node->node_type = node_type;
+        insert_child_ast_node(shift_node,identifier);
+        insert_child_ast_node(shift_node,shift_type);
+        insert_child_ast_node(shift_node,expression);
+        
+    }
+    
+    return shift_node;
+    
+    
+}
+
+ast_node* new_return_command_node(int node_type, VALOR_LEXICO lexico, ast_node* expression){
+    ast_node* return_node = new_leaf_node(node_type,lexico);
+    
+    if(return_node != NULL){
+        insert_child_ast_node(return_node,expression);
+        
+        
+    }
+    
+    return return_node;
+    
+}
+
 
 ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *true_expression, ast_node *false_expression){
     if(test_expression == NULL || false_expression == NULL || true_expression == NULL){

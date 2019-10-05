@@ -136,6 +136,8 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers ,ast
 
 ast_node* new_shift_command_node(int node_type,ast_node *identifier, ast_node *shift_type, ast_node *expression);
 
+ast_node* new_return_command_node(int node_type, VALOR_LEXICO lexico, ast_node* expression);
+
 ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *true_expression, ast_node *false_expression);
 
 ast_node* new_unary_expression(int node_type, ast_node *expression);

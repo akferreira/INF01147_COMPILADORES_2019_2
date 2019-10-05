@@ -111,7 +111,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> function_call expression expression_list identifier  simple_identifier output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node;
+%type <ast_node> function_call expression expression_list identifier  simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node;
 
 
 null_node: {$$ = get_null();};
@@ -201,11 +201,13 @@ output_command: TK_PR_OUTPUT expression_list{$$ = new_io_node('o',$<valor_lexico
 
 
 //shift
-shift: TK_OC_SL | TK_OC_SR;
-shift_command: identifier shift expression;
+shift: TK_OC_SL { $$ = new_leaf_node('L',$<valor_lexico>1);}
+| TK_OC_SR { $$ = new_leaf_node('R',$<valor_lexico>1);};
+
+shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,$2,$3);};
 
 //Retorno
-command_return: TK_PR_RETURN expression;
+command_return: TK_PR_RETURN expression {$$ = new_return_command_node('R',$<valor_lexico>1,$2);};
 
 //If Statement
 if_statement: TK_PR_IF '(' expression ')' command_block;
