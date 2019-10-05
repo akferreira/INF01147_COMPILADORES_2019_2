@@ -111,7 +111,10 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> expression expression_list identifier  simple_identifier assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node;
+%type <ast_node> function_call expression expression_list identifier  simple_identifier output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node;
+
+
+null_node: {$$ = get_null();};
 
 //programa:
 program: /* empty */;
@@ -164,12 +167,7 @@ modifiers: TK_PR_STATIC TK_PR_CONST { $$ = new_modifier_node('S','C',$<valor_lex
 //Local Var declaration
 local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
 $$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;
-
 };
-// local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization{
-// };
-// local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization{
-//};
 local_var_declaration: primitive_type simple_identifier local_var_initialization{
 $$ = new_local_var_declaration_node('<', NULL ,$1,$2,$3 ) ;
 
@@ -180,21 +178,24 @@ printf("%d || %d\n",@2.first_column,@2.last_column);
 $$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;
 };
 
-null_node: {$$ = get_null();};
+//Chamada de Função
+function_call: simple_identifier '(' expression_list ')'{$$ = new_function_call_node('K',$1,$3);};
+function_call: simple_identifier '(' expression ')'{$$ = new_function_call_node('K',$1,$3);};
+
+
 
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression { $$ = new_assignment_node($1,$3);};
 
 //Comandos de Entrada e Saída
-input_command: TK_PR_INPUT expression;
+input_command: TK_PR_INPUT expression {$$ = new_io_node('i',$<valor_lexico>1,$2);};
 
-output_command: TK_PR_OUTPUT expression;
-output_command: TK_PR_OUTPUT expression_list;
-//expression
-//Chamada de Função
-function_call: TK_IDENTIFICADOR '(' expression_list ')';
-function_call: TK_IDENTIFICADOR '(' expression ')';
+output_command: TK_PR_OUTPUT expression{$$ = new_io_node('o',$<valor_lexico>1,$2);};
+output_command: TK_PR_OUTPUT expression_list{$$ = new_io_node('o',$<valor_lexico>1,$2);};
+
+
+
 //function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
 //call_parameter_list:expression ',' call_parameter_list | expression;
 

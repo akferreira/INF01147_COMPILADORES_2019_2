@@ -127,16 +127,15 @@ ast_node* insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
 }
 ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression){
     ast_node* io_node = new_leaf_node(node_type,lexico_io);
-    ast_node* io_command_node = new_empty_node();
     
     
     
     if(io_node != NULL){
-        
+        insert_child_ast_node(io_node,expression);
     }
     
     
-    return NULL;
+    return io_node;
     
 }
 
@@ -261,6 +260,19 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
     
     
     return function_node;
+}
+
+ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* parameter_list){
+    ast_node *function_call_node = new_empty_node();
+    
+    if(function_call_node != NULL){
+        function_call_node->node_type = node_type;
+        insert_child_ast_node(function_call_node,identifier);
+        insert_child_ast_node(function_call_node,parameter_list);
+        
+    }
+    
+    return function_call_node;
 }
 
 ast_node* new_modifier_node(int node_type1, int node_type2, VALOR_LEXICO lexico1, VALOR_LEXICO lexico2){
