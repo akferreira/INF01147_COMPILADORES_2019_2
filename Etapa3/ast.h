@@ -64,6 +64,7 @@ typedef struct _symbol_info{
 
 typedef struct _ast_node {
     int node_type;
+    int children_count;
     VALOR_LEXICO ast_valor_lexico;
     
     
