@@ -79,9 +79,9 @@ void erase_tree(ast_node *root);
 
 
     
-ast_node* insert_child_ast_node(ast_node *node,ast_node *child);
+ast_node* insert_child(ast_node *node,ast_node *child);
 
-ast_node* insert_ast_node_sibling_list(ast_node *node,ast_node *sibling);
+ast_node* insert_sibling(ast_node *node,ast_node *sibling);
 
 void print_node_info_csv(ast_node * node,FILE *arq);
 
@@ -108,7 +108,11 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right);
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list);
 
+ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_commands);
+
 ast_node* new_empty_node();
+
+ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_expressions);
 
 ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* parameter_list, ast_node* command_block);
 
@@ -116,7 +120,7 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
 
 ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *global_scope_node);
 
-ast_node* new_ifelse_node(int node_type, ast_node* true_expression, ast_node *true_command_block , ast_node *false_command_block);
+ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *true_command_block , ast_node *false_command_block);
 
 ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression);
 

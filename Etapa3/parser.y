@@ -111,7 +111,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> function_call expression expression_list identifier  simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node;
+%type <ast_node> function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list;
 
 
 null_node: {$$ = get_null();};
@@ -148,13 +148,19 @@ function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_lis
 	function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 //Command Block
-command_block: '{'command_list'}';
+command_block: '{'command_list'}' {$$ = new_command_block_node('{',$2);};
 
-command_list: command command_list | loop_while command_list|loop_for command_list |command_block|;
+command_list: command command_list {$$ = new_command_list_node($1,$2);}
+
+| loops command_list {$$ = new_command_list_node($1,$2);}
+|command_block{$$ = $1;}
+|{$$ = get_null();};
 
 
 //command
-command: if_statement | local_var_declaration';' {exporta($1);}| shift_command';'; | assignment_command';' {exporta($1);} | input_command';'| output_command';'| function_call';'|command_return';'| TK_PR_BREAK';' |TK_PR_CONTINUE';';
+command: if_statement | local_var_declaration';' {exporta($1);}| shift_command';'; | assignment_command';' {exporta($1);} | input_command';'| output_command';'| function_call';'|command_return';'
+| TK_PR_BREAK';'  {$$ = new_leaf_node('b',$<valor_lexico>1);}
+|TK_PR_CONTINUE';' {$$ = new_leaf_node('.',$<valor_lexico>1);};
 
 
 
@@ -210,20 +216,21 @@ shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,
 command_return: TK_PR_RETURN expression {$$ = new_return_command_node('R',$<valor_lexico>1,$2);};
 
 //If Statement
-if_statement: TK_PR_IF '(' expression ')' command_block;
-if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block;
+if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_ifelse_node(':',$3,$5,$6);};
+if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = new_ifelse_node(':',$3,$5,$7);};
 
 //Loops
- command_block_loop: '{'command_block_loop'}';
- command_block_loop: '{''}';
+ command_block_loop: '{'command_block_loop'}' {$$ = $2;};
+ command_block_loop: '{''}' {$$ = get_null();};
  command_block_loop: command;
-	//While
 
-	loop_while:TK_PR_WHILE'('expression')' command_block_loop;
-    	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop;
-    
-    	loop_for_command_list:loop_for_command','loop_for_command_list|loop_for_command;
-    	loop_for_command: local_var_declaration| shift_command | assignment_command;
+loops: loop_for | loop_while; 
+loop_while:TK_PR_WHILE'('expression')' command_block_loop {$$ = new_loop_while_node('w',$3,$5);};
+loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop {$$ = new_loop_for_node('j',$3,$5,$7,$9);};
+
+loop_for_command_list:loop_for_command','loop_for_command_list {$$ = new_command_list_node($1,$3);}
+|loop_for_command;
+loop_for_command: local_var_declaration| shift_command | assignment_command;
 
 
 
@@ -234,7 +241,7 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 
 
-expression_list:  expression ',' expression_list { $$ = insert_ast_node_sibling_list($1,$3);};
+expression_list:  expression ',' expression_list { $$ = new_expression_list_node($1,$3);};
 |  ',' expression { $$ = $2;};
 
 expression: literal { $$ = $1;};

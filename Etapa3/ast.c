@@ -65,7 +65,7 @@ ast_node* new_empty_node(){
 
 
 
-ast_node* insert_child_ast_node(ast_node *node, ast_node *child)
+ast_node* insert_child(ast_node *node, ast_node *child)
 {
     if(node == NULL) return NULL;
 
@@ -82,7 +82,7 @@ ast_node* insert_child_ast_node(ast_node *node, ast_node *child)
     
     
 
-    insert_ast_node_sibling_list(node->first_child, child);
+    insert_sibling(node->first_child, child);
     
     
     return node;
@@ -91,7 +91,7 @@ ast_node* insert_child_ast_node(ast_node *node, ast_node *child)
 
 
 //Adiciona o siobling (irmao), percorrendo a arvore ate achar um vazio.
-ast_node* insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
+ast_node* insert_sibling(ast_node *node, ast_node *sibling)
 {
     if(node == NULL) return NULL;
 
@@ -125,13 +125,28 @@ ast_node* insert_ast_node_sibling_list(ast_node *node, ast_node *sibling)
 
     return node;
 }
+
+ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *true_command_block , ast_node *false_command_block){
+    ast_node* ifelse_node = new_empty_node();
+    
+    if(ifelse_node != NULL){
+        ifelse_node->node_type = node_type;
+        insert_child(ifelse_node,test_expression);
+        insert_child(ifelse_node,true_command_block);
+        if(false_command_block) insert_child(ifelse_node,false_command_block);
+    }
+    
+    return ifelse_node;
+    
+}
+
 ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression){
     ast_node* io_node = new_leaf_node(node_type,lexico_io);
     
     
     
     if(io_node != NULL){
-        insert_child_ast_node(io_node,expression);
+        insert_child(io_node,expression);
     }
     
     
@@ -163,6 +178,38 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     
 }
 
+ast_node* new_loop_for_node(int node_type, ast_node* initialization,ast_node *test_expression,ast_node* loop_command, ast_node* command_block){
+    ast_node *for_loop_node = new_empty_node();
+    
+    if(for_loop_node != NULL){
+        for_loop_node->node_type = node_type;
+        insert_child(for_loop_node,initialization);
+        insert_child(for_loop_node,test_expression);
+        insert_child(for_loop_node,loop_command);
+        insert_child(for_loop_node,command_block);
+    }
+    
+    return for_loop_node;
+    
+    
+}
+
+ast_node* new_loop_while_node(int node_type, ast_node* expression, ast_node* command_block){
+    ast_node* while_loop_node = new_empty_node();
+    
+    if(while_loop_node != NULL){
+        while_loop_node->node_type = node_type;
+        insert_child(while_loop_node,expression);
+        insert_child(while_loop_node,command_block);
+        
+    }
+    
+    return while_loop_node;
+    
+    
+}
+
+
 
 ast_node* new_unary_expression(int node_type, ast_node *expression){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
@@ -189,8 +236,8 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
         
         
         new_node->node_type = '=';
-        insert_child_ast_node(new_node,dest);
-        insert_child_ast_node(new_node,source);
+        insert_child(new_node,dest);
+        insert_child(new_node,source);
          
         
     }
@@ -217,8 +264,8 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
         
         
         new_node->node_type = node_type;
-        insert_child_ast_node(new_node,left);
-        insert_child_ast_node(new_node,right);
+        insert_child(new_node,left);
+        insert_child(new_node,right);
         
 //         printf("new_node");
 //         print_node_info(new_node);
@@ -230,6 +277,9 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
     return new_node;
 }
 
+
+
+
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
     if(command_list == NULL) return NULL;
     
@@ -237,9 +287,29 @@ ast_node* new_command_block_node(int node_type,ast_node *command_list){
     
     if(command_block == NULL){
         command_block->node_type = node_type;
-        insert_child_ast_node(command_block,command_list);
+        insert_child(command_block,command_list);
     }
     return command_block;
+}
+
+ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_commands){
+    if(next_commands == NULL) return NULL;
+    
+    if(current_commands == NULL){
+        insert_sibling(current_commands,next_commands);
+    }
+    return current_commands;
+}
+
+ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_expressions){
+    if(next_expressions == NULL) return NULL;
+    
+    if(current_expressions == NULL){
+        insert_sibling(current_expressions,next_expressions);
+    }
+    return current_expressions;
+    
+    
 }
 
 ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* parameter_list, ast_node* command_block){
@@ -249,13 +319,13 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
         function_node->node_type = node_type;
         
         if(modifier_static != NULL){
-            insert_child_ast_node(function_node,modifier_static);
+            insert_child(function_node,modifier_static);
         }
         
         
-        insert_child_ast_node(function_node,var_type);
-        insert_child_ast_node(function_node,parameter_list);
-        insert_child_ast_node(function_node,command_block);
+        insert_child(function_node,var_type);
+        insert_child(function_node,parameter_list);
+        insert_child(function_node,command_block);
     }
     
     
@@ -267,8 +337,8 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
     
     if(function_call_node != NULL){
         function_call_node->node_type = node_type;
-        insert_child_ast_node(function_call_node,identifier);
-        insert_child_ast_node(function_call_node,parameter_list);
+        insert_child(function_call_node,identifier);
+        insert_child(function_call_node,parameter_list);
         
     }
     
@@ -280,7 +350,7 @@ ast_node* new_modifier_node(int node_type1, int node_type2, VALOR_LEXICO lexico1
     
     if(node_type2){
         ast_node* modifier2 = new_leaf_node(node_type2,lexico2);
-        insert_ast_node_sibling_list(modifier1 , modifier2);
+        insert_sibling(modifier1 , modifier2);
     }
     
     return modifier1;
@@ -298,14 +368,14 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
         new_node->node_type = node_type;
         
         
-        if(modifiers != NULL) insert_child_ast_node(new_node, modifiers);
+        if(modifiers != NULL) insert_child(new_node, modifiers);
         
-        insert_child_ast_node(new_node,var_type);
+        insert_child(new_node,var_type);
         
-        insert_child_ast_node(new_node,identifier);
+        insert_child(new_node,identifier);
         
         
-        if(initialization != NULL) insert_child_ast_node(new_node,initialization);
+        if(initialization != NULL) insert_child(new_node,initialization);
         
         
     }
@@ -320,9 +390,9 @@ ast_node* new_shift_command_node(int node_type,ast_node *identifier, ast_node *s
     
     if(shift_node != NULL){
         shift_node->node_type = node_type;
-        insert_child_ast_node(shift_node,identifier);
-        insert_child_ast_node(shift_node,shift_type);
-        insert_child_ast_node(shift_node,expression);
+        insert_child(shift_node,identifier);
+        insert_child(shift_node,shift_type);
+        insert_child(shift_node,expression);
         
     }
     
@@ -335,7 +405,7 @@ ast_node* new_return_command_node(int node_type, VALOR_LEXICO lexico, ast_node* 
     ast_node* return_node = new_leaf_node(node_type,lexico);
     
     if(return_node != NULL){
-        insert_child_ast_node(return_node,expression);
+        insert_child(return_node,expression);
         
         
     }
@@ -355,8 +425,8 @@ ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_no
     if(new_node != NULL){
         new_node->node_type = node_type;
         new_node->first_child = test_expression;
-        insert_ast_node_sibling_list(new_node->first_child,false_expression);
-        insert_ast_node_sibling_list(new_node->first_child,true_expression);
+        insert_sibling(new_node->first_child,false_expression);
+        insert_sibling(new_node->first_child,true_expression);
     }
     
     
