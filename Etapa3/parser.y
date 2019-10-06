@@ -1,5 +1,6 @@
 %code requires {
     #include "ast.h"
+    //extern void *arvore;
 }
 
 
@@ -17,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+extern void *arvore;
 extern int get_line_number (void);
 extern void exporta (void *arvore);
 void yyerror (char const *s)
@@ -111,20 +113,21 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list;
 
 
 null_node: {$$ = get_null();};
 
 //programa:
-program: /* empty */;
-program:grammars program;
+program: /* empty */{$$ = get_null();};
+program:grammars program {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
+
 grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
-global_var_declaration: TK_PR_STATIC decl';';
-global_var_declaration: decl';';
-decl: primitive_type identifier;
+global_var_declaration: TK_PR_STATIC primitive_type identifier';'{$$ = new_static_global_var_declaration_node('g',$<valor_lexico>1,$2,$3);};
+global_var_declaration: primitive_type identifier';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$2);};
+//decl: primitive_type identifier;
 
 primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}
 |TK_PR_FLOAT{$$ = new_leaf_node('t',$<valor_lexico>1);}
@@ -133,7 +136,7 @@ primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}
 |TK_PR_STRING{$$ = new_leaf_node('t',$<valor_lexico>1);};
 
 identifier: simple_identifier {$$ = $1;}
-|vector {$$ = new_leaf_node('I',$<valor_lexico>1);};
+|vector {$$ = new_leaf_node('V',$<valor_lexico>1);};
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
 vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
@@ -141,11 +144,20 @@ vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
 //Function declaration
-function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
-function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
-	function_parameters_list: |function_parameters_argument|function_parameters_argument','function_parameters_list;
-	function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
-	function_parameters_argument:primitive_type TK_IDENTIFICADOR;
+function_declaration: TK_PR_STATIC primitive_type simple_identifier '('function_parameters_list')' command_block 
+{
+$$ = new_static_function_declaration_node('M',$<valor_lexico>1,$2,$3,$5,$7);
+
+};
+function_declaration: primitive_type simple_identifier '('function_parameters_list')' command_block{
+$$ = new_nonstatic_function_declaration_node('M',$1,$2,$4,$6);
+};
+	function_parameters_list: {$$ = get_null();}
+	
+	|function_parameters_argument 
+	|function_parameters_argument','function_parameters_list {$$ = new_parameter_list_node($1,$3);};
+	function_parameters_argument:TK_PR_CONST primitive_type simple_identifier {$$ = new_const_parameter_node('p',$<valor_lexico>1,$2,$3);};
+	function_parameters_argument:primitive_type simple_identifier {$$ = new_nonconst_parameter_node('p',$1,$2);};
 
 //Command Block
 command_block: '{'command_list'}' {$$ = new_command_block_node('{',$2);};
@@ -158,7 +170,8 @@ command_list: command command_list {$$ = new_command_list_node($1,$2);}
 
 
 //command
-command: if_statement | local_var_declaration';' {exporta($1);}| shift_command';'; | assignment_command';' {exporta($1);} | input_command';'| output_command';'| function_call';'|command_return';'
+command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{$$ = $1;}
+|command_return';'{$$ = $1;}
 | TK_PR_BREAK';'  {$$ = new_leaf_node('b',$<valor_lexico>1);}
 |TK_PR_CONTINUE';' {$$ = new_leaf_node('.',$<valor_lexico>1);};
 
@@ -179,8 +192,6 @@ $$ = new_local_var_declaration_node('<', NULL ,$1,$2,$3 ) ;
 
 };
 local_var_declaration: primitive_type simple_identifier null_node{
-printf("%d || %d\n",@1.first_line,@1.last_line);
-printf("%d || %d\n",@2.first_column,@2.last_column);
 $$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;
 };
 
@@ -192,7 +203,8 @@ function_call: simple_identifier '(' expression ')'{$$ = new_function_call_node(
 
 
 //Comando de Atribuição
-assignment_command: identifier '=' expression { $$ = new_assignment_node($1,$3);};
+assignment_command: identifier '=' expression { 
+$$ = new_assignment_node($1,$3);};
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression {$$ = new_io_node('i',$<valor_lexico>1,$2);};
@@ -248,7 +260,7 @@ expression: literal { $$ = $1;};
 //expression: expression_unary | expression_binary| expression_ternary;
 
 
-expression: '(' expression ')'{ printf("aaaaa\n");};
+expression: '(' expression ')'{ $$ = $2;};
 //Unários
 expression:'+'expression{ $$ = $2;};
 expression:'-'expression{ $$ = new_unary_expression('-',$2);};

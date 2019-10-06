@@ -5,7 +5,6 @@
 extern void *arvore;
 
 void libera (void *arvore){
-    printf("Liberating %p\n",arvore);
     
     erase_tree(arvore);
     
@@ -14,21 +13,11 @@ void libera (void *arvore){
     
 }
 void exporta (void *arvore){
-    printf("Exporting %p\n",arvore);
     
      FILE *arq1;
-     arq1=fopen("Arvore1.csv","a+");
+     arq1=fopen("e3.csv","w+");
      Percorrer_imprimir_file_DFS(arvore,arq1);
      fclose(arq1);
-        
-     FILE *arq2;
-     arq2=fopen("Arvore2.csv","a+");
-     
-    
-    print_node_info_csv(arvore,arq2);
-
-    
-    fclose(arq2);
     
 }
 
@@ -71,10 +60,20 @@ ast_node* insert_child(ast_node *node, ast_node *child)
 
     if(node->first_child == NULL)
     {
-        //printf("First child\n");
-        //printf("%d\n",child->node_type);
         node->first_child = child;
         node->first_child->father = node;
+        
+        
+        
+        ast_node *temp = node->first_child;
+        
+        while(temp != NULL){
+            temp = temp->next_sibling;
+            
+            if(temp != NULL && temp->father == NULL) temp->father = node;
+            
+        }
+        
         
 
         return node;
@@ -97,8 +96,9 @@ ast_node* insert_sibling(ast_node *node, ast_node *sibling)
 
     if(node->next_sibling == NULL)
     {
-        //printf("%d\n",sibling->node_type);
         node->next_sibling = sibling;
+        
+        
         
         
         
@@ -238,6 +238,8 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
         new_node->node_type = '=';
         insert_child(new_node,dest);
         insert_child(new_node,source);
+        
+        
          
         
     }
@@ -257,9 +259,6 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
     ast_node *new_node = new_empty_node();
     
     if(new_node != NULL){
-//          printf("\nLine : %d \t Binary : %c\n", left->ast_valor_lexico.line, node_type);
-//          print_node_info(left);
-//          print_node_info(right);
         
         
         
@@ -281,21 +280,27 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
+    
+   
+    
     if(command_list == NULL) return NULL;
     
     ast_node *command_block = new_empty_node();
     
-    if(command_block == NULL){
+    
+    if(command_block != NULL){
         command_block->node_type = node_type;
         insert_child(command_block,command_list);
     }
+    
+   
     return command_block;
 }
 
 ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_commands){
-    if(next_commands == NULL) return NULL;
+    if(next_commands == NULL) return current_commands;
     
-    if(current_commands == NULL){
+    if(current_commands != NULL){
         insert_sibling(current_commands,next_commands);
     }
     return current_commands;
@@ -311,8 +316,61 @@ ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_
     
     
 }
+ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO const_lexical,ast_node* parameter_type,ast_node *identifier){
+    ast_node* const_node = new_leaf_node(node_type,const_lexical);
+    
+    return new_parameter_node(node_type,const_node,parameter_type,identifier);
+}
 
-ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* parameter_list, ast_node* command_block){
+ast_node* new_nonconst_parameter_node(int node_type,ast_node* parameter_type,ast_node *identifier){
+    return new_parameter_node(node_type,NULL,parameter_type,identifier);
+    
+}
+
+ast_node* new_parameter_node(int node_type,ast_node* const_modifier,ast_node* parameter_type,ast_node *identifier){
+    ast_node* parameter_node = new_empty_node();
+    
+    if(parameter_node != NULL){
+        parameter_node->node_type = node_type;
+        if(const_modifier != NULL) insert_child(parameter_node,const_modifier);
+        insert_child(parameter_node,parameter_type);
+        insert_child(parameter_node,identifier);
+    }
+    
+    return parameter_node;
+    
+}
+
+
+
+ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_parameters){
+    if(next_parameters == NULL) return NULL;
+    
+    if(current_parameters == NULL){
+        insert_sibling(current_parameters,next_parameters);
+    }
+    return current_parameters;
+    
+    
+}
+
+ast_node* new_nonstatic_function_declaration_node(int node_type, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
+    return new_function_declaration_node(node_type,NULL,var_type, identifier,parameter_list,command_block);
+    
+}
+
+
+
+
+ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO static_lexical, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
+    ast_node* static_node = new_leaf_node('S',static_lexical);
+    
+    return new_function_declaration_node(node_type,static_node,var_type,  identifier,parameter_list,command_block);
+}
+
+
+ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
+    
     ast_node *function_node = new_empty_node();
     
     if(function_node != NULL){
@@ -322,10 +380,13 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
             insert_child(function_node,modifier_static);
         }
         
-        
+       
         insert_child(function_node,var_type);
-        insert_child(function_node,parameter_list);
+        insert_child(function_node,identifier);
+        if(parameter_list != NULL) insert_child(function_node,parameter_list);
+         
         insert_child(function_node,command_block);
+        
     }
     
     
@@ -344,6 +405,57 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
     
     return function_call_node;
 }
+
+ast_node* new_static_global_var_declaration_node(int node_type, VALOR_LEXICO static_lexical,ast_node* var_type, ast_node* identifier){
+    ast_node* static_node = new_leaf_node('S',static_lexical);
+    
+    return new_global_var_declaration_node(node_type,static_node,var_type,identifier);
+    
+    
+}
+ast_node* new_nonstatic_global_var_declaration_node(int node_type,ast_node* var_type, ast_node* identifier){
+    return new_global_var_declaration_node(node_type,NULL,var_type,identifier);
+}
+
+ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_static,ast_node* var_type, ast_node* identifier){
+    ast_node* global_var_node = new_empty_node();
+    
+    if(global_var_node != NULL){
+        global_var_node->node_type = node_type;
+        if(modifier_static != NULL) insert_child(global_var_node,modifier_static); 
+        insert_child(global_var_node,var_type);
+        insert_child(global_var_node,identifier);
+        
+    }
+    
+    return global_var_node;
+}
+
+ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *current_global_node, ast_node* next_global_nodes){
+   
+    
+    if(ast_root == NULL){
+        ast_node* temp_node = new_empty_node();
+        temp_node->node_type = node_type;
+        arvore = temp_node;
+        
+        
+        
+        insert_child(arvore,current_global_node);
+        if(next_global_nodes != NULL) insert_child(arvore,next_global_nodes);
+        return ast_root;
+    }
+    
+    else{
+        if(next_global_nodes != NULL) insert_sibling(current_global_node,next_global_nodes);
+        return current_global_node;
+        
+    }
+    
+    
+    
+}
+
 
 ast_node* new_modifier_node(int node_type1, int node_type2, VALOR_LEXICO lexico1, VALOR_LEXICO lexico2){
     ast_node* modifier1 = new_leaf_node(node_type1,lexico1);
@@ -444,8 +556,10 @@ void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
 {
     if(Tree == NULL)
         return;
+    
+    fprintf(arq,"%p, %p\n",Tree->father, Tree);
+    
     Percorrer_imprimir_file_DFS(Tree->first_child,arq);
-    fprintf(arq,"\n%p, %p [%c] \n",Tree->father, Tree,Tree->node_type);
     //printf("%p %d\n",Tree->node_node_father, Tree->node_type);
     Percorrer_imprimir_file_DFS(Tree->next_sibling,arq);
 
@@ -480,36 +594,21 @@ void print_node_info_csv(ast_node * node, FILE *arq){
 }
 
 
-void print_tree(ast_node *root){
-    if(root == NULL) return;
-    
-    print_node_info(root);
-    
-    print_tree(root->first_child);
-    
-    
-    
-    if(root->first_child){
-        print_tree(root->first_child->next_sibling);
-        
-    }
-    
-    //print_tree(root->next_sibling);
-    
-   
-    
-    
-}
+
 
 void erase_tree(ast_node *root){
-    printf("erasing\n");
     
     if(root == NULL) return;
     
     erase_tree(root->first_child);
     erase_tree(root->next_sibling);
     
+    
+    //printf("\naaa   %d | %p | %c | %s\n",root->ast_valor_lexico.column,root->ast_valor_lexico.value,root->node_type,root->ast_valor_lexico.value);
+    free(root->ast_valor_lexico.value);
+    root->ast_valor_lexico.value = NULL;
     free(root);
+    root = NULL;
     
 }
 
@@ -520,30 +619,4 @@ void erase_tree(ast_node *root){
 
 
 
-/*
-int main(){
-VALOR_LEXICO a;
-a.line = 0;
 
-ast_node *test = new_leaf_node(1,a);
-
-insert_child_ast_node(test,new_leaf_node(2,a));
-insert_child_ast_node(test,new_leaf_node(8,a));
-
-insert_child_ast_node(test, new_leaf_node(3,a));
-insert_child_ast_node(test->first_child,new_leaf_node(4,a));
-insert_child_ast_node(test->first_child,new_leaf_node(5,a));
-insert_child_ast_node(test->first_child,new_leaf_node(6,a));
-insert_child_ast_node(test->first_child,new_leaf_node(7,a));
-
-
-
-
-
-printf("\n\n");
-print_tree(test);
-erase_tree(test);
-    
-    
-return 0;
-}*/

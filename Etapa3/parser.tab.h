@@ -47,8 +47,9 @@ extern int yydebug;
 #line 1 "parser.y"
 
     #include "ast.h"
+    //extern void *arvore;
 
-#line 52 "parser.tab.h"
+#line 53 "parser.tab.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -107,14 +108,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 6 "parser.y"
+#line 7 "parser.y"
 
   ast_node* ast_node;
   VALOR_LEXICO valor_lexico;
   
   
 
-#line 118 "parser.tab.h"
+#line 119 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

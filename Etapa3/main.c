@@ -15,9 +15,9 @@ void exporta (void *arvore);
 int main (int argc, char **argv)
 {
   int ret = yyparse(); 
-  printf("THis is in main!\n");
   exporta (arvore);
   libera(arvore);
+  
   arvore = NULL;
   yylex_destroy();
   return ret;

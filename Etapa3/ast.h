@@ -64,7 +64,6 @@ typedef struct _symbol_info{
 
 typedef struct _ast_node {
     int node_type;
-    int children_count;
     VALOR_LEXICO ast_valor_lexico;
     
     
@@ -74,7 +73,7 @@ typedef struct _ast_node {
     
 } ast_node;
 
-
+extern void *arvore;
 void erase_tree(ast_node *root);
 
 
@@ -114,11 +113,27 @@ ast_node* new_empty_node();
 
 ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_expressions);
 
-ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* parameter_list, ast_node* command_block);
+ast_node* new_nonstatic_function_declaration_node(int node_type, ast_node* var_type, ast_node* indentifier,ast_node* parameter_list, ast_node* command_block);
+
+ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO static_lexical, ast_node* var_type, ast_node* indentifier,ast_node* parameter_list, ast_node* command_block);
+ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* indentifier ,ast_node* parameter_list, ast_node* command_block);
+
+
+
+
+ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_parameters);
+
+
+ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO const_lexical,ast_node* parameter_type,ast_node *identifier);
+ast_node* new_nonconst_parameter_node(int node_type,ast_node* parameter_type,ast_node *identifier);
+
+ast_node* new_parameter_node(int node_type,ast_node* const_modifier,ast_node* parameter_type,ast_node *identifier);
+
+
 
 ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* parameter_list);
 
-ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *global_scope_node);
+ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *current_global_node, ast_node* next_global_nodes);
 
 ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *true_command_block , ast_node *false_command_block);
 
@@ -134,7 +149,10 @@ ast_node* new_loop_while_node(int node_type, ast_node* expression, ast_node* com
 
 ast_node* new_modifier_node(int node_type1, int node_type2, VALOR_LEXICO lexico1, VALOR_LEXICO lexico2);
 
-ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_static,ast_node* var_type, ast_node* identifier, ast_node *vector_size);
+ast_node* new_static_global_var_declaration_node(int node_type, VALOR_LEXICO static_lexical,ast_node* var_type, ast_node* identifier);
+ast_node* new_nonstatic_global_var_declaration_node(int node_type,ast_node* var_type, ast_node* identifier);
+
+ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_static,ast_node* var_type, ast_node* identifier);
 
 ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers ,ast_node* var_type, ast_node* identifier, ast_node* initialization);
 

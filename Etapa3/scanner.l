@@ -60,17 +60,20 @@ yylval.valor_lexico.value = NULL;
 }
 
 void char_lexical(){
-char *literal_char = strdup(yytext);
-literal_char[strlen(literal_char) - 1] = 0;
-literal_char = literal_char + 1;
+ char *literal_char = yytext;
+ literal_char[strlen(literal_char) - 1] = 0;
+ literal_char = literal_char + 1;
 
 
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-yylval.valor_lexico.charvalue = literal_char[0];
-yylval.valor_lexico.intvalue = literal_char[0];
+yylval.valor_lexico.charvalue = atoi(literal_char);
+yylval.valor_lexico.intvalue = atoi(literal_char);
 yylval.valor_lexico.var_type = TK_LIT_CHAR;
 yylval.valor_lexico.value = NULL;
+
+
+
 }
 
 void string_lexical(){
@@ -99,6 +102,7 @@ void bool_lexical(int bool_value){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.intvalue = bool_value;
+yylval.valor_lexico.value = NULL;
 yylval.valor_lexico.var_type = TK_PR_BOOL;
 }
 
@@ -117,7 +121,10 @@ return var_type;
 int identifier_lexical(int var_type){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
+
 yylval.valor_lexico.value = strdup(yytext);
+
+
 yylval.valor_lexico.var_type = var_type;
 
 return var_type;
