@@ -93,11 +93,16 @@ int yyparse (void);
 
 %right '!''#'
 
+
+
+
+
+%left   '|'
+%left   '&'
+%left  TK_OC_SR TK_OC_SL
+%left   '+' '-'
 %left  '*' '/' '%'
-       '+' '-'
-       TK_OC_SR TK_OC_SL
-       '&'
-       '|'
+
 
 %right '^'
        '?' ':'

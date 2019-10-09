@@ -557,7 +557,7 @@ void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
     if(Tree == NULL)
         return;
     
-    fprintf(arq,"%p, %p\n",Tree->father, Tree);
+    fprintf(arq,"%p, %p [%c][%d]\n",Tree->father, Tree,Tree->node_type,Tree->ast_valor_lexico.intvalue);
     
     Percorrer_imprimir_file_DFS(Tree->first_child,arq);
     //printf("%p %d\n",Tree->node_node_father, Tree->node_type);

@@ -812,10 +812,10 @@ State 46
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -837,10 +837,10 @@ State 47
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
     ','               shift, and go to state 91
@@ -863,10 +863,10 @@ State 48
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1146,10 +1146,10 @@ State 72
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1170,10 +1170,10 @@ State 73
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1243,10 +1243,10 @@ State 81
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1267,10 +1267,10 @@ State 82
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1280,7 +1280,7 @@ State 82
 
 State 83
 
-   77 expression: '*' . expression
+   76 expression: '&' . expression
 
     TK_LIT_INT        shift, and go to state 74
     TK_LIT_FLOAT      shift, and go to state 75
@@ -1291,10 +1291,10 @@ State 83
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1315,10 +1315,10 @@ State 84
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1339,10 +1339,10 @@ State 85
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1352,7 +1352,7 @@ State 85
 
 State 86
 
-   76 expression: '&' . expression
+   77 expression: '*' . expression
 
     TK_LIT_INT        shift, and go to state 74
     TK_LIT_FLOAT      shift, and go to state 75
@@ -1363,10 +1363,10 @@ State 86
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1387,10 +1387,10 @@ State 87
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1411,10 +1411,10 @@ State 88
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1435,13 +1435,13 @@ State 89
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -1468,10 +1468,10 @@ State 91
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1500,13 +1500,13 @@ State 93
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ','  shift, and go to state 136
@@ -1527,13 +1527,13 @@ State 94
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -1626,10 +1626,10 @@ State 102
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1650,10 +1650,10 @@ State 103
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -1675,10 +1675,10 @@ State 104
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
     ','               shift, and go to state 91
@@ -1779,13 +1779,13 @@ State 116
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ')'  shift, and go to state 151
@@ -1804,13 +1804,13 @@ State 117
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ')'  shift, and go to state 152
@@ -1829,13 +1829,13 @@ State 118
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -1855,13 +1855,13 @@ State 119
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -1870,7 +1870,7 @@ State 119
 
 State 120
 
-   77 expression: '*' expression .
+   76 expression: '&' expression .
    80           | expression . '+' expression
    81           | expression . '-' expression
    82           | expression . '*' expression
@@ -1881,10 +1881,15 @@ State 120
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
-    $default  reduce using rule 77 (expression)
+    $default  reduce using rule 76 (expression)
 
 
 State 121
@@ -1900,6 +1905,9 @@ State 121
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -1919,6 +1927,9 @@ State 122
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -1927,7 +1938,7 @@ State 122
 
 State 123
 
-   76 expression: '&' expression .
+   77 expression: '*' expression .
    80           | expression . '+' expression
    81           | expression . '-' expression
    82           | expression . '*' expression
@@ -1941,7 +1952,7 @@ State 123
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
-    $default  reduce using rule 76 (expression)
+    $default  reduce using rule 77 (expression)
 
 
 State 124
@@ -1976,163 +1987,19 @@ State 125
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ')'  shift, and go to state 153
 
 
 State 126
-
-   82 expression: expression '*' . expression
-
-    TK_LIT_INT        shift, and go to state 74
-    TK_LIT_FLOAT      shift, and go to state 75
-    TK_LIT_FALSE      shift, and go to state 76
-    TK_LIT_TRUE       shift, and go to state 77
-    TK_LIT_CHAR       shift, and go to state 78
-    TK_LIT_STRING     shift, and go to state 79
-    TK_IDENTIFICADOR  shift, and go to state 80
-    '!'               shift, and go to state 81
-    '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '+'               shift, and go to state 84
-    '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
-    '?'               shift, and go to state 87
-    '('               shift, and go to state 88
-
-    expression  go to state 154
-    literal     go to state 90
-
-
-State 127
-
-   83 expression: expression '/' . expression
-
-    TK_LIT_INT        shift, and go to state 74
-    TK_LIT_FLOAT      shift, and go to state 75
-    TK_LIT_FALSE      shift, and go to state 76
-    TK_LIT_TRUE       shift, and go to state 77
-    TK_LIT_CHAR       shift, and go to state 78
-    TK_LIT_STRING     shift, and go to state 79
-    TK_IDENTIFICADOR  shift, and go to state 80
-    '!'               shift, and go to state 81
-    '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '+'               shift, and go to state 84
-    '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
-    '?'               shift, and go to state 87
-    '('               shift, and go to state 88
-
-    expression  go to state 155
-    literal     go to state 90
-
-
-State 128
-
-   84 expression: expression '%' . expression
-
-    TK_LIT_INT        shift, and go to state 74
-    TK_LIT_FLOAT      shift, and go to state 75
-    TK_LIT_FALSE      shift, and go to state 76
-    TK_LIT_TRUE       shift, and go to state 77
-    TK_LIT_CHAR       shift, and go to state 78
-    TK_LIT_STRING     shift, and go to state 79
-    TK_IDENTIFICADOR  shift, and go to state 80
-    '!'               shift, and go to state 81
-    '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '+'               shift, and go to state 84
-    '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
-    '?'               shift, and go to state 87
-    '('               shift, and go to state 88
-
-    expression  go to state 156
-    literal     go to state 90
-
-
-State 129
-
-   80 expression: expression '+' . expression
-
-    TK_LIT_INT        shift, and go to state 74
-    TK_LIT_FLOAT      shift, and go to state 75
-    TK_LIT_FALSE      shift, and go to state 76
-    TK_LIT_TRUE       shift, and go to state 77
-    TK_LIT_CHAR       shift, and go to state 78
-    TK_LIT_STRING     shift, and go to state 79
-    TK_IDENTIFICADOR  shift, and go to state 80
-    '!'               shift, and go to state 81
-    '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '+'               shift, and go to state 84
-    '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
-    '?'               shift, and go to state 87
-    '('               shift, and go to state 88
-
-    expression  go to state 157
-    literal     go to state 90
-
-
-State 130
-
-   81 expression: expression '-' . expression
-
-    TK_LIT_INT        shift, and go to state 74
-    TK_LIT_FLOAT      shift, and go to state 75
-    TK_LIT_FALSE      shift, and go to state 76
-    TK_LIT_TRUE       shift, and go to state 77
-    TK_LIT_CHAR       shift, and go to state 78
-    TK_LIT_STRING     shift, and go to state 79
-    TK_IDENTIFICADOR  shift, and go to state 80
-    '!'               shift, and go to state 81
-    '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '+'               shift, and go to state 84
-    '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
-    '?'               shift, and go to state 87
-    '('               shift, and go to state 88
-
-    expression  go to state 158
-    literal     go to state 90
-
-
-State 131
-
-   86 expression: expression '&' . expression
-
-    TK_LIT_INT        shift, and go to state 74
-    TK_LIT_FLOAT      shift, and go to state 75
-    TK_LIT_FALSE      shift, and go to state 76
-    TK_LIT_TRUE       shift, and go to state 77
-    TK_LIT_CHAR       shift, and go to state 78
-    TK_LIT_STRING     shift, and go to state 79
-    TK_IDENTIFICADOR  shift, and go to state 80
-    '!'               shift, and go to state 81
-    '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
-    '+'               shift, and go to state 84
-    '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
-    '?'               shift, and go to state 87
-    '('               shift, and go to state 88
-
-    expression  go to state 159
-    literal     go to state 90
-
-
-State 132
 
    85 expression: expression '|' . expression
 
@@ -2145,10 +2012,154 @@ State 132
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
+    '?'               shift, and go to state 87
+    '('               shift, and go to state 88
+
+    expression  go to state 154
+    literal     go to state 90
+
+
+State 127
+
+   86 expression: expression '&' . expression
+
+    TK_LIT_INT        shift, and go to state 74
+    TK_LIT_FLOAT      shift, and go to state 75
+    TK_LIT_FALSE      shift, and go to state 76
+    TK_LIT_TRUE       shift, and go to state 77
+    TK_LIT_CHAR       shift, and go to state 78
+    TK_LIT_STRING     shift, and go to state 79
+    TK_IDENTIFICADOR  shift, and go to state 80
+    '!'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '&'               shift, and go to state 83
+    '+'               shift, and go to state 84
+    '-'               shift, and go to state 85
+    '*'               shift, and go to state 86
+    '?'               shift, and go to state 87
+    '('               shift, and go to state 88
+
+    expression  go to state 155
+    literal     go to state 90
+
+
+State 128
+
+   80 expression: expression '+' . expression
+
+    TK_LIT_INT        shift, and go to state 74
+    TK_LIT_FLOAT      shift, and go to state 75
+    TK_LIT_FALSE      shift, and go to state 76
+    TK_LIT_TRUE       shift, and go to state 77
+    TK_LIT_CHAR       shift, and go to state 78
+    TK_LIT_STRING     shift, and go to state 79
+    TK_IDENTIFICADOR  shift, and go to state 80
+    '!'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '&'               shift, and go to state 83
+    '+'               shift, and go to state 84
+    '-'               shift, and go to state 85
+    '*'               shift, and go to state 86
+    '?'               shift, and go to state 87
+    '('               shift, and go to state 88
+
+    expression  go to state 156
+    literal     go to state 90
+
+
+State 129
+
+   81 expression: expression '-' . expression
+
+    TK_LIT_INT        shift, and go to state 74
+    TK_LIT_FLOAT      shift, and go to state 75
+    TK_LIT_FALSE      shift, and go to state 76
+    TK_LIT_TRUE       shift, and go to state 77
+    TK_LIT_CHAR       shift, and go to state 78
+    TK_LIT_STRING     shift, and go to state 79
+    TK_IDENTIFICADOR  shift, and go to state 80
+    '!'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '&'               shift, and go to state 83
+    '+'               shift, and go to state 84
+    '-'               shift, and go to state 85
+    '*'               shift, and go to state 86
+    '?'               shift, and go to state 87
+    '('               shift, and go to state 88
+
+    expression  go to state 157
+    literal     go to state 90
+
+
+State 130
+
+   82 expression: expression '*' . expression
+
+    TK_LIT_INT        shift, and go to state 74
+    TK_LIT_FLOAT      shift, and go to state 75
+    TK_LIT_FALSE      shift, and go to state 76
+    TK_LIT_TRUE       shift, and go to state 77
+    TK_LIT_CHAR       shift, and go to state 78
+    TK_LIT_STRING     shift, and go to state 79
+    TK_IDENTIFICADOR  shift, and go to state 80
+    '!'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '&'               shift, and go to state 83
+    '+'               shift, and go to state 84
+    '-'               shift, and go to state 85
+    '*'               shift, and go to state 86
+    '?'               shift, and go to state 87
+    '('               shift, and go to state 88
+
+    expression  go to state 158
+    literal     go to state 90
+
+
+State 131
+
+   83 expression: expression '/' . expression
+
+    TK_LIT_INT        shift, and go to state 74
+    TK_LIT_FLOAT      shift, and go to state 75
+    TK_LIT_FALSE      shift, and go to state 76
+    TK_LIT_TRUE       shift, and go to state 77
+    TK_LIT_CHAR       shift, and go to state 78
+    TK_LIT_STRING     shift, and go to state 79
+    TK_IDENTIFICADOR  shift, and go to state 80
+    '!'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '&'               shift, and go to state 83
+    '+'               shift, and go to state 84
+    '-'               shift, and go to state 85
+    '*'               shift, and go to state 86
+    '?'               shift, and go to state 87
+    '('               shift, and go to state 88
+
+    expression  go to state 159
+    literal     go to state 90
+
+
+State 132
+
+   84 expression: expression '%' . expression
+
+    TK_LIT_INT        shift, and go to state 74
+    TK_LIT_FLOAT      shift, and go to state 75
+    TK_LIT_FALSE      shift, and go to state 76
+    TK_LIT_TRUE       shift, and go to state 77
+    TK_LIT_CHAR       shift, and go to state 78
+    TK_LIT_STRING     shift, and go to state 79
+    TK_IDENTIFICADOR  shift, and go to state 80
+    '!'               shift, and go to state 81
+    '#'               shift, and go to state 82
+    '&'               shift, and go to state 83
+    '+'               shift, and go to state 84
+    '-'               shift, and go to state 85
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -2169,10 +2180,10 @@ State 133
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -2193,10 +2204,10 @@ State 134
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -2217,13 +2228,13 @@ State 135
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -2243,10 +2254,10 @@ State 136
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
     ','               shift, and go to state 91
@@ -2343,13 +2354,13 @@ State 146
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -2369,13 +2380,13 @@ State 147
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
 
@@ -2403,13 +2414,13 @@ State 149
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ')'  shift, and go to state 169
@@ -2484,6 +2495,99 @@ State 154
    80 expression: expression . '+' expression
    81           | expression . '-' expression
    82           | expression . '*' expression
+   83           | expression . '/' expression
+   84           | expression . '%' expression
+   85           | expression . '|' expression
+   85           | expression '|' expression .
+   86           | expression . '&' expression
+   87           | expression . '^' expression
+   88           | expression . '?' expression ':' expression
+
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
+    '^'  shift, and go to state 133
+    '?'  shift, and go to state 134
+
+    $default  reduce using rule 85 (expression)
+
+
+State 155
+
+   80 expression: expression . '+' expression
+   81           | expression . '-' expression
+   82           | expression . '*' expression
+   83           | expression . '/' expression
+   84           | expression . '%' expression
+   85           | expression . '|' expression
+   86           | expression . '&' expression
+   86           | expression '&' expression .
+   87           | expression . '^' expression
+   88           | expression . '?' expression ':' expression
+
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
+    '^'  shift, and go to state 133
+    '?'  shift, and go to state 134
+
+    $default  reduce using rule 86 (expression)
+
+
+State 156
+
+   80 expression: expression . '+' expression
+   80           | expression '+' expression .
+   81           | expression . '-' expression
+   82           | expression . '*' expression
+   83           | expression . '/' expression
+   84           | expression . '%' expression
+   85           | expression . '|' expression
+   86           | expression . '&' expression
+   87           | expression . '^' expression
+   88           | expression . '?' expression ':' expression
+
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
+    '^'  shift, and go to state 133
+    '?'  shift, and go to state 134
+
+    $default  reduce using rule 80 (expression)
+
+
+State 157
+
+   80 expression: expression . '+' expression
+   81           | expression . '-' expression
+   81           | expression '-' expression .
+   82           | expression . '*' expression
+   83           | expression . '/' expression
+   84           | expression . '%' expression
+   85           | expression . '|' expression
+   86           | expression . '&' expression
+   87           | expression . '^' expression
+   88           | expression . '?' expression ':' expression
+
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
+    '^'  shift, and go to state 133
+    '?'  shift, and go to state 134
+
+    $default  reduce using rule 81 (expression)
+
+
+State 158
+
+   80 expression: expression . '+' expression
+   81           | expression . '-' expression
+   82           | expression . '*' expression
    82           | expression '*' expression .
    83           | expression . '/' expression
    84           | expression . '%' expression
@@ -2498,7 +2602,7 @@ State 154
     $default  reduce using rule 82 (expression)
 
 
-State 155
+State 159
 
    80 expression: expression . '+' expression
    81           | expression . '-' expression
@@ -2517,7 +2621,7 @@ State 155
     $default  reduce using rule 83 (expression)
 
 
-State 156
+State 160
 
    80 expression: expression . '+' expression
    81           | expression . '-' expression
@@ -2534,82 +2638,6 @@ State 156
     '?'  shift, and go to state 134
 
     $default  reduce using rule 84 (expression)
-
-
-State 157
-
-   80 expression: expression . '+' expression
-   80           | expression '+' expression .
-   81           | expression . '-' expression
-   82           | expression . '*' expression
-   83           | expression . '/' expression
-   84           | expression . '%' expression
-   85           | expression . '|' expression
-   86           | expression . '&' expression
-   87           | expression . '^' expression
-   88           | expression . '?' expression ':' expression
-
-    '^'  shift, and go to state 133
-    '?'  shift, and go to state 134
-
-    $default  reduce using rule 80 (expression)
-
-
-State 158
-
-   80 expression: expression . '+' expression
-   81           | expression . '-' expression
-   81           | expression '-' expression .
-   82           | expression . '*' expression
-   83           | expression . '/' expression
-   84           | expression . '%' expression
-   85           | expression . '|' expression
-   86           | expression . '&' expression
-   87           | expression . '^' expression
-   88           | expression . '?' expression ':' expression
-
-    '^'  shift, and go to state 133
-    '?'  shift, and go to state 134
-
-    $default  reduce using rule 81 (expression)
-
-
-State 159
-
-   80 expression: expression . '+' expression
-   81           | expression . '-' expression
-   82           | expression . '*' expression
-   83           | expression . '/' expression
-   84           | expression . '%' expression
-   85           | expression . '|' expression
-   86           | expression . '&' expression
-   86           | expression '&' expression .
-   87           | expression . '^' expression
-   88           | expression . '?' expression ':' expression
-
-    '^'  shift, and go to state 133
-    '?'  shift, and go to state 134
-
-    $default  reduce using rule 86 (expression)
-
-
-State 160
-
-   80 expression: expression . '+' expression
-   81           | expression . '-' expression
-   82           | expression . '*' expression
-   83           | expression . '/' expression
-   84           | expression . '%' expression
-   85           | expression . '|' expression
-   85           | expression '|' expression .
-   86           | expression . '&' expression
-   87           | expression . '^' expression
-   88           | expression . '?' expression ':' expression
-
-    '^'  shift, and go to state 133
-    '?'  shift, and go to state 134
-
-    $default  reduce using rule 85 (expression)
 
 
 State 161
@@ -2644,13 +2672,13 @@ State 162
    88           | expression . '?' expression ':' expression
    88           | expression '?' expression . ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ':'  shift, and go to state 175
@@ -2676,13 +2704,13 @@ State 164
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ','  shift, and go to state 136
@@ -2701,10 +2729,10 @@ State 165
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -2843,10 +2871,10 @@ State 175
     TK_IDENTIFICADOR  shift, and go to state 80
     '!'               shift, and go to state 81
     '#'               shift, and go to state 82
-    '*'               shift, and go to state 83
+    '&'               shift, and go to state 83
     '+'               shift, and go to state 84
     '-'               shift, and go to state 85
-    '&'               shift, and go to state 86
+    '*'               shift, and go to state 86
     '?'               shift, and go to state 87
     '('               shift, and go to state 88
 
@@ -2867,13 +2895,13 @@ State 176
    87           | expression . '^' expression
    88           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 126
-    '/'  shift, and go to state 127
-    '%'  shift, and go to state 128
-    '+'  shift, and go to state 129
-    '-'  shift, and go to state 130
-    '&'  shift, and go to state 131
-    '|'  shift, and go to state 132
+    '|'  shift, and go to state 126
+    '&'  shift, and go to state 127
+    '+'  shift, and go to state 128
+    '-'  shift, and go to state 129
+    '*'  shift, and go to state 130
+    '/'  shift, and go to state 131
+    '%'  shift, and go to state 132
     '^'  shift, and go to state 133
     '?'  shift, and go to state 134
     ':'  shift, and go to state 183
