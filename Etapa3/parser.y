@@ -108,6 +108,9 @@ int yyparse (void);
        '?' ':'
 %right TK_PR_STATIC
 
+%left UNARY_QUESTION_MARK
+%right UNARY_PLUS UNARY_MINUS
+%right UNARY_ET UNARY_POINTER
 
 /*Mais Prioritário*/
 
@@ -267,12 +270,12 @@ expression: literal { $$ = $1;};
 
 expression: '(' expression ')'{ $$ = $2;};
 //Unários
-expression:'+'expression{ $$ = $2;};
-expression:'-'expression{ $$ = new_unary_expression('-',$2);};
+expression:'+'expression %prec UNARY_PLUS{ $$ = $2;};
+expression:'-'expression %prec UNARY_MINUS{ $$ = new_unary_expression('-',$2);};
 expression:'!'expression{ $$ = new_unary_expression('!',$2); };
-expression:'&'expression { $$ = new_unary_expression('@',$2); };
-expression:'*'expression {$$ = new_unary_expression('$',$2); };
-expression:'?'expression{$$ = new_unary_expression('~',$2); };
+expression:'&'expression %prec UNARY_ET{ $$ = new_unary_expression('@',$2); };
+expression:'*'expression %prec UNARY_POINTER{$$ = new_unary_expression('$',$2); };
+expression:'?'expression %prec UNARY_QUESTION_MARK{$$ = new_unary_expression('~',$2); };
 expression:'#'expression{$$ = new_unary_expression('#',$2); };
 //Binários
 expression: expression '+' expression {$$ = new_binary_expression('+',$1,$3);};
