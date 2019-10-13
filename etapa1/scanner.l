@@ -114,7 +114,7 @@ whitespace [ \n\t\r]+
 "protected" {return TK_PR_PROTECTED;}
 "end" {return TK_PR_END;}
 "default" {return TK_PR_DEFAULT;}
-{id} {return TK_IDENTIFICADOR;}
+
 
 {literal_char} {return TK_LIT_CHAR;}
 
@@ -126,7 +126,7 @@ whitespace [ \n\t\r]+
 "false" {return TK_LIT_FALSE;}
 "true" {return TK_LIT_TRUE;}
 
-
+{id} {return TK_IDENTIFICADOR;}
 
 . {return TOKEN_ERRO;}
 %%

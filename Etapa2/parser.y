@@ -83,6 +83,9 @@ int yyparse (void);
        '?' ':'
 %right TK_PR_STATIC
 
+%left UNARY_QUESTION_MARK
+%right UNARY_PLUS UNARY_MINUS
+%right UNARY_ET UNARY_POINTER
 
 /*Mais Prioritário*/
 
@@ -171,15 +174,15 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 //Operaçoes basicasLALR
 expression_list: ','expression|;
-expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT{ $$=$1; };
-expression: '(' expression ')' { $$ = $2; };
+expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT;
+expression: '(' expression ')';
 //Unários
-expression:'+'expression;
-expression:'-'expression;
+expression:'+'expression %prec UNARY_PLUS;
+expression:'-'expression %prec UNARY_MINUS;
 expression:'!'expression;
-expression:'&'expression;
-expression:'*'expression;
-expression:'?'expression;
+expression:'&'expression %prec UNARY_ET;
+expression:'*'expression %prec UNARY_POINTER;
+expression:'?'expression %prec UNARY_QUESTION_MARK;
 expression:'#'expression;
 //Binários
 expression: expression '+' expression;
