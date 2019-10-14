@@ -12,12 +12,13 @@ int line_number = 1;
 
 
 letter [a-zA-z]
+ASCII [\x00-\x7F]
 digit [0-9]
 integer ([+|-]?){digit}+
 alphanumeric [a-zA-z0-9]
 id {letter}({alphanumeric}+?)
 
-literal_char '{letter}'
+literal_char '{ASCII}'
 literal_int {integer}
 literal_string \"{letter}+\"
 
