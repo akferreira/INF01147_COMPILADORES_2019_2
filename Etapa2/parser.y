@@ -124,9 +124,9 @@ command_list: command';' command_list | loop_while command_list|loop_for command
 
 
 //command
-command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;
+/*command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;*/
 
-
+command: local_var_declaration|assignment_command|input_command|output_command|function_call|shift_command|command_return|TK_PR_BREAK|TK_PR_CONTINUE|if_statement|loop_for|loop_while;
 
 //Local Var declaration
 local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
@@ -134,7 +134,9 @@ local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_in
 local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: primitive_type TK_IDENTIFICADOR;
-
+local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR;
+local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR
+local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR;
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression;
@@ -198,7 +200,7 @@ expression: expression'?'expression':'expression;
       
 
 //Local Var Initialization
-local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
+local_var_initialization: "<=" TK_IDENTIFICADOR|"<=" TK_LIT_CHAR|"<=" TK_LIT_STRING|"<=" TK_LIT_FLOAT|"<=" TK_LIT_INT;
 
 
 

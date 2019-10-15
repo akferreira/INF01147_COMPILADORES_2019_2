@@ -13,17 +13,18 @@ int line_number = 1;
 
 
 letter [a-zA-z]
+ASCII [\x00-\x7F] 
 digit [0-9]
 integer ([+|-]?){digit}+
 alphanumeric [a-zA-z0-9]
 id {letter}({alphanumeric}+?)
 
-literal_char '{letter}'
+literal_char '{ASCII}'
 literal_int {integer}
-literal_string \"{letter}+\"
+literal_string \"{ASCII}+\"
 
 power (["e"|"E"]{integer})
-literal_float {integer}"."({integer})({power}?)
+literal_float {integer}"."({integer}?)({power}?)
 literal_float1 {integer}"."
 
 whitespace [ \n\t\r]+
@@ -31,9 +32,9 @@ whitespace [ \n\t\r]+
 
 
 %%
-"/*" {BEGIN(BLOCK_COMMENT);printf("Begin comment block\n");}
-"//" {BEGIN(LINE_COMMENT);printf("single line comment\n");}
-<BLOCK_COMMENT>"*/" { BEGIN(INITIAL); printf("end comment\n");}
+"/*" {BEGIN(BLOCK_COMMENT);}
+"//" {BEGIN(LINE_COMMENT);}
+<BLOCK_COMMENT>"*/" { BEGIN(INITIAL);}
 <BLOCK_COMMENT>\n   { }
 <BLOCK_COMMENT>.    { }
 
@@ -129,7 +130,7 @@ whitespace [ \n\t\r]+
 
 {id} {return TK_IDENTIFICADOR;}
 
-. {return TOKEN_ERRO; printf("Erro Linha: %d\n", get_line_number());}
+. {return TOKEN_ERRO;}
 %%
 
 int get_line_number(){
