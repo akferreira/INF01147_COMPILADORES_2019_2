@@ -118,7 +118,7 @@ function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_lis
 //Command Block
 //command_block: '{'command_block'}';
 command_block: '{'command_list'}';
-//command_block: command_list';';
+//command_block: command_list;
 
 command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block|;
 
