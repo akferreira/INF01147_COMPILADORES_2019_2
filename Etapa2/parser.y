@@ -120,7 +120,7 @@ function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_lis
 command_block: '{'command_list'}';
 //command_block: command_list;
 
-command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block|;
+command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block';'|;
 
 
 //command
@@ -135,15 +135,25 @@ local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_ini
 local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: primitive_type TK_IDENTIFICADOR;
 local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR;
-local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR
-local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR;
+local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR;
+local_var_declaration: TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR;
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression;
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression;
+
 output_command: TK_PR_OUTPUT expression expression_list;
+//output_command: TK_PR_OUTPUT TK_IDENTIFICADOR output_id_list;
+//output_id_list: |','output_id_list;
+
+//Operaçoes basicasLALR
+expression_list: ','expression expression_list|;
+expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT;
+expression: '(' expression ')';
+
+
 
 //Chamada de Função
 function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
@@ -174,10 +184,7 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 
 
-//Operaçoes basicasLALR
-expression_list: ','expression|;
-expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT;
-expression: '(' expression ')';
+
 //Unários
 expression:'+'expression %prec UNARY_PLUS;
 expression:'-'expression %prec UNARY_MINUS;
@@ -200,7 +207,7 @@ expression: expression'?'expression':'expression;
       
 
 //Local Var Initialization
-local_var_initialization: "<=" TK_IDENTIFICADOR|"<=" TK_LIT_CHAR|"<=" TK_LIT_STRING|"<=" TK_LIT_FLOAT|"<=" TK_LIT_INT;
+local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
 
 
 
