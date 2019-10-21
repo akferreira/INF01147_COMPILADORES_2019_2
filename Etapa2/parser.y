@@ -111,9 +111,15 @@ identifier: TK_IDENTIFICADOR|TK_IDENTIFICADOR'['TK_LIT_INT']';
 //Function declaration
 function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
 function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
-	function_parameters_list: |function_parameters_argument|function_parameters_argument','function_parameters_list;
-	function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
-	function_parameters_argument:primitive_type TK_IDENTIFICADOR;
+function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('')' command_block;
+
+function_declaration: primitive_type TK_IDENTIFICADOR '('')' command_block;
+
+
+function_parameters_list:function_parameters_argument|function_parameters_argument','function_parameters_list;
+
+function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
+function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 //Command Block
 //command_block: '{'command_block'}';
@@ -156,6 +162,7 @@ expression: '(' expression ')';
 
 
 //Chamada de Função
+function_call: TK_IDENTIFICADOR '('')';
 function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
 call_parameter_list:expression ',' call_parameter_list | expression;
 
@@ -176,6 +183,7 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
  command_block_loop: '{''}';
  command_block_loop: command;
 	//While
+	loop_while:TK_PR_WHILE'('expression')'TK_PR_DO command_block_loop;
 	loop_while:TK_PR_WHILE'('expression')' command_block_loop;
     	//For
     	loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')' command_block_loop;
@@ -194,16 +202,30 @@ expression:'*'expression %prec UNARY_POINTER;
 expression:'?'expression %prec UNARY_QUESTION_MARK;
 expression:'#'expression;
 //Binários
+
+//Expressoes Aritmeticas
 expression: expression '+' expression;
 expression: expression '-' expression;
 expression: expression '*' expression;
 expression: expression '/' expression;
 expression: expression '%' expression;
+expression: expression '^' expression;
+
+
+//Expressoes Logicas
+expression: expression TK_OC_EQ expression;
+expression: expression TK_OC_LE expression;
+expression: expression TK_OC_GE expression;
 expression: expression '|' expression;
 expression: expression '&' expression;
-expression: expression '^' expression;
+
+
 //Ternários
 expression: expression'?'expression':'expression;
+
+expression:function_call;
+
+
       
 
 //Local Var Initialization
