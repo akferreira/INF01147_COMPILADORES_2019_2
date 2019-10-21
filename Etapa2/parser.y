@@ -103,21 +103,20 @@ grammars:global_var_declaration|function_declaration;
 //Declaração de variaveis globais
 global_var_declaration: TK_PR_STATIC decl';';
 global_var_declaration: decl';';
-decl: primitive_type identifier;
+decl: primitive_type identifier|array_identifier;
 primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
-identifier: TK_IDENTIFICADOR|TK_IDENTIFICADOR'['TK_LIT_INT']';
+identifier: TK_IDENTIFICADOR;
+array_identifier:TK_IDENTIFICADOR'['TK_LIT_INT']';
+
 
 
 //Function declaration
 function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
 function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
 function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('')' command_block;
-
 function_declaration: primitive_type TK_IDENTIFICADOR '('')' command_block;
 
-
 function_parameters_list:function_parameters_argument|function_parameters_argument','function_parameters_list;
-
 function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
 function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
@@ -135,17 +134,31 @@ command_list: command';' command_list | loop_while command_list|loop_for command
 command: local_var_declaration|assignment_command|input_command|output_command|function_call|shift_command|command_return|TK_PR_BREAK|TK_PR_CONTINUE|if_statement|loop_for|loop_while;
 
 //Local Var declaration
-local_var_declaration:  TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
+local_var_declaration: TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR local_var_initialization;
 local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization;
-local_var_declaration: primitive_type TK_IDENTIFICADOR;
+
+local_var_declaration: TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR;
 local_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR;
 local_var_declaration: TK_PR_CONST primitive_type TK_IDENTIFICADOR;
-local_var_declaration: TK_PR_STATIC TK_PR_CONST primitive_type TK_IDENTIFICADOR;
+local_var_declaration: primitive_type TK_IDENTIFICADOR;
+
+
+
+
+
+//Local Var Initialization
+local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
+
+//global_var_assignment
+
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression;
+assignment_command: identifier'['expression']' '=' expression;
+
+
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression;
@@ -223,13 +236,13 @@ expression: expression '&' expression;
 //Ternários
 expression: expression'?'expression':'expression;
 
+//Function Call
 expression:function_call;
+//expression:TK_IDENTIFICADOR|TK_LIT_CHAR|TK_LIT_FLOAT|TK_LIT_INT;
 
 
       
 
-//Local Var Initialization
-local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_LE TK_LIT_STRING|TK_OC_LE TK_LIT_FLOAT|TK_OC_LE TK_LIT_INT;
 
 
 
