@@ -17,7 +17,7 @@ ASCII [\x00-\x7F]
 digit [0-9]
 integer ([+|-]?){digit}+
 alphanumeric [a-zA-z0-9]
-id {letter}({alphanumeric}+?)
+id [a-zA-Z_][a-zA-Z0-9_]*
 
 literal_char '{ASCII}'
 literal_int {integer}

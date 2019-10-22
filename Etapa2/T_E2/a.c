@@ -1,3 +1,1 @@
-int foo(){
-	a+b;
-}
+int [;

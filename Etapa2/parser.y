@@ -73,11 +73,16 @@ int yyparse (void);
 */
 %right '!''#'
 
+
+
+%left TK_OC_EQ
+%left TK_OC_LE TK_OC_GE
+%left       '&'
+%left       '|'
+%left       TK_OC_SR TK_OC_SL
+%left       '+' '-'
 %left  '*' '/' '%'
-       '+' '-'
-       TK_OC_SR TK_OC_SL
-       '&'
-       '|'
+
 
 %right '^'
        '?' ':'
@@ -103,9 +108,9 @@ grammars:global_var_declaration|function_declaration;
 //Declaração de variaveis globais
 global_var_declaration: TK_PR_STATIC decl';';
 global_var_declaration: decl';';
-decl: primitive_type identifier|array_identifier;
+decl: primitive_type identifier|primitive_type array_identifier;
 primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
-identifier: TK_IDENTIFICADOR;
+identifier: TK_IDENTIFICADOR|;
 array_identifier:TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
@@ -128,8 +133,7 @@ command_block: '{'command_list'}';
 command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block';'|;
 
 
-//command
-/*command: if_statement | local_var_declaration| shift_command | assignment_command| input_command| output_command| function_call|command_return| TK_PR_BREAK |TK_PR_CONTINUE;*/
+
 
 command: local_var_declaration|assignment_command|input_command|output_command|function_call|shift_command|command_return|TK_PR_BREAK|TK_PR_CONTINUE|if_statement|loop_for|loop_while;
 
@@ -157,6 +161,7 @@ local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_L
 //Comando de Atribuição
 assignment_command: identifier '=' expression;
 assignment_command: identifier'['expression']' '=' expression;
+
 
 
 
@@ -238,6 +243,8 @@ expression: expression'?'expression':'expression;
 
 //Function Call
 expression:function_call;
+//expression:identifier'['expression']';
+
 //expression:TK_IDENTIFICADOR|TK_LIT_CHAR|TK_LIT_FLOAT|TK_LIT_INT;
 
 
