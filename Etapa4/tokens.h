@@ -1,0 +1,4 @@
+enum{
+    UNIDENTIFIED,
+    EXPRESSION_NODE
+} NODE_TYPE ;

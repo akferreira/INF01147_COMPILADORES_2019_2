@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build",
+  "command": "/usr/bin/cc   -O3 -DNDEBUG   -o CMakeFiles/etapa3_prj.dir/ast.c.o   -c /mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/ast.c",
+  "file": "/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/ast.c"
+}
+]
