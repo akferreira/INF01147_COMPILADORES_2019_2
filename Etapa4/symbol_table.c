@@ -130,7 +130,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
     printf("Inserting table entry at %d\n",semantic_stack->depth);
     
     if(top_table->symbol_info == NULL){
-        printf("First symbol\n");
+        printf("First symbol %s\n",lexical.value.str_value);
         
         top_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;

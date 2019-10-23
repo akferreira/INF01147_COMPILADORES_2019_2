@@ -171,13 +171,13 @@ vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
 //Function declaration
-function_declaration: TK_PR_STATIC primitive_type simple_identifier '('function_parameters_list')' command_block 
+function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block 
 {
-$$ = new_static_function_declaration_node('M',$<valor_lexico>1,$2,$3,$5,$7);
+$$ = new_static_function_declaration_node('M',$2,$<valor_lexico>3,$5,$7);
 
 };
-function_declaration: primitive_type simple_identifier '('function_parameters_list')' command_block {
-$$ = new_nonstatic_function_declaration_node('M',$1,$2,$4,$6);
+function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block {
+$$ = new_nonstatic_function_declaration_node('M',$1,$<valor_lexico>2,$4,$6);
 };
 
 
@@ -185,7 +185,7 @@ function_parameters_list: {$$ = get_null();}
 
 |function_parameters_argument 
 |function_parameters_argument','function_parameters_list {$$ = new_parameter_list_node($1,$3);};
-function_parameters_argument:TK_PR_CONST primitive_type simple_identifier {$$ = new_const_parameter_node('p',$<valor_lexico>1,$2,$3);};
+function_parameters_argument:TK_PR_CONST primitive_type simple_identifier {$$ = new_const_parameter_node('p',$2,$3);};
 function_parameters_argument:primitive_type simple_identifier {$$ = new_nonconst_parameter_node('p',$1,$2);};
 
 

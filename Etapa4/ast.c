@@ -180,9 +180,9 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
 //     }
         
         
-  /*      
-    printf("%c",node_type);
-    if(ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || ast_valor_lexico.var_type == TK_LIT_STRING){
+        
+    printf("%c----%d\n",node_type,ast_valor_lexico.line);
+   /* if(ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || ast_valor_lexico.var_type == TK_LIT_STRING){
         printf("||%s",ast_valor_lexico.value.str_value);
     }*/
     
@@ -368,42 +368,36 @@ ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_
     
     
 }
-ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO const_lexical,VALOR_LEXICO parameter_type,ast_node *identifier){
-    ast_node* const_node = new_leaf_node(node_type,const_lexical);
+ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO parameter_type,ast_node *identifier){
     
-    return new_parameter_node(node_type,const_node,parameter_type,identifier);
+    return new_parameter_node(node_type,1,parameter_type,identifier);
 }
 
 ast_node* new_nonconst_parameter_node(int node_type,VALOR_LEXICO parameter_type,ast_node *identifier){
-    return new_parameter_node(node_type,NULL,parameter_type,identifier);
+    return new_parameter_node(node_type,0,parameter_type,identifier);
     
 }
 
-ast_node* new_parameter_node(int node_type,ast_node* const_modifier,VALOR_LEXICO parameter_type,ast_node *identifier){
-    ast_node* parameter_node = new_empty_node();
+ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_type,ast_node *identifier){
+    if(is_const) {
+        identifier->ast_valor_lexico.nature = CONST;
+        //insert_child(parameter_node,const_modifier);
     
-    if(parameter_node != NULL){
-        parameter_node->node_type = node_type;
-        if(const_modifier != NULL) {
-            identifier->ast_valor_lexico.nature = CONST;
-            //insert_child(parameter_node,const_modifier);
-        
-        }
-        
-        else identifier->ast_valor_lexico.nature = VARIABLE;
-        
-        identifier->ast_valor_lexico.var_type = parameter_type.var_type;
-        
-        //insert_child(parameter_node,parameter_type);
-        //insert_child(parameter_node,identifier);
-        
-        
-        
-        
     }
     
+    else identifier->ast_valor_lexico.nature = VARIABLE;
+    
+    identifier->ast_valor_lexico.var_type = parameter_type.var_type;
+    
+    //insert_child(parameter_node,parameter_type);
+    //insert_child(parameter_node,identifier);
+        
+        
+        
+        
+    
+    
     return NULL;
-    return parameter_node;
     
 }
 
@@ -420,31 +414,30 @@ ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_pa
     
 }
 
-ast_node* new_nonstatic_function_declaration_node(int node_type, VALOR_LEXICO var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
-    return new_function_declaration_node(node_type,NULL,var_type, identifier,parameter_list,command_block);
+ast_node* new_nonstatic_function_declaration_node(int node_type, VALOR_LEXICO var_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block){
+    return new_function_declaration_node(node_type,0,var_type, identifier,parameter_list,command_block);
     
 }
 
 
 
 
-ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO static_lexical, VALOR_LEXICO var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
-    ast_node* static_node = new_leaf_node('S',static_lexical);
+ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO var_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block){
     
-    return new_function_declaration_node(node_type,static_node,var_type,  identifier,parameter_list,command_block);
+    return new_function_declaration_node(node_type,1,var_type,  identifier,parameter_list,command_block);
 }
 
 
-ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, VALOR_LEXICO var_type, ast_node* identifier, ast_node* parameter_list, ast_node* command_block)
+ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXICO var_type, VALOR_LEXICO identifier, ast_node* parameter_list, ast_node* command_block)
 {
    
 
         //printf("function declaration %s\n",identifier->ast_valor_lexico.value.str_value);
         
-    identifier->ast_valor_lexico.var_type = var_type.var_type;
-    identifier->ast_valor_lexico.nature = FUNCTION;
+    identifier.var_type = var_type.var_type;
+    identifier.nature = FUNCTION;
     
-    insert_new_table_entry(identifier->ast_valor_lexico);
+    insert_new_table_entry(identifier);
        
         
         
@@ -556,24 +549,6 @@ MODIFIER_S modifier(int modifier_static, int modifier_const){
 // }
 
 ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VALOR_LEXICO var_type, VALOR_LEXICO identifier, ast_node* initialization){
-    
-    
-        //printf("%s [%s] local declaration\n",var_type.value.str_value,identifier->ast_valor_lexico.value.str_value);
-
-    
-
-
-//     if(modifiers != NULL) {
-//         erase_tree(modifiers);
-//         //insert_child(new_node, modifiers);
-//     }
-
-    //insert_child(new_node,var_type);
-
-
-
-
-
     identifier.var_type = var_type.var_type;
     insert_new_table_entry( identifier);
 
@@ -586,8 +561,11 @@ ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VAL
     }
         
         
-    printf("local var %s\n",identifier.value.str_value);
-    
+    printf("local var %s\n",var_type.value.str_value);
+    if( var_type.value.str_value != NULL) {
+        free(var_type.value.str_value);
+        var_type.value.str_value = NULL;
+    }
     
     
     return NULL;
