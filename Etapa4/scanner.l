@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "parser.tab.h"
 #include "tokens.h"
+#include "symbol_table.h"
 
 int offset;
 extern YYLTYPE yylloc;
@@ -56,7 +57,7 @@ void integer_lexical(){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.intvalue = atoi(yytext);
-yylval.valor_lexico.var_type = TK_LIT_INT;
+yylval.valor_lexico.var_type = TYPE_INT;
 }
 
 void char_lexical(){
@@ -68,7 +69,7 @@ void char_lexical(){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.charvalue = literal_char[0];
-yylval.valor_lexico.var_type = TK_LIT_CHAR;
+yylval.valor_lexico.var_type = TYPE_CHAR;
 
 
 
@@ -84,7 +85,7 @@ literal_char = literal_char + 1;
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.str_value = literal_char ;
-yylval.valor_lexico.var_type = TK_LIT_STRING;
+yylval.valor_lexico.var_type = TYPE_STRING;
 }
 
 
@@ -93,38 +94,38 @@ void float_lexical(){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.fvalue = atof(yytext);
-yylval.valor_lexico.var_type = TK_LIT_FLOAT;
+yylval.valor_lexico.var_type = TYPE_FLOAT;
 }
 
 void bool_lexical(int bool_value){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.intvalue = bool_value;
-yylval.valor_lexico.var_type = TK_PR_BOOL;
+yylval.valor_lexico.var_type = TYPE_BOOL;
 }
 
 int keyword_lexical(int var_type){
+
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
 yylval.valor_lexico.value.str_value = strdup(yytext);
 yylval.valor_lexico.var_type = var_type;
-
 return var_type;
 
 
 }
 
 
-int identifier_lexical(int var_type){
+int identifier_lexical(int token_type){
 update_lexical_location();
-yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
+yylval.valor_lexico.token_type = token_type;
 
 yylval.valor_lexico.value.str_value = strdup(yytext);
 
 
-yylval.valor_lexico.var_type = var_type;
+//yylval.valor_lexico.var_type = var_type;
 
-return var_type;
+return TK_IDENTIFICADOR;
 
 
 }
@@ -221,16 +222,15 @@ return TK_LIT_TRUE;}
 
 	/* palavras reservadas */
 "int" {
-
-return keyword_lexical(TK_PR_INT);
+keyword_lexical(TYPE_INT);
 
 return TK_PR_INT;}
 
 
-"float" { return keyword_lexical(TK_PR_FLOAT);}
-"bool" {return keyword_lexical(TK_PR_BOOL);}
-"char" {return keyword_lexical(TK_PR_CHAR);}
-"string" {return keyword_lexical( TK_PR_STRING);}
+"float" { keyword_lexical(TYPE_FLOAT);  return TK_PR_FLOAT;}
+"bool" {  keyword_lexical(TYPE_BOOL); return TK_PR_BOOL;}
+"char" {keyword_lexical(TYPE_CHAR); return TK_PR_CHAR;}
+"string" {keyword_lexical(TYPE_STRING); return TK_PR_STRING;}
 "if" {return keyword_lexical(TK_PR_IF);}
 "then" {return keyword_lexical(TK_PR_THEN);}
 "else" {return keyword_lexical(TK_PR_ELSE);}
@@ -255,7 +255,7 @@ return TK_PR_INT;}
 "default" {return keyword_lexical(TK_PR_DEFAULT);}
 
 
-{id} {return identifier_lexical(TK_IDENTIFICADOR);}
+{id} {return identifier_lexical(TK_TYPE_ID);}
 
 {literal_char} {
 

@@ -606,6 +606,7 @@ char *yytext;
 #include <stdlib.h>
 #include "parser.tab.h"
 #include "tokens.h"
+#include "symbol_table.h"
 
 int offset;
 extern YYLTYPE yylloc;
@@ -650,7 +651,7 @@ void integer_lexical(){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.intvalue = atoi(yytext);
-yylval.valor_lexico.var_type = TK_LIT_INT;
+yylval.valor_lexico.var_type = TYPE_INT;
 }
 
 void char_lexical(){
@@ -662,7 +663,7 @@ void char_lexical(){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.charvalue = literal_char[0];
-yylval.valor_lexico.var_type = TK_LIT_CHAR;
+yylval.valor_lexico.var_type = TYPE_CHAR;
 
 
 
@@ -678,7 +679,7 @@ literal_char = literal_char + 1;
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.str_value = literal_char ;
-yylval.valor_lexico.var_type = TK_LIT_STRING;
+yylval.valor_lexico.var_type = TYPE_STRING;
 }
 
 
@@ -687,44 +688,44 @@ void float_lexical(){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.fvalue = atof(yytext);
-yylval.valor_lexico.var_type = TK_LIT_FLOAT;
+yylval.valor_lexico.var_type = TYPE_FLOAT;
 }
 
 void bool_lexical(int bool_value){
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.intvalue = bool_value;
-yylval.valor_lexico.var_type = TK_PR_BOOL;
+yylval.valor_lexico.var_type = TYPE_BOOL;
 }
 
 int keyword_lexical(int var_type){
+
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
 yylval.valor_lexico.value.str_value = strdup(yytext);
 yylval.valor_lexico.var_type = var_type;
-
 return var_type;
 
 
 }
 
 
-int identifier_lexical(int var_type){
+int identifier_lexical(int token_type){
 update_lexical_location();
-yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
+yylval.valor_lexico.token_type = token_type;
 
 yylval.valor_lexico.value.str_value = strdup(yytext);
 
 
-yylval.valor_lexico.var_type = var_type;
+//yylval.valor_lexico.var_type = var_type;
 
-return var_type;
+return TK_IDENTIFICADOR;
 
 
 }
 
-#line 726 "lex.yy.c"
 #line 727 "lex.yy.c"
+#line 728 "lex.yy.c"
 
 #define INITIAL 0
 #define BLOCK_COMMENT 1
@@ -943,9 +944,9 @@ YY_DECL
 		}
 
 	{
-#line 155 "scanner.l"
+#line 156 "scanner.l"
 
-#line 948 "lex.yy.c"
+#line 949 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1014,248 +1015,248 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 156 "scanner.l"
+#line 157 "scanner.l"
 {BEGIN(BLOCK_COMMENT);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 157 "scanner.l"
+#line 158 "scanner.l"
 {BEGIN(LINE_COMMENT);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 158 "scanner.l"
+#line 159 "scanner.l"
 { BEGIN(INITIAL);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 159 "scanner.l"
+#line 160 "scanner.l"
 { }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 160 "scanner.l"
+#line 161 "scanner.l"
 { }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 162 "scanner.l"
+#line 163 "scanner.l"
 { BEGIN(INITIAL);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 163 "scanner.l"
+#line 164 "scanner.l"
 { }
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 165 "scanner.l"
+#line 166 "scanner.l"
 { }
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 166 "scanner.l"
+#line 167 "scanner.l"
 {}
 	YY_BREAK
 /* caracteres especiais */
 case 10:
 YY_RULE_SETUP
-#line 169 "scanner.l"
+#line 170 "scanner.l"
 {return ',';}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 170 "scanner.l"
+#line 171 "scanner.l"
 {return ';';}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 171 "scanner.l"
+#line 172 "scanner.l"
 {return ':';}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 172 "scanner.l"
+#line 173 "scanner.l"
 {return '(';}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 173 "scanner.l"
+#line 174 "scanner.l"
 {return ')';}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 174 "scanner.l"
+#line 175 "scanner.l"
 {return '[';}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 175 "scanner.l"
+#line 176 "scanner.l"
 {return ']';}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 176 "scanner.l"
+#line 177 "scanner.l"
 {return '{';}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 177 "scanner.l"
+#line 178 "scanner.l"
 {return '}';}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 178 "scanner.l"
+#line 179 "scanner.l"
 {return '+';}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 179 "scanner.l"
+#line 180 "scanner.l"
 {return '-';}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 180 "scanner.l"
+#line 181 "scanner.l"
 {return '|';}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 181 "scanner.l"
+#line 182 "scanner.l"
 {return '?';}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 182 "scanner.l"
+#line 183 "scanner.l"
 {return '@';}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 183 "scanner.l"
+#line 184 "scanner.l"
 {return '*';}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 184 "scanner.l"
+#line 185 "scanner.l"
 {return '/';}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 185 "scanner.l"
+#line 186 "scanner.l"
 {return '<';}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 186 "scanner.l"
+#line 187 "scanner.l"
 {return '>';}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 187 "scanner.l"
+#line 188 "scanner.l"
 {return '=';}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 188 "scanner.l"
+#line 189 "scanner.l"
 {return '!';}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 189 "scanner.l"
+#line 190 "scanner.l"
 {return '&';}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 190 "scanner.l"
+#line 191 "scanner.l"
 {return '%';}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 191 "scanner.l"
+#line 192 "scanner.l"
 {return '#';}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 192 "scanner.l"
+#line 193 "scanner.l"
 {return '^';}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 193 "scanner.l"
+#line 194 "scanner.l"
 {return '.';}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 194 "scanner.l"
+#line 195 "scanner.l"
 {return '$';}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 195 "scanner.l"
+#line 196 "scanner.l"
 {return '~';}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 196 "scanner.l"
+#line 197 "scanner.l"
 {return '`';}
 	YY_BREAK
 /* operadores compostos */
 case 38:
 YY_RULE_SETUP
-#line 199 "scanner.l"
+#line 200 "scanner.l"
 {return TK_OC_LE;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 200 "scanner.l"
+#line 201 "scanner.l"
 {return TK_OC_GE;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 201 "scanner.l"
+#line 202 "scanner.l"
 {return TK_OC_EQ;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 202 "scanner.l"
+#line 203 "scanner.l"
 {return TK_OC_NE;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 203 "scanner.l"
+#line 204 "scanner.l"
 {return TK_OC_AND;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 204 "scanner.l"
+#line 205 "scanner.l"
 {return TK_OC_OR;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 205 "scanner.l"
+#line 206 "scanner.l"
 {return TK_OC_SR;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 206 "scanner.l"
+#line 207 "scanner.l"
 {return TK_OC_SL;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 207 "scanner.l"
+#line 208 "scanner.l"
 {return TK_OC_FORWARD_PIPE;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 208 "scanner.l"
+#line 209 "scanner.l"
 {return TK_OC_BASH_PIPE;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 210 "scanner.l"
+#line 211 "scanner.l"
 {
 bool_lexical(0);
 
@@ -1263,7 +1264,7 @@ return TK_LIT_FALSE;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 216 "scanner.l"
+#line 217 "scanner.l"
 {
 bool_lexical(1);
 
@@ -1273,32 +1274,31 @@ return TK_LIT_TRUE;}
 /* palavras reservadas */
 case 50:
 YY_RULE_SETUP
-#line 223 "scanner.l"
+#line 224 "scanner.l"
 {
-
-return keyword_lexical(TK_PR_INT);
+keyword_lexical(TYPE_INT);
 
 return TK_PR_INT;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 230 "scanner.l"
-{ return keyword_lexical(TK_PR_FLOAT);}
+{ keyword_lexical(TYPE_FLOAT);  return TK_PR_FLOAT;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 231 "scanner.l"
-{return keyword_lexical(TK_PR_BOOL);}
+{  keyword_lexical(TYPE_BOOL); return TK_PR_BOOL;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 232 "scanner.l"
-{return keyword_lexical(TK_PR_CHAR);}
+{keyword_lexical(TYPE_CHAR); return TK_PR_CHAR;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 233 "scanner.l"
-{return keyword_lexical( TK_PR_STRING);}
+{keyword_lexical(TYPE_STRING); return TK_PR_STRING;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
@@ -1413,7 +1413,7 @@ YY_RULE_SETUP
 case 77:
 YY_RULE_SETUP
 #line 258 "scanner.l"
-{return identifier_lexical(TK_IDENTIFICADOR);}
+{return identifier_lexical(TK_TYPE_ID);}
 	YY_BREAK
 case 78:
 /* rule 78 can match eol */

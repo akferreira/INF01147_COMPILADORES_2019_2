@@ -10,7 +10,7 @@ SYMBOL_STACK *semantic_stack = NULL;
 
 int initialize_stack(){
     if(semantic_stack == NULL){
-        printf("First table\n");
+        //printf("First table\n");
         
         semantic_stack = malloc(sizeof(SYMBOL_STACK));
         if(semantic_stack != NULL){
@@ -51,7 +51,7 @@ int create_new_scope(){
             semantic_stack = new_stack_entry;
             semantic_stack->depth++;
             
-            printf("Current stack depth:%d\n",semantic_stack->depth);
+            //printf("Current stack depth:%d\n",semantic_stack->depth);
             
             return 0;
         }
@@ -61,13 +61,26 @@ int create_new_scope(){
     
 }
 
+void clean_stack(SYMBOL_STACK *stack){
+    if(stack == NULL) return;
+    
+    clean_stack(stack->next);
+    
+    clean_table(stack->symbol_table);
+    free(stack);
+    
+}
+
 void clean_table(SYMBOL_TABLE *table){
     if(table == NULL) return;
     
     clean_table(table->next);
     
-    table->next = NULL;
-    if(table->symbol_info) free(table->symbol_info);
+    
+    if(table->symbol_info) {
+        if(table->symbol_info->name) free(table->symbol_info->name);
+        free(table->symbol_info);
+    }
     if(table->argument_list) free(table->argument_list);
     free(table);
     
@@ -86,7 +99,7 @@ int exit_scope(){
         
         
         clean_table(current_stack_entry->symbol_table);
-        free(current_stack_entry);
+        printf("exittt\n");
         
     }
     
@@ -111,12 +124,13 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 
 int insert_new_table_entry(VALOR_LEXICO lexical){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
-    printf("Inserting table entry\n");
+    printf("Inserting table entry at %d\n",semantic_stack->depth);
     
     if(top_table->symbol_info == NULL){
-        //printf("First symbol\n");
+        printf("First symbol\n");
         
         top_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
+        top_table->next = NULL;
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
@@ -128,6 +142,8 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
     }
     
     else{
+        printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+        
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
             return ERR_DECLARED;
@@ -135,11 +151,13 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         
         
         SYMBOL_TABLE* current_table = top_table;
+        printf("Current: %p \nnext %p \n",current_table,current_table->next);
+        
        // printf("not first symbol\n");
         
         while(current_table->next != NULL){
-            //printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
-            // printf("Current: %p \nnext %p \n",current_table,current_table->next);
+            printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
+            printf("Current: %p \nnext %p \n",current_table,current_table->next);
             
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 return ERR_DECLARED;
@@ -149,15 +167,19 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
            
             
         }
-        //printf("end loop\n");
+        printf("end loop\n");
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 return ERR_DECLARED;
             }
+            
+            
+        SYMBOL_TABLE *next_table = malloc(sizeof(SYMBOL_TABLE));
+        next_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
+        next_table->next = NULL;
         
         
-        current_table->next = malloc(sizeof(SYMBOL_TABLE));
+        current_table->next = next_table;
         current_table = current_table->next;
-        current_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
         
         if(current_table->symbol_info != NULL){
             
@@ -193,4 +215,4 @@ int check_symbol(VALOR_LEXICO lexical){
     
     
 }
-int check_type_compatibility(VALOR_LEXICO lexical1, VALOR_LEXICO lexical2);
+int check_type_compatibility(int type1, int type2);

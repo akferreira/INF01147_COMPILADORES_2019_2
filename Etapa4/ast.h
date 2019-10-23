@@ -3,34 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "tokens.h"
 
-enum TOKEN_TYPE {
-    TK_TYPE_RESERVED_WORD, 
-    TK_TYPE_SPECIAL_CHAR, 
-    TK_TYPE_OPERATOR, 
-    TK_TYPE_ID, 
-    TK_TYPE_LITERAL 
-};
 
-enum NODE_TYPE{
-    TERMINAL,
-    UNINITIALIZED,
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    OR,
-    AND,
-    MOD,
-    MINUS,
-    POWER,
-    ADDRESS,
-    CONTENT,
-    INVERT,
-    HASH,
-    BOOL_EVAL
-    
-};
+
 
 
 
@@ -55,6 +31,11 @@ typedef struct  _valor_lexico{
     
     
 } VALOR_LEXICO;
+
+typedef struct _modifiers{
+    int is_static;
+    int is_const;
+} MODIFIER_S;
 
 
 

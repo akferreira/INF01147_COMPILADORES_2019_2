@@ -7,6 +7,7 @@
 %union {
   ast_node* ast_node;
   VALOR_LEXICO valor_lexico;
+  MODIFIER_S var_modifier;
   
   
 }
@@ -119,7 +120,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list ;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list;
 
 
 enter_scope: {
@@ -209,9 +210,10 @@ modifiers: TK_PR_STATIC TK_PR_CONST { $$ = new_modifier_node('S','C',$<valor_lex
 
 
 //Local Var declaration
-local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
+local_var_declaration:  modifiers primitive_type simple_identifier local_var_initialization {
 $$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;
 };
+
 local_var_declaration: primitive_type simple_identifier local_var_initialization null_node{
 $$ = new_local_var_declaration_node('<', $4 ,$1,$2,$3 ) ;
 
@@ -221,10 +223,10 @@ $$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;
 };
 
 //Chamada de Função
-function_call: simple_identifier '(' expression_list ')'{$$ = new_function_call_node('K',$1,$3);};
-function_call: simple_identifier '(' expression ')'{$$ = new_function_call_node('K',$1,$3);};
 
+function_call: simple_identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
 
+call_parameter_list:expression ',' call_parameter_list { $$ = new_expression_list_node($1,$3);};| expression;
 
 
 //Comando de Atribuição
@@ -311,6 +313,7 @@ expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('
 local_var_initialization: TK_OC_LE literal { $$ = $2;};
 
 expression:  TK_IDENTIFICADOR{ 
+
 $$ = new_leaf_node('I',$<valor_lexico>1);
 }
 |TK_LIT_INT{ 

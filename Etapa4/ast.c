@@ -5,10 +5,12 @@
 #include "symbol_table.h"
 
 extern void *arvore;
+extern SYMBOL_STACK *semantic_stack; 
 
 void libera (void *arvore){
-    
+    printf("erase\n");
     erase_tree(arvore);
+    //clean_stack(semantic_stack);
     
 
     
@@ -39,7 +41,7 @@ ast_node* new_empty_node(){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
     
     if(new_node != NULL){
-        new_node->node_type = UNINITIALIZED;
+        new_node->node_type = 0;
         new_node->first_child = NULL;
         new_node->next_sibling = NULL;
         new_node->father = NULL;
@@ -256,7 +258,7 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 }
 
 ast_node* new_assignment_node(ast_node *dest, ast_node *source){
-    printf("assignment node\n");
+    //printf("assignment node\n");
     
     if(dest == NULL || source == NULL){
         return NULL;
@@ -271,7 +273,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
         insert_child(new_node,dest);
         insert_child(new_node,source);
         
-        printf("checking dest %d\n",check_symbol(dest->ast_valor_lexico));
+        //printf("checking dest %d\n",check_symbol(dest->ast_valor_lexico));
         
         
          
@@ -301,6 +303,15 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
         insert_child(new_node,left);
         insert_child(new_node,right);
         
+        //printf()
+        
+        if(left->ast_valor_lexico.token_type == TK_TYPE_ID) check_symbol(left->ast_valor_lexico);
+        
+            
+            if(right->ast_valor_lexico.token_type ==  TK_TYPE_ID) check_symbol(right->ast_valor_lexico);
+        
+        //printf("binary %d//%d\n",left->ast_valor_lexico.var_type,right->ast_valor_lexico.var_type);
+        
 //         printf("new_node");
 //         print_node_info(new_node);
 //         printf("left and right");
@@ -315,7 +326,7 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
-    printf("command list %p\n",command_list);
+    //printf("command list %p\n",command_list);
    
     
     if(command_list == NULL) return NULL;
@@ -373,9 +384,22 @@ ast_node* new_parameter_node(int node_type,ast_node* const_modifier,ast_node* pa
     
     if(parameter_node != NULL){
         parameter_node->node_type = node_type;
-        if(const_modifier != NULL) insert_child(parameter_node,const_modifier);
+        if(const_modifier != NULL) {
+            identifier->ast_valor_lexico.nature = CONST;
+            insert_child(parameter_node,const_modifier);
+        
+        }
+        
+        else identifier->ast_valor_lexico.nature = VARIABLE;
+        
+        identifier->ast_valor_lexico.var_type = parameter_type->ast_valor_lexico.var_type;
+        
         insert_child(parameter_node,parameter_type);
         insert_child(parameter_node,identifier);
+        
+        
+        
+        
     }
     
     return parameter_node;
@@ -432,9 +456,16 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
         if(parameter_list != NULL) insert_child(function_node,parameter_list);
         insert_child(function_node,command_block);
         
+        identifier->ast_valor_lexico.var_type = var_type->ast_valor_lexico.var_type;
+        identifier->ast_valor_lexico.nature = FUNCTION;
+        
+        insert_new_table_entry(identifier->ast_valor_lexico);
+        erase_tree(function_node);
+        
+        
     }
     
-    
+    return NULL;
     return function_node;
 }
 
@@ -481,8 +512,9 @@ ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_stat
         
         
     }
+    
+    erase_tree(global_var_node);
     return NULL;
-    return global_var_node;
 }
 
 ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *current_global_node, ast_node* next_global_nodes){
@@ -548,21 +580,32 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
         new_node->node_type = node_type;
         
         
-        if(modifiers != NULL) insert_child(new_node, modifiers);
+        if(modifiers != NULL) {
+            erase_tree(modifiers);
+            //insert_child(new_node, modifiers);
+        }
         
-        insert_child(new_node,var_type);
-        
-        insert_child(new_node,identifier);
+        //insert_child(new_node,var_type);
         
         
-        if(initialization != NULL) insert_child(new_node,initialization);
         
-         identifier->ast_valor_lexico.var_type = var_type->ast_valor_lexico.var_type;
+        
+        
+        identifier->ast_valor_lexico.var_type = var_type->ast_valor_lexico.var_type;
         printf("Local Declaration returned %d\n",insert_new_table_entry( identifier->ast_valor_lexico));
+        
+        if(initialization != NULL) {
+            insert_child(new_node,identifier);
+            insert_child(new_node,initialization);
+            return new_node;
+        }
+        
+        erase_tree(var_type);
     }
     
+    
+    erase_tree(new_node);
     return NULL;
-    return new_node;
     
     
 }
@@ -675,10 +718,10 @@ void erase_tree(ast_node *root){
 //     
 //     //printf("\naaa   %d | %p | %c | %s\n",root->ast_valor_lexico.column,root->ast_valor_lexico.value,root->node_type,root->ast_valor_lexico.value);
 //     printf("%d||%d\n", root->ast_valor_lexico.token_type,TK_TYPE_RESERVED_WORD);
-//     printf("%d||%d\n", root->ast_valor_lexico.var_type,TK_LIT_STRING);
+//     printf("%d||%d\n", root->ast_valor_lexico.var_type,TK_LIT_STRING); TK_LIT_STRING
 //     printf("child : %c\n",root->node_type);
     
-    if(root->ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || root->ast_valor_lexico.var_type == TK_LIT_STRING){
+    if(root->ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || root->ast_valor_lexico.var_type == TYPE_STRING){
 //         printf("freeing\n");
         free(root->ast_valor_lexico.value.str_value);
         root->ast_valor_lexico.value.str_value = NULL;

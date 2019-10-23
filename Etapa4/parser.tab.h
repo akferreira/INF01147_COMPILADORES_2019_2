@@ -112,10 +112,11 @@ union YYSTYPE
 
   ast_node* ast_node;
   VALOR_LEXICO valor_lexico;
+  MODIFIER_S var_modifier;
   
   
 
-#line 119 "parser.tab.h"
+#line 120 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

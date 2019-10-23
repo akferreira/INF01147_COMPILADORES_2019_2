@@ -5,6 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+enum nature {
+    LITERAL,
+    VARIABLE,
+    VECTOR,
+    CONST,
+    FUNCTION
+} SYMBOL_NATURE;
+
 
 typedef struct  _symbol_info{
     int line;
@@ -19,7 +27,7 @@ typedef struct  _symbol_info{
 
 
 typedef struct _arg_list{
-    SYMBOL_INFO arg_info;
+    SYMBOL_INFO* arg_info;
     
     struct _arg_list *next_argument;
     
@@ -61,22 +69,22 @@ int initialize_stack();
 extern SYMBOL_STACK *semantic_stack;
 
 
+void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical);
+void clean_arg_list(ARG_LIST* arg_list);
+void clean_table(SYMBOL_TABLE *table);
+void clean_stack(SYMBOL_STACK *stack);
 
 int create_new_scope();
 int exit_scope();
 int insert_new_table_entry(VALOR_LEXICO lexical);
+int insert_parameters_function_entry(ARG_LIST);
 SYMBOL_INFO* retrieve_symbol(VALOR_LEXICO lexical);
 int check_symbol(VALOR_LEXICO lexical);
-int check_type_compatibility(VALOR_LEXICO lexical1, VALOR_LEXICO lexical2);
+int check_type_compatibility(int type1, int type2);
+int type_coercion(int type1, int type2);
 
 
-#define NATUREZA_LITERAL_INT        1
-#define NATUREZA_LITERAL_FLOAT      2
-#define NATUREZA_LITERAL_CHAR       3
-#define NATUREZA_LITERAL_STRING     4
-#define NATUREZA_LITERAL_BOOL       5
-#define NATUREZA_IDENTIFICADOR      6
-#define NATUREZA_FUNCTION 7
+
 
 
 
