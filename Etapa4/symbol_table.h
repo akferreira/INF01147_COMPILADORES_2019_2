@@ -43,6 +43,8 @@ typedef struct _S_TABLE{
 } SYMBOL_TABLE;
 
 typedef struct _S_STACK{
+    int depth;
+    
     SYMBOL_TABLE* symbol_table;
     struct _S_STACK *next;
     
@@ -54,15 +56,29 @@ typedef struct _S_STACK{
 SYMBOL_STACK* push_table(SYMBOL_TABLE symbol_table);
 SYMBOL_STACK* pop_table(SYMBOL_TABLE symbol_table);
 
+int initialize_stack();
+
 extern SYMBOL_STACK *semantic_stack;
 
 
 
 int create_new_scope();
+int exit_scope();
 int insert_new_table_entry(VALOR_LEXICO lexical);
 SYMBOL_INFO* retrieve_symbol(VALOR_LEXICO lexical);
 int check_symbol(VALOR_LEXICO lexical);
 int check_type_compatibility(VALOR_LEXICO lexical1, VALOR_LEXICO lexical2);
+
+
+#define NATUREZA_LITERAL_INT        1
+#define NATUREZA_LITERAL_FLOAT      2
+#define NATUREZA_LITERAL_CHAR       3
+#define NATUREZA_LITERAL_STRING     4
+#define NATUREZA_LITERAL_BOOL       5
+#define NATUREZA_IDENTIFICADOR      6
+#define NATUREZA_FUNCTION 7
+
+
 
 /*
  * Um identificador não declarado é encontrado

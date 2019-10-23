@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
+#include "symbol_table.h"
 extern void *arvore;
 extern int get_line_number (void);
 extern void exporta (void *arvore);
@@ -121,11 +122,20 @@ int yyparse (void);
 %type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list ;
 
 
+enter_scope: {
+printf("\nnew scope\n");
+printf("%d\n",create_new_scope());
+
+
+};
+
+exit_scope: {printf("exiting scope\n");  printf("%d\n",exit_scope());};
+
 null_node: {$$ = get_null();};
 
 //programa:
 program: /* empty */{$$ = get_null();};
-program: grammars program  { $$ =  new_global_grammar_node('|',arvore,$1,$2);};
+program: grammars program  {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
 
 
 
@@ -171,8 +181,7 @@ function_parameters_argument:primitive_type simple_identifier {$$ = new_nonconst
 
 
 
-enter_scope: {printf("\nnew scope\n");};
-exit_scope: {printf("exiting scope\n");};
+
 
 
 //Command Block
@@ -203,8 +212,8 @@ modifiers: TK_PR_STATIC TK_PR_CONST { $$ = new_modifier_node('S','C',$<valor_lex
 local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
 $$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;
 };
-local_var_declaration: primitive_type simple_identifier local_var_initialization{
-$$ = new_local_var_declaration_node('<', NULL ,$1,$2,$3 ) ;
+local_var_declaration: primitive_type simple_identifier local_var_initialization null_node{
+$$ = new_local_var_declaration_node('<', $4 ,$1,$2,$3 ) ;
 
 };
 local_var_declaration: primitive_type simple_identifier null_node{

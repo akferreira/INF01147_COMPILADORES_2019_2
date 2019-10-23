@@ -1,34 +1,6 @@
 int global1;
 int global2;
 
-int funcao1(){
-    int a;
-    int b;
-    a = 5;
-    b = 8;
-    
-}
-
-int funcao2(){
-    int d;
-    int c;
-    int k;
-    d = 5;
-    c = 8;
-    {
-        {
-            {
-                {
-                    int x;
-                }
-            }
-        }
-    }
-    
-}
-
-
-
 int main(){
     int x;
     int y;
@@ -44,6 +16,9 @@ int funcao3(){
     d = 5;
     char x;
     float y;
+    int y;
+    int b;
     c = 8;
+    l = 9;
     
 }

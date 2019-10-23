@@ -271,6 +271,8 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
         insert_child(new_node,dest);
         insert_child(new_node,source);
         
+        printf("checking dest %d\n",check_symbol(dest->ast_valor_lexico));
+        
         
          
         
@@ -313,7 +315,7 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
-    
+    printf("command list %p\n",command_list);
    
     
     if(command_list == NULL) return NULL;
@@ -332,16 +334,17 @@ ast_node* new_command_block_node(int node_type,ast_node *command_list){
 
 ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_commands){
     
-    
     if(next_commands == NULL) return current_commands;
+    
     
     if(current_commands != NULL){
 //         printf("command list line %d\n",current_commands->ast_valor_lexico.line);
-        insert_sibling(current_commands,next_commands);
-        
-        
+        if(next_commands != NULL) insert_sibling(current_commands,next_commands);
+        return current_commands;
     }
-    return current_commands;
+    
+    else return next_commands;
+    
 }
 
 ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_expressions){
@@ -415,7 +418,7 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
     if(function_node != NULL){
          printf("function declaration %s\n",identifier->ast_valor_lexico.value.str_value);
         
-        
+       
         
         function_node->node_type = node_type;
         
@@ -423,11 +426,10 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
             insert_child(function_node,modifier_static);
         }
         
-       
+        
         insert_child(function_node,var_type);
         insert_child(function_node,identifier);
         if(parameter_list != NULL) insert_child(function_node,parameter_list);
-         
         insert_child(function_node,command_block);
         
     }
@@ -463,6 +465,7 @@ ast_node* new_nonstatic_global_var_declaration_node(int node_type,ast_node* var_
 ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_static,ast_node* var_type, ast_node* identifier){
     ast_node* global_var_node = new_empty_node();
     printf("global declaration\n");
+    initialize_stack();
     
     
     if(global_var_node != NULL){
@@ -471,6 +474,11 @@ ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_stat
         if(modifier_static != NULL) insert_child(global_var_node,modifier_static); 
         insert_child(global_var_node,var_type);
         insert_child(global_var_node,identifier);
+        
+        identifier->ast_valor_lexico.var_type = var_type->ast_valor_lexico.var_type;
+        printf("Declaration returned %d\n",insert_new_table_entry( identifier->ast_valor_lexico));
+        
+        
         
     }
     return NULL;
@@ -549,10 +557,11 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
         
         if(initialization != NULL) insert_child(new_node,initialization);
         
-        
+         identifier->ast_valor_lexico.var_type = var_type->ast_valor_lexico.var_type;
+        printf("Local Declaration returned %d\n",insert_new_table_entry( identifier->ast_valor_lexico));
     }
     
-    
+    return NULL;
     return new_node;
     
     
