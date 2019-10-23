@@ -438,6 +438,7 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
     identifier.nature = FUNCTION;
     
     insert_new_table_entry(identifier);
+    free(var_type.value.str_value);
        
         
         

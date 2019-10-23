@@ -100,7 +100,7 @@ int exit_scope(){
         
         
         clean_table(current_stack_entry->symbol_table);
-        
+        free(current_stack_entry);
         
     }
     
@@ -132,7 +132,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
     if(top_table->symbol_info == NULL){
         printf("First symbol %s\n",lexical.value.str_value);
         
-        top_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
+        top_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
         
         if(top_table->symbol_info != NULL){
@@ -172,14 +172,14 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
            
             
         }
-       // printf("end loop\n");
+       printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 printf("já existe\n");return ERR_DECLARED;
             }
             
             
-        SYMBOL_TABLE *next_table = malloc(sizeof(SYMBOL_TABLE));
-        next_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
+        SYMBOL_TABLE *next_table = (SYMBOL_TABLE*) malloc(sizeof(SYMBOL_TABLE));
+        next_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         next_table->next = NULL;
         
         
@@ -189,6 +189,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         if(current_table->symbol_info != NULL){
             
             copy_lexical_to_symbol(current_table->symbol_info,lexical);
+            free(lexical.value.str_value);
             return 0;
         }
         

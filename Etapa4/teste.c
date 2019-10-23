@@ -17,3 +17,10 @@ int funcao3(){
     int k;
     
 }
+
+int funcao43(){
+    int d;
+    int c;
+    int k;
+    
+}
