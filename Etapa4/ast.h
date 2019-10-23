@@ -128,12 +128,12 @@ ast_node* new_loop_while_node(int node_type, ast_node* expression, ast_node* com
 
 MODIFIER_S modifier(int modifier_static, int modifier_const);
 
-ast_node* new_static_global_var_declaration_node(int node_type, VALOR_LEXICO static_lexical,VALOR_LEXICO  var_type, ast_node* identifier);
-ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type, ast_node* identifier);
+ast_node* new_static_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type, VALOR_LEXICO identifier, int vector_lenght);
+ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type, VALOR_LEXICO identifier,int vector_lenght);
 
-ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_static,VALOR_LEXICO  var_type, ast_node* identifier);
+ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEXICO  var_type, VALOR_LEXICO identifier,int vector_lenght);
 
-ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers ,VALOR_LEXICO var_type, ast_node* identifier, ast_node* initialization);
+ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers ,VALOR_LEXICO var_type,VALOR_LEXICO identifier, ast_node* initialization);
 
 ast_node* new_shift_command_node(int node_type,ast_node *identifier, ast_node *shift_type, ast_node *expression);
 

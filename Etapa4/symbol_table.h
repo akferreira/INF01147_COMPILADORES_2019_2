@@ -14,6 +14,9 @@ enum nature {
 } SYMBOL_NATURE;
 
 
+
+
+
 typedef struct  _symbol_info{
     int line;
     int column;

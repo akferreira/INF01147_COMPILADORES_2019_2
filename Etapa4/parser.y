@@ -147,8 +147,13 @@ program: grammars program  {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
 grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
-global_var_declaration: TK_PR_STATIC primitive_type identifier';'{$$ = new_static_global_var_declaration_node('g',$<valor_lexico>1,$2,$3);};
-global_var_declaration: primitive_type identifier';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$2);};
+global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR ';'{$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,1);};
+global_var_declaration: primitive_type TK_IDENTIFICADOR';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,1);};
+
+global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';' {$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,$<valor_lexico>5.value.intvalue);};
+global_var_declaration: primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,$<valor_lexico>4.value.intvalue);};
+
+
 //decl: primitive_type identifier;
 
 primitive_type: TK_PR_INT
@@ -216,16 +221,16 @@ no_modifier: {$$ = modifier(0,0);}
 
 
 //Local Var declaration
-local_var_declaration:  modifiers primitive_type simple_identifier local_var_initialization {
-$$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;
+local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
+$$ = new_local_var_declaration_node('<',$1,$2,$<valor_lexico>3,$4 ) ;
 };
 
-local_var_declaration: primitive_type simple_identifier local_var_initialization no_modifier{
-$$ = new_local_var_declaration_node('<', $4 ,$1,$2,$3 ) ;
+local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization no_modifier{
+$$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
 
 };
-local_var_declaration: primitive_type simple_identifier null_node no_modifier{
-$$ = new_local_var_declaration_node('<', $4 ,$1,$2,$3) ;
+local_var_declaration: primitive_type TK_IDENTIFICADOR null_node no_modifier{
+$$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3) ;
 };
 
 //Chamada de Função

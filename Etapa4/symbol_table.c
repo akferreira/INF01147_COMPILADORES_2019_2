@@ -118,6 +118,8 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
     
     symbol->name = strdup(lexical.value.str_value);
     
+    //free(lexical.value.str_value);
+    
     
 }
 
@@ -125,16 +127,17 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 
 int insert_new_table_entry(VALOR_LEXICO lexical){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
-    //printf("Inserting table entry at %d\n",semantic_stack->depth);
+    printf("Inserting table entry at %d\n",semantic_stack->depth);
     
     if(top_table->symbol_info == NULL){
-        //printf("First symbol\n");
+        printf("First symbol\n");
         
         top_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
+            free(lexical.value.str_value);
             return 0;
         }
         
@@ -154,13 +157,14 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         SYMBOL_TABLE* current_table = top_table;
         //printf("Current: %p \nnext %p \n",current_table,current_table->next);
         
-       // printf("not first symbol\n");
+        printf("not first symbol\n");
         
         while(current_table->next != NULL){
-           // printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
-          //  printf("Current: %p \nnext %p \n",current_table,current_table->next);
+            printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
+           printf("Current: %p \nnext %p \n",current_table,current_table->next);
             
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
+                printf("já existe\n");
                 return ERR_DECLARED;
             }
             
@@ -170,7 +174,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         }
        // printf("end loop\n");
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                return ERR_DECLARED;
+                printf("já existe\n");return ERR_DECLARED;
             }
             
             
