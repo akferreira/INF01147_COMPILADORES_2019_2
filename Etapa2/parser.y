@@ -211,6 +211,9 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 
 
+
+
+
 //Unários
 expression:'+'expression %prec UNARY_PLUS;
 expression:'-'expression %prec UNARY_MINUS;
@@ -243,9 +246,12 @@ expression: expression'?'expression':'expression;
 
 //Function Call
 expression:function_call;
+//Boolean Values
+expression:TK_LIT_FALSE | TK_LIT_TRUE;
+
 //expression:identifier'['expression']';
 
-//expression:TK_IDENTIFICADOR|TK_LIT_CHAR|TK_LIT_FLOAT|TK_LIT_INT;
+
 
 
       
