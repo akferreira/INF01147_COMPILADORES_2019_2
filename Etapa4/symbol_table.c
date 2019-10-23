@@ -47,8 +47,10 @@ int create_new_scope(){
             new_stack_entry->symbol_table->next = NULL;
             new_stack_entry->next = semantic_stack;
             
+            int previous_depth = semantic_stack->depth;
+            
             semantic_stack = new_stack_entry;
-            semantic_stack->depth++;
+            semantic_stack->depth = previous_depth++;
             
             //printf("Current stack depth:%d\n",semantic_stack->depth);
             
@@ -82,10 +84,27 @@ void clean_table(SYMBOL_TABLE *table){
         free(table->symbol_info);
         table->symbol_info = NULL;
     }
-    if(table->argument_list) free(table->argument_list);
+    if(table->argument_list) {
+        
+        clean_arg_list(table->argument_list);
+        table->argument_list = NULL;
+    }
     free(table);
     
 }
+
+void clean_arg_list(ARG_LIST* arg_list){
+    if(arg_list == NULL) return;
+    
+    clean_arg_list(arg_list->next_argument);
+    
+    
+    free(arg_list->arg_info);
+    arg_list->arg_info = NULL;
+    free(arg_list);
+    arg_list = NULL;
+}
+
 
 
 int exit_scope(){
@@ -127,10 +146,10 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 
 int insert_new_table_entry(VALOR_LEXICO lexical){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
-    printf("Inserting table entry at %d\n",semantic_stack->depth);
+    //printf("Inserting table entry at %d\n",semantic_stack->depth);
     
     if(top_table->symbol_info == NULL){
-        printf("First symbol %s\n",lexical.value.str_value);
+        //printf("First symbol %s\n",lexical.value.str_value);
         
         top_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
@@ -157,11 +176,11 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         SYMBOL_TABLE* current_table = top_table;
         //printf("Current: %p \nnext %p \n",current_table,current_table->next);
         
-        printf("not first symbol\n");
+        //printf("not first symbol\n");
         
         while(current_table->next != NULL){
-            printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
-           printf("Current: %p \nnext %p \n",current_table,current_table->next);
+           // printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
+           //printf("Current: %p \nnext %p \n",current_table,current_table->next);
             
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 printf("já existe\n");
@@ -172,13 +191,14 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
            
             
         }
-       printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
+       //printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 printf("já existe\n");return ERR_DECLARED;
             }
             
             
         SYMBOL_TABLE *next_table = (SYMBOL_TABLE*) malloc(sizeof(SYMBOL_TABLE));
+        next_table->argument_list = NULL;
         next_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         next_table->next = NULL;
         
@@ -198,7 +218,52 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
     
 }
 
-
+int insert_parameters_function_entry(VALOR_LEXICO argument){
+    printf("\n\nArgument list \n\n");
+    
+    SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
+    
+    if(top_table->argument_list == NULL){
+        top_table->argument_list = malloc(sizeof(ARG_LIST));
+        top_table->argument_list->next_argument = NULL;
+        
+        top_table->argument_list->arg_info = (VALOR_LEXICO*) malloc(sizeof(VALOR_LEXICO));
+        
+        memcpy(top_table->argument_list->arg_info,&argument,sizeof(VALOR_LEXICO));
+        
+        printf("alloced %d\n", top_table->argument_list->arg_info->line);
+        
+        
+        printf("arg %s", top_table->argument_list->arg_info->value.str_value);
+    }
+    
+    else{
+        ARG_LIST* next_argument = top_table->argument_list;
+        
+        while(next_argument->next_argument != NULL){
+            next_argument = next_argument->next_argument;
+        }
+        
+        next_argument->next_argument = malloc(sizeof(ARG_LIST));
+        next_argument->next_argument->next_argument = NULL;
+        
+        next_argument->next_argument->arg_info = (VALOR_LEXICO*) malloc(sizeof(VALOR_LEXICO));
+        
+        memcpy(next_argument->next_argument->arg_info,&argument,sizeof(VALOR_LEXICO));
+        
+        printf("alloced %d\n", next_argument->next_argument->arg_info->line);
+        
+        
+        printf("arg %s", next_argument->next_argument->arg_info->value.str_value);
+        
+        
+        
+        
+    }
+    
+    
+    return 0;
+}
 
 
 SYMBOL_INFO* retrieve_symbol(VALOR_LEXICO lexical);

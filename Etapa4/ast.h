@@ -103,10 +103,10 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
 ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_parameters);
 
 
-ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO parameter_type,ast_node *identifier);
-ast_node* new_nonconst_parameter_node(int node_type,VALOR_LEXICO parameter_type,ast_node *identifier);
+ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO parameter_type,VALOR_LEXICO identifier);
+ast_node* new_nonconst_parameter_node(int node_type,VALOR_LEXICO parameter_type,VALOR_LEXICO identifier);
 
-ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_type,ast_node *identifier);
+ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_type,VALOR_LEXICO identifier);
 
 
 

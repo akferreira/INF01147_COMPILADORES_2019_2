@@ -129,12 +129,12 @@ int yyparse (void);
 
 enter_scope: {
 printf("\nnew scope\n");
-printf("%d\n",create_new_scope());
+create_new_scope();
 
 
 };
 
-exit_scope: {printf("exiting scope\n");  printf("%d\n",exit_scope());};
+exit_scope: {printf("exiting scope\n");  exit_scope();};
 
 null_node: {$$ = get_null();};
 
@@ -185,8 +185,8 @@ function_parameters_list: {$$ = get_null();}
 
 |function_parameters_argument 
 |function_parameters_argument','function_parameters_list {$$ = new_parameter_list_node($1,$3);};
-function_parameters_argument:TK_PR_CONST primitive_type simple_identifier {$$ = new_const_parameter_node('p',$2,$3);};
-function_parameters_argument:primitive_type simple_identifier {$$ = new_nonconst_parameter_node('p',$1,$2);};
+function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR {$$ = new_const_parameter_node('p',$2,$<valor_lexico>3);};
+function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_parameter_node('p',$1,$<valor_lexico>2);};
 
 
 
@@ -195,7 +195,7 @@ function_parameters_argument:primitive_type simple_identifier {$$ = new_nonconst
 
 
 //Command Block
-command_block: enter_scope '{'command_list'}' exit_scope {$$ = new_command_block_node('{',$3);};
+command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
 
 command_list: command command_list {$$ = new_command_list_node($1,$2);}
 

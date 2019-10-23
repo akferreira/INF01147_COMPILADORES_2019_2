@@ -51,10 +51,11 @@ ast_node* new_empty_node(){
         new_valor_lexico.value.intvalue = 0;
         new_valor_lexico.token_type =  TOKEN_ERRO;
         new_valor_lexico.var_type = 0;
-        //new_valor_lexico.value = NULL;
+        new_valor_lexico.value.str_value = NULL;
          
         
         new_node->ast_valor_lexico = new_valor_lexico;
+        new_node->ast_valor_lexico.value.str_value = NULL;
     }
     
     
@@ -173,24 +174,6 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
     
     if(new_node != NULL){
-    
-//     if(temp_table == NULL){
-//         printf("create temp table\n");
-//         temp_table = malloc(sizeof(SYMBOL_TABLE));
-//     }
-        
-        
-        
-    printf("%c----%d\n",node_type,ast_valor_lexico.line);
-   /* if(ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || ast_valor_lexico.var_type == TK_LIT_STRING){
-        printf("||%s",ast_valor_lexico.value.str_value);
-    }*/
-    
-//     if(ast_valor_lexico.var_type == TK_LIT_INT){
-//         printf("\n%d",ast_valor_lexico.value.intvalue);
-//     }
-    
-//     printf("\n%d / %d\n",ast_valor_lexico.line,ast_valor_lexico.column);
 
     new_node->node_type = node_type;
     new_node->first_child = NULL;
@@ -326,8 +309,8 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
+    //printf("heey %p\n",command_list);
     //printf("command list %p\n",command_list);
-   
     
     if(command_list == NULL) return NULL;
     
@@ -339,7 +322,8 @@ ast_node* new_command_block_node(int node_type,ast_node *command_list){
         insert_child(command_block,command_list);
     }
     
-   
+       //printf("command block node %p//%p", command_block,command_list);
+
     return command_block;
 }
 
@@ -368,26 +352,38 @@ ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_
     
     
 }
-ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO parameter_type,ast_node *identifier){
+ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO parameter_type,VALOR_LEXICO identifier){
     
     return new_parameter_node(node_type,1,parameter_type,identifier);
 }
 
-ast_node* new_nonconst_parameter_node(int node_type,VALOR_LEXICO parameter_type,ast_node *identifier){
+ast_node* new_nonconst_parameter_node(int node_type,VALOR_LEXICO parameter_type,VALOR_LEXICO identifier){
     return new_parameter_node(node_type,0,parameter_type,identifier);
     
 }
 
-ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_type,ast_node *identifier){
+ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_type,VALOR_LEXICO identifier){
+   // printf("Paramter %p \n %s\n", identifier, identifier->ast_valor_lexico.value.str_value);
+    
+    
+    
     if(is_const) {
-        identifier->ast_valor_lexico.nature = CONST;
+        identifier.nature = CONST;
         //insert_child(parameter_node,const_modifier);
     
     }
     
-    else identifier->ast_valor_lexico.nature = VARIABLE;
+    else identifier.nature = VARIABLE;
     
-    identifier->ast_valor_lexico.var_type = parameter_type.var_type;
+    identifier.var_type = parameter_type.var_type;
+    
+    //erase_tree(identifier);
+    
+    free(parameter_type.value.str_value);
+    //return NULL;
+    ast_node *parameter_node = new_leaf_node('i',identifier);
+    return parameter_node;
+    
     
     //insert_child(parameter_node,parameter_type);
     //insert_child(parameter_node,identifier);
@@ -397,7 +393,7 @@ ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_t
         
     
     
-    return NULL;
+    
     
 }
 
@@ -406,8 +402,9 @@ ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_t
 ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_parameters){
     if(next_parameters == NULL) return NULL;
     
-    if(current_parameters == NULL){
+    if(current_parameters != NULL){
         insert_sibling(current_parameters,next_parameters);
+
     }
     return current_parameters;
     
@@ -428,16 +425,35 @@ ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO var_t
 }
 
 
+
+
 ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXICO var_type, VALOR_LEXICO identifier, ast_node* parameter_list, ast_node* command_block)
 {
    
 
-        //printf("function declaration %s\n",identifier->ast_valor_lexico.value.str_value);
+    printf("function declaration %s\n",identifier.value.str_value);
         
     identifier.var_type = var_type.var_type;
     identifier.nature = FUNCTION;
     
     insert_new_table_entry(identifier);
+    
+    if(parameter_list != NULL){
+        ast_node *next = parameter_list;
+        
+        while(next != NULL){
+            
+            insert_parameters_function_entry(next->ast_valor_lexico);
+            next = next->next_sibling;
+        }
+        
+        
+    } 
+    
+    //erase_tree(parameter_list);
+    
+    
+    erase_tree(parameter_list);
     free(var_type.value.str_value);
        
         
@@ -445,9 +461,12 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
     
     
     
-    
+    //printf("command block%p\n",command_block);
     return command_block;
 }
+
+
+
 
 ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* parameter_list){
     ast_node *function_call_node = new_empty_node();
@@ -562,7 +581,7 @@ ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VAL
     }
         
         
-    printf("local var %s\n",var_type.value.str_value);
+    
     if( var_type.value.str_value != NULL) {
         free(var_type.value.str_value);
         var_type.value.str_value = NULL;
@@ -690,6 +709,7 @@ void erase_tree(ast_node *root){
         free(root->ast_valor_lexico.value.str_value);
         root->ast_valor_lexico.value.str_value = NULL;
     }
+
     free(root);
     root = NULL;
     
