@@ -71,6 +71,8 @@ yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
 yylval.valor_lexico.value.charvalue = literal_char[0];
 yylval.valor_lexico.var_type = TYPE_CHAR;
 
+free(yytext);
+
 
 
 }

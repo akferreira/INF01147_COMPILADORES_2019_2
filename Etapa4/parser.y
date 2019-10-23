@@ -120,7 +120,11 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list;
+
+%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR;
+
+%type <var_modifier> modifiers no_modifier;
 
 
 enter_scope: {
@@ -147,11 +151,11 @@ global_var_declaration: TK_PR_STATIC primitive_type identifier';'{$$ = new_stati
 global_var_declaration: primitive_type identifier';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$2);};
 //decl: primitive_type identifier;
 
-primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}
-|TK_PR_FLOAT{$$ = new_leaf_node('t',$<valor_lexico>1);}
-|TK_PR_CHAR{$$ = new_leaf_node('t',$<valor_lexico>1);}
-|TK_PR_BOOL{$$ = new_leaf_node('t',$<valor_lexico>1);}
-|TK_PR_STRING{$$ = new_leaf_node('t',$<valor_lexico>1);};
+primitive_type: TK_PR_INT
+|TK_PR_FLOAT
+|TK_PR_CHAR
+|TK_PR_BOOL
+|TK_PR_STRING;
 
 identifier: simple_identifier {$$ = $1;}
 |vector {$$ = new_leaf_node('V',$<valor_lexico>1);};
@@ -204,9 +208,11 @@ command: if_statement | local_var_declaration';' | shift_command';' | assignment
 
 
 
-modifiers: TK_PR_STATIC TK_PR_CONST { $$ = new_modifier_node('S','C',$<valor_lexico>1,$<valor_lexico>2);}
-| TK_PR_STATIC { $$ = new_modifier_node('S', 0 ,$<valor_lexico>1,$<valor_lexico>1);}
-| TK_PR_CONST{ $$ = new_modifier_node('C',0,$<valor_lexico>1,$<valor_lexico>1);};
+modifiers: TK_PR_STATIC TK_PR_CONST { $$ = modifier(1,1);}
+| TK_PR_STATIC { $$ = modifier(1,0);}
+| TK_PR_CONST{ $$ = modifier(0,1);};
+
+no_modifier: {$$ = modifier(0,0);}
 
 
 //Local Var declaration
@@ -214,12 +220,12 @@ local_var_declaration:  modifiers primitive_type simple_identifier local_var_ini
 $$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;
 };
 
-local_var_declaration: primitive_type simple_identifier local_var_initialization null_node{
+local_var_declaration: primitive_type simple_identifier local_var_initialization no_modifier{
 $$ = new_local_var_declaration_node('<', $4 ,$1,$2,$3 ) ;
 
 };
-local_var_declaration: primitive_type simple_identifier null_node{
-$$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;
+local_var_declaration: primitive_type simple_identifier null_node no_modifier{
+$$ = new_local_var_declaration_node('<', $4 ,$1,$2,$3) ;
 };
 
 //Chamada de Função

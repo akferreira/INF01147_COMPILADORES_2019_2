@@ -39,14 +39,13 @@ int create_new_scope(){
         SYMBOL_STACK* new_stack_entry = malloc(sizeof(SYMBOL_STACK));
         
         if(new_stack_entry != NULL){
-            SYMBOL_STACK *current_stack_entry = semantic_stack;
             
             new_stack_entry->next = NULL;
             new_stack_entry->symbol_table = malloc(sizeof(SYMBOL_TABLE));
             new_stack_entry->symbol_table->symbol_info = NULL;
             new_stack_entry->symbol_table->argument_list = NULL;
             new_stack_entry->symbol_table->next = NULL;
-            new_stack_entry->next = current_stack_entry;
+            new_stack_entry->next = semantic_stack;
             
             semantic_stack = new_stack_entry;
             semantic_stack->depth++;
@@ -79,7 +78,9 @@ void clean_table(SYMBOL_TABLE *table){
     
     if(table->symbol_info) {
         if(table->symbol_info->name) free(table->symbol_info->name);
+        table->symbol_info->name = NULL;
         free(table->symbol_info);
+        table->symbol_info = NULL;
     }
     if(table->argument_list) free(table->argument_list);
     free(table);
@@ -99,7 +100,7 @@ int exit_scope(){
         
         
         clean_table(current_stack_entry->symbol_table);
-        printf("exittt\n");
+        
         
     }
     
@@ -124,10 +125,10 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 
 int insert_new_table_entry(VALOR_LEXICO lexical){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
-    printf("Inserting table entry at %d\n",semantic_stack->depth);
+    //printf("Inserting table entry at %d\n",semantic_stack->depth);
     
     if(top_table->symbol_info == NULL){
-        printf("First symbol\n");
+        //printf("First symbol\n");
         
         top_table->symbol_info = malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
@@ -142,7 +143,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
     }
     
     else{
-        printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+        //printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
@@ -151,13 +152,13 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         
         
         SYMBOL_TABLE* current_table = top_table;
-        printf("Current: %p \nnext %p \n",current_table,current_table->next);
+        //printf("Current: %p \nnext %p \n",current_table,current_table->next);
         
        // printf("not first symbol\n");
         
         while(current_table->next != NULL){
-            printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
-            printf("Current: %p \nnext %p \n",current_table,current_table->next);
+           // printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
+          //  printf("Current: %p \nnext %p \n",current_table,current_table->next);
             
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 return ERR_DECLARED;
@@ -167,7 +168,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
            
             
         }
-        printf("end loop\n");
+       // printf("end loop\n");
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 return ERR_DECLARED;
             }
@@ -179,7 +180,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         
         
         current_table->next = next_table;
-        current_table = current_table->next;
+        current_table = next_table;
         
         if(current_table->symbol_info != NULL){
             
