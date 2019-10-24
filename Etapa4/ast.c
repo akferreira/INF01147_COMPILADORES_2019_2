@@ -172,9 +172,21 @@ ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *tr
 }
 
 ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression){
+    if(node_type == INPUT_NODE){
+        if(expression->ast_valor_lexico.token_type != TK_TYPE_ID){
+            exit(ERR_WRONG_PAR_INPUT);
+        }
+        
+    }
+    
+    else{
+        printf("%d-----%d",expression->ast_valor_lexico.token_type,expression->ast_valor_lexico.var_type);
+        
+    }
+    
     ast_node* io_node = new_leaf_node(node_type,lexico_io);
     
-    
+    printf("Node type %d",node_type);
     
     if(io_node != NULL){
         insert_child(io_node,expression);
@@ -302,14 +314,28 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
         insert_child(new_node,left);
         insert_child(new_node,right);
         
-        //printf()
+        int type1,type2;
         
-        if(left->ast_valor_lexico.token_type == TK_TYPE_ID) check_symbol(left->ast_valor_lexico);
+        if(left->ast_valor_lexico.token_type == TK_TYPE_ID) {
+            type1 = check_symbol(left->ast_valor_lexico);
+        }
+        else type1 = left->ast_valor_lexico.var_type;
         
             
-            if(right->ast_valor_lexico.token_type ==  TK_TYPE_ID) check_symbol(right->ast_valor_lexico);
+        if(right->ast_valor_lexico.token_type ==  TK_TYPE_ID){
+            type2 = check_symbol(right->ast_valor_lexico);
+        }
         
-        //printf("binary %d//%d\n",left->ast_valor_lexico.var_type,right->ast_valor_lexico.var_type);
+        else type2 = right->ast_valor_lexico.var_type;
+        
+            
+            
+            
+            
+        
+        printf("binary %d//%d\n",type1,type2);
+        
+        new_node->ast_valor_lexico.var_type = check_type_compatibility(type1,type2);
         
 //         printf("new_node");
 //         print_node_info(new_node);

@@ -177,8 +177,8 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 
 int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
-    printf("Inserting table entry at %d\n",semantic_stack->depth);
-     printf("table %p\n",top_table);
+    //printf("Inserting table entry at %d\n",semantic_stack->depth);
+     //printf("table %p\n",top_table);
     
     if(top_table->symbol_info == NULL){
         //printf("First symbol %s\n",lexical.value.str_value);
@@ -186,7 +186,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         top_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
         
-        printf("%p\n",top_table->symbol_info);
+        //printf("%p\n",top_table->symbol_info);
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
@@ -204,7 +204,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     }
     
     else{
-        printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+        //printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
@@ -318,7 +318,9 @@ int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name,
 
 
 
-SYMBOL_INFO* retrieve_symbol(VALOR_LEXICO lexical);
+SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical){
+    
+}
 
 ARG_LIST* retrieve_arg_list(char *function_name){
     
@@ -390,7 +392,7 @@ int check_symbol(VALOR_LEXICO lexical){
             printf("cmp %s\n",current_table->symbol_info->name);
                 
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                return 0;
+                return current_table->symbol_info->var_type;
             }
             
             current_table = current_table->next;
@@ -408,7 +410,6 @@ int check_symbol(VALOR_LEXICO lexical){
         
     }
     exit(ERR_UNDECLARED);
-    return ERR_UNDECLARED;
     
     
 }

@@ -1,6 +1,8 @@
-//ERR_DECLARED
+
 int f()
 {
   int x;
-  float x;
+  float y;
+  
+  x = x*y + 'x'*x;
 }

@@ -6,6 +6,10 @@
 #include "tokens.h"
 
 
+enum _node_types{
+    INPUT_NODE,
+    OUTPUT_NODE
+} NODES_TYPES;
 
 
 

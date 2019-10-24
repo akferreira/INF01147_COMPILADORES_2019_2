@@ -82,7 +82,7 @@ int exit_scope();
 int insert_new_table_entry(VALOR_LEXICO lexical, int lenght);
 int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name, int lenght);
 ARG_LIST* retrieve_arg_list(char *function_name);
-SYMBOL_INFO* retrieve_symbol(VALOR_LEXICO lexical);
+SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical);
 int check_symbol(VALOR_LEXICO lexical);
 int check_type_compatibility(int type1, int type2);
 int type_coercion(int type1, int type2);

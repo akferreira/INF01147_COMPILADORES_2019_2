@@ -245,10 +245,10 @@ assignment_command: identifier '=' expression {
 $$ = new_assignment_node($1,$3);};
 
 //Comandos de Entrada e Saída
-input_command: TK_PR_INPUT expression {$$ = new_io_node('i',$<valor_lexico>1,$2);};
+input_command: TK_PR_INPUT expression {$$ = new_io_node(INPUT_NODE,$<valor_lexico>1,$2);};
 
-output_command: TK_PR_OUTPUT expression{$$ = new_io_node('o',$<valor_lexico>1,$2);};
-output_command: TK_PR_OUTPUT expression_list{$$ = new_io_node('o',$<valor_lexico>1,$2);};
+output_command: TK_PR_OUTPUT expression{$$ = new_io_node(OUTPUT_NODE,$<valor_lexico>1,$2);};
+output_command: TK_PR_OUTPUT expression_list{$$ = new_io_node(OUTPUT_NODE,$<valor_lexico>1,$2);};
 
 
 
