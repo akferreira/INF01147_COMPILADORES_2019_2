@@ -205,7 +205,7 @@ command_list: command command_list {$$ = new_command_list_node($1,$2);}
 
 
 //command
-command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{$$ = $1;}
+command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{printf("function call\n"); $$ = $1;}
 |command_return';'{$$ = $1;}
 | TK_PR_BREAK';'  {$$ = new_leaf_node('b',$<valor_lexico>1);}
 |TK_PR_CONTINUE';' {$$ = new_leaf_node('.',$<valor_lexico>1);};
@@ -237,7 +237,7 @@ $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3) ;
 
 function_call: simple_identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
 
-call_parameter_list:expression ',' call_parameter_list { $$ = new_expression_list_node($1,$3);};| expression;
+call_parameter_list:expression ',' call_parameter_list { printf("call parameters\n"); $$ = new_expression_list_node($1,$3);};| expression;
 
 
 //Comando de Atribuição

@@ -30,7 +30,7 @@ typedef struct  _symbol_info{
 
 
 typedef struct _arg_list{
-    VALOR_LEXICO* arg_info;
+    SYMBOL_INFO* arg_info;
     
     struct _arg_list *next_argument;
     
@@ -80,7 +80,7 @@ void clean_stack(SYMBOL_STACK *stack);
 int create_new_scope();
 int exit_scope();
 int insert_new_table_entry(VALOR_LEXICO lexical);
-int insert_parameters_function_entry(VALOR_LEXICO argument);
+int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name);
 SYMBOL_INFO* retrieve_symbol(VALOR_LEXICO lexical);
 int check_symbol(VALOR_LEXICO lexical);
 int check_type_compatibility(int type1, int type2);

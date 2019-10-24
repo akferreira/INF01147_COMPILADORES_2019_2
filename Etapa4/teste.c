@@ -19,6 +19,11 @@ int funcao3(int abc , int kil){
 }
 
 int funcao43(){
+    funcao3( 5 ,  7);
+    funcao1( 5 ,  7);
+    funcao3( 5 ,  7);
+    funcao3( 5 ,  7);
+     funcao1( 5 ,  7);
     int d;
     int c;
     int k;

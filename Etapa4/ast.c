@@ -1,8 +1,11 @@
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "ast.h"
 #include "parser.tab.h"
 #include "symbol_table.h"
+#include <string.h>
 
 extern void *arvore;
 extern SYMBOL_STACK *semantic_stack; 
@@ -83,6 +86,7 @@ ast_node* insert_child(ast_node *node, ast_node *child)
         ast_node *temp = node->first_child;
         
         while(temp != NULL){
+            
             temp = temp->next_sibling;
             
             if(temp != NULL && temp->father == NULL) temp->father = node;
@@ -95,7 +99,7 @@ ast_node* insert_child(ast_node *node, ast_node *child)
     }
     
     
-
+     
     insert_sibling(node->first_child, child);
     
     
@@ -118,6 +122,18 @@ ast_node* insert_sibling(ast_node *node, ast_node *sibling)
         
         
         node->next_sibling->father = node->father;
+        
+        ast_node *temp = node->next_sibling;
+        
+        
+        
+        while(temp != NULL){
+            
+             temp = temp->next_sibling;
+            
+            if(temp != NULL && temp->father == NULL) temp->father = node->father;
+            
+        }
         
         
         
@@ -345,7 +361,9 @@ ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_comman
 ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_expressions){
     if(next_expressions == NULL) return NULL;
     
-    if(current_expressions == NULL){
+    if(current_expressions != NULL){
+       
+        
         insert_sibling(current_expressions,next_expressions);
     }
     return current_expressions;
@@ -436,14 +454,18 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
     identifier.var_type = var_type.var_type;
     identifier.nature = FUNCTION;
     
+    
+    char *function_name;
+    function_name = strdup(identifier.value.str_value);
     insert_new_table_entry(identifier);
+    printf("%s",function_name);
     
     if(parameter_list != NULL){
         ast_node *next = parameter_list;
         
         while(next != NULL){
             
-            insert_parameters_function_entry(next->ast_valor_lexico);
+            insert_parameters_function_entry(next->ast_valor_lexico,function_name);
             next = next->next_sibling;
         }
         
@@ -452,10 +474,9 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
     
     //erase_tree(parameter_list);
     
-    
     erase_tree(parameter_list);
     free(var_type.value.str_value);
-       
+    free(function_name);
         
         
     
@@ -477,6 +498,9 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
         insert_child(function_call_node,parameter_list);
         
     }
+    printf("check %s\n",identifier->ast_valor_lexico.value.str_value);
+    printf("Function name check %d\n",check_symbol(identifier->ast_valor_lexico));
+    
     
     return function_call_node;
 }
@@ -652,7 +676,9 @@ void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
     if(Tree == NULL)
         return;
     
-    fprintf(arq,"%p, %p [%c]\n",Tree->father, Tree,Tree->node_type);
+    fprintf(arq,"%p, %p [%c] \t%d",Tree->father, Tree,Tree->node_type,Tree->ast_valor_lexico.line);
+    
+    fprintf(arq,"\n");
     
     Percorrer_imprimir_file_DFS(Tree->first_child,arq);
     //printf("%p %d\n",Tree->node_node_father, Tree->node_type);

@@ -1744,7 +1744,7 @@ create_new_scope();
 
   case 40:
 #line 208 "parser.y"
-    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
+    {printf("function call\n"); (yyval.ast_node) = (yyvsp[-1].ast_node);}
 #line 1749 "parser.tab.c"
     break;
 
@@ -1823,7 +1823,7 @@ create_new_scope();
 
   case 52:
 #line 240 "parser.y"
-    { (yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
+    { printf("call parameters\n"); (yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
 #line 1828 "parser.tab.c"
     break;
 
