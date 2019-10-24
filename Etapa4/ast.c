@@ -447,7 +447,7 @@ ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO var_t
 
 ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXICO var_type, VALOR_LEXICO identifier, ast_node* parameter_list, ast_node* command_block)
 {
-   
+   initialize_stack();
 
     printf("function declaration %s\n",identifier.value.str_value);
         
@@ -619,8 +619,12 @@ MODIFIER_S modifier(int modifier_static, int modifier_const){
 // }
 
 ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VALOR_LEXICO var_type, VALOR_LEXICO identifier, ast_node* initialization){
+    printf("local var\n");
+    
     identifier.var_type = var_type.var_type;
     insert_new_table_entry( identifier,1);
+    
+    printf("local var 2\n");
 
     if(initialization != NULL) {
         ast_node *new_node = new_empty_node();

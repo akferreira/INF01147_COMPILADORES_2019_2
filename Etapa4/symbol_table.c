@@ -62,6 +62,10 @@ int initialize_stack(){
 
 
 int create_new_scope(){
+        if (semantic_stack == NULL){
+            return initialize_stack();
+        }
+    
         SYMBOL_STACK* new_stack_entry = malloc(sizeof(SYMBOL_STACK));
         
         if(new_stack_entry != NULL){
@@ -173,13 +177,16 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 
 int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
-    //printf("Inserting table entry at %d\n",semantic_stack->depth);
+    printf("Inserting table entry at %d\n",semantic_stack->depth);
+     printf("table %p\n",top_table);
     
     if(top_table->symbol_info == NULL){
         //printf("First symbol %s\n",lexical.value.str_value);
         
         top_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
+        
+        printf("%p\n",top_table->symbol_info);
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
@@ -197,11 +204,11 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     }
     
     else{
-        //printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+        printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
-            return ERR_DECLARED;
+            exit(ERR_DECLARED);
         }
         
         
@@ -216,7 +223,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
             
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
                 printf("já existe\n");
-                return ERR_DECLARED;
+                exit(ERR_DECLARED);
             }
             
             current_table = current_table->next;
@@ -225,7 +232,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         }
        printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                printf("já existe\n");return ERR_DECLARED;
+                printf("já existe\n");exit(ERR_DECLARED);
             }
             
             
