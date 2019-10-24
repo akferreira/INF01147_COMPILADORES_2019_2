@@ -7,6 +7,32 @@
 
 SYMBOL_STACK *semantic_stack = NULL;
 
+int get_size(VALOR_LEXICO lexical){
+    int type = lexical.var_type;
+    int lenght;
+    
+    switch (type){
+        case TYPE_BOOL:
+        case TYPE_CHAR:
+            return 1;
+        case TYPE_FLOAT:
+            return 8;
+            
+        case TYPE_INT:
+            return 4;
+        
+        case TYPE_STRING:
+            return 0;
+            
+        default:
+            return 4;
+            
+            
+        
+    }
+    
+}
+
 
 int initialize_stack(){
     if(semantic_stack == NULL){
@@ -145,7 +171,7 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 
 
 
-int insert_new_table_entry(VALOR_LEXICO lexical){
+int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
     //printf("Inserting table entry at %d\n",semantic_stack->depth);
     
@@ -157,6 +183,10 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
+            
+            
+            
+            printf("%s size %d\n",lexical.value.str_value ,get_size(lexical)*lenght);
             free(lexical.value.str_value);
             lexical.value.str_value = NULL;
             return 0;
@@ -211,6 +241,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
         if(current_table->symbol_info != NULL){
             
             copy_lexical_to_symbol(current_table->symbol_info,lexical);
+            printf("%s size %d\n",lexical.value.str_value ,get_size(lexical)*lenght);
             free(lexical.value.str_value);
             lexical.value.str_value = NULL;
             return 0;
@@ -221,7 +252,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical){
     
 }
 
-int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name){
+int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name, int lenght){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
     
     while(top_table != NULL && top_table->symbol_info->name != NULL && strcmp(top_table->symbol_info->name, function_name) != 0){
@@ -278,7 +309,60 @@ int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name)
 }
 
 
+
+
 SYMBOL_INFO* retrieve_symbol(VALOR_LEXICO lexical);
+
+ARG_LIST* retrieve_arg_list(char *function_name){
+    
+    SYMBOL_STACK* stack = semantic_stack;
+    
+    SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
+    
+    SYMBOL_TABLE* current_table = top_table;
+    
+    printf("compare start\n");
+        
+        
+        
+    while(current_table != NULL){
+        printf("%p\n",current_table->symbol_info);
+        
+        while(current_table != NULL && current_table->symbol_info != NULL){
+            printf("compare %p\n",current_table->symbol_info);   
+            
+            printf("cmp %s\n",current_table->symbol_info->name);
+                
+            if(strcmp(current_table->symbol_info->name,function_name) == 0){
+                if(current_table->symbol_info->nature == VARIABLE) exit(ERR_VARIABLE);
+                if(current_table->symbol_info->nature == VECTOR) exit(ERR_VECTOR);
+                if(current_table->symbol_info->nature == CONST) exit(ERR_VARIABLE);
+
+                
+                
+                
+                return current_table->argument_list;
+            }
+            
+            current_table = current_table->next;
+        
+        
+        }
+    
+    if(stack->next != NULL){
+        
+        printf("next stack level\n");    
+        stack = stack->next;
+        current_table =  stack->symbol_table;
+    }
+    
+        
+    }
+    
+    
+    
+}
+
 int check_symbol(VALOR_LEXICO lexical){
     SYMBOL_STACK* stack = semantic_stack;
     
@@ -321,4 +405,24 @@ int check_symbol(VALOR_LEXICO lexical){
     
     
 }
-int check_type_compatibility(int type1, int type2);
+int check_type_compatibility(int type1, int type2){
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) exit(ERR_STRING_TO_X);
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) exit(ERR_STRING_TO_X);
+    else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
+    
+    
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) exit( ERR_CHAR_TO_X);
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) exit( ERR_CHAR_TO_X);
+    else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_INT || type2 == TYPE_INT) return TYPE_INT;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_BOOL || type2 == TYPE_BOOL) return TYPE_BOOL;
+    
+    
+    return -1;
+}

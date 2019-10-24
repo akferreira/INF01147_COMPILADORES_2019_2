@@ -61,17 +61,18 @@ yylval.valor_lexico.var_type = TYPE_INT;
 }
 
 void char_lexical(){
- char *literal_char = yytext;
+/* char *literal_char = yytext;
  literal_char[strlen(literal_char) - 1] = 0;
- literal_char = literal_char + 1;
+ literal_char = literal_char + 1;*/
+
 
 
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-yylval.valor_lexico.value.charvalue = literal_char[0];
+yylval.valor_lexico.value.charvalue = *(yytext+1);
 yylval.valor_lexico.var_type = TYPE_CHAR;
 
-free(yytext);
+//free(yytext);
 
 
 
@@ -79,15 +80,37 @@ free(yytext);
 
 void string_lexical(){
 //copia literal "string", remove aspas
-char *literal_char = strdup(yytext);
-literal_char[strlen(literal_char) - 1] = 0;
-literal_char = literal_char + 1;
+int lenght = strlen(yytext)-2;
+yylval.valor_lexico.value.str_value = malloc(lenght);
+
+
+int quotes =0 ;
+int i;
+for (i=1;i<=lenght;i++){
+   // printf("%p",(yylval.valor_lexico.value.str_value+i-1));
+    *(yylval.valor_lexico.value.str_value+i-1) = *(yytext+i);
+   // printf("\tcharrrr %c\n",*(yytext+i));
+    
+    if(*(yytext+1) == '"') quotes++;
+    if(quotes >= 2) break;
+    
+
+}
+
+
+/*
+printf("string lenght %d\n\n\n\n", strlen(yytext));
+printf("%s",yylval.valor_lexico.value.str_value);*/
+
+
 
 
 update_lexical_location();
 yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-yylval.valor_lexico.value.str_value = literal_char ;
+//yylval.valor_lexico.value.str_value = strdup(literal_char) ;
 yylval.valor_lexico.var_type = TYPE_STRING;
+
+
 }
 
 
@@ -136,19 +159,18 @@ return TK_IDENTIFICADOR;
 
 
 letter [a-zA-z]
+ASCII [\x00-\x7F] 
 digit [0-9]
 integer ([+|-]?){digit}+
 alphanumeric [a-zA-z0-9]
-id {letter}({alphanumeric}+?)
+id [a-zA-Z_][a-zA-Z0-9_]*
 
-ascii [\x00-\x7f]
-
-literal_char '{ascii}'
+literal_char '{ASCII}'
 literal_int {integer}
-literal_string \"{letter}+\"
+literal_string \"{ASCII}+\"
 
 power (["e"|"E"]{integer})
-literal_float {integer}"."({integer})({power}?)
+literal_float {integer}"."({integer}?)({power}?)
 literal_float1 {integer}"."
 
 whitespace [ \n\t\r]+
@@ -268,6 +290,8 @@ char_lexical();
 return TK_LIT_CHAR;}
 
 {literal_string} {
+printf("string lexical %s\n",yytext);
+
 string_lexical();
 return TK_LIT_STRING;}
 {literal_float} {

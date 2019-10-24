@@ -272,7 +272,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
         insert_child(new_node,dest);
         insert_child(new_node,source);
         
-        //printf("checking dest %d\n",check_symbol(dest->ast_valor_lexico));
+        printf("checking %s dest %d\n",dest->ast_valor_lexico.value.str_value,check_symbol(dest->ast_valor_lexico));
         
         
          
@@ -457,7 +457,7 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
     
     char *function_name;
     function_name = strdup(identifier.value.str_value);
-    insert_new_table_entry(identifier);
+    insert_new_table_entry(identifier,1);
     printf("%s",function_name);
     
     if(parameter_list != NULL){
@@ -465,7 +465,7 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
         
         while(next != NULL){
             
-            insert_parameters_function_entry(next->ast_valor_lexico,function_name);
+            insert_parameters_function_entry(next->ast_valor_lexico,function_name,1);
             next = next->next_sibling;
         }
         
@@ -492,6 +492,8 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
 ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* parameter_list){
     ast_node *function_call_node = new_empty_node();
     
+    printf("function call\n");
+    
     if(function_call_node != NULL){
         function_call_node->node_type = node_type;
         insert_child(function_call_node,identifier);
@@ -500,6 +502,30 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
     }
     printf("check %s\n",identifier->ast_valor_lexico.value.str_value);
     printf("Function name check %d\n",check_symbol(identifier->ast_valor_lexico));
+    
+    ARG_LIST *arg_list = retrieve_arg_list(identifier->ast_valor_lexico.value.str_value);
+    
+    
+    printf("arg list %p\n\n",arg_list);
+    printf("%s\n",arg_list->arg_info->name);
+    
+    ARG_LIST *next_arg = arg_list;
+    ast_node *next_parameter = parameter_list;
+    
+    while(next_arg != NULL && next_parameter != NULL){
+        printf("%d||%d\n",next_arg->arg_info->var_type,next_parameter->ast_valor_lexico.var_type);
+        check_type_compatibility(next_arg->arg_info->var_type,next_parameter->ast_valor_lexico.var_type);
+        
+        next_arg = next_arg->next_argument;
+        next_parameter = next_parameter->next_sibling;
+        
+        
+    }
+    
+    if(next_arg != NULL && next_parameter == NULL) exit(ERR_MISSING_ARGS);
+    if(next_arg == NULL && next_parameter != NULL) exit(ERR_EXCESS_ARGS);
+     
+     
     
     
     return function_call_node;
@@ -517,12 +543,12 @@ ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  
 
 ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEXICO  var_type, VALOR_LEXICO identifier, int vector_lenght){
     //ast_node* global_var_node = new_empty_node();
-    printf("global declaration\n");
+    printf("global declaration of lenght %d\n",vector_lenght);
     initialize_stack();
         
         
     identifier.var_type = var_type.var_type;
-    printf("Declaration returned %d\n",insert_new_table_entry( identifier));
+    printf("Declaration returned %d\n",insert_new_table_entry( identifier,vector_lenght));
         
         
         
@@ -594,7 +620,7 @@ MODIFIER_S modifier(int modifier_static, int modifier_const){
 
 ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VALOR_LEXICO var_type, VALOR_LEXICO identifier, ast_node* initialization){
     identifier.var_type = var_type.var_type;
-    insert_new_table_entry( identifier);
+    insert_new_table_entry( identifier,1);
 
     if(initialization != NULL) {
         ast_node *new_node = new_empty_node();
@@ -726,13 +752,14 @@ void erase_tree(ast_node *root){
 //     printf("erase\n");
 //     
 //     //printf("\naaa   %d | %p | %c | %s\n",root->ast_valor_lexico.column,root->ast_valor_lexico.value,root->node_type,root->ast_valor_lexico.value);
-//     printf("%d||%d\n", root->ast_valor_lexico.token_type,TK_TYPE_RESERVED_WORD);
+//     printf("%d||%d\n", root->ast_valor_lexico.token_type,TK_TYPE_RESERVED_WORD);   
 //     printf("%d||%d\n", root->ast_valor_lexico.var_type,TK_LIT_STRING); TK_LIT_STRING
 //     printf("child : %c\n",root->node_type);
+    //|| root->ast_valor_lexico.var_type == TYPE_STRING
     
-    if(root->ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || root->ast_valor_lexico.token_type == TK_TYPE_ID || root->ast_valor_lexico.var_type == TYPE_STRING){
-        //printf("freeing\n");
-        free(root->ast_valor_lexico.value.str_value);
+    if(root->ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || root->ast_valor_lexico.token_type == TK_TYPE_ID || root->ast_valor_lexico.var_type == TYPE_STRING ){
+        printf("%d freeing %s\n",root->ast_valor_lexico.token_type,root->ast_valor_lexico.value.str_value);
+        if(root->ast_valor_lexico.value.str_value) free(root->ast_valor_lexico.value.str_value);
         root->ast_valor_lexico.value.str_value = NULL;
     }
 
