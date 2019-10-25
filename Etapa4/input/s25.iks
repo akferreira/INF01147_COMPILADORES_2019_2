@@ -1,3 +1,5 @@
+//RETORNO 0
+
 char f()
 {
    return f();

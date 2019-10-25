@@ -128,20 +128,22 @@ int yyparse (void);
 %%
 %type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization ;
 
-%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR;
+%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR TK_LIT_CHAR TK_LIT_STRING;
  
 %type <var_modifier> modifiers no_modifier;
 
 
 enter_scope: {
-printf("\nnew scope\n");
+//printf("\nnew scope\n");
 create_new_scope();
 
 
 };
 
+
+
 exit_scope: {
-printf("\nexiting scope\n");  
+//printf("\nexiting scope\n");  
 exit_scope();};
 
 null_node: {$$ = get_null();};
@@ -217,15 +219,14 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
 
 command_list: command command_list {$$ = new_command_list_node($1,$2);}
-
+|command_block';' command_list {$$ = $1;}
 | loops command_list {$$ = new_command_list_node($1,$2);}
-|command_block{$$ = $1;}
 |{$$ = get_null();};
 
-
 //command
-command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{printf("function call\n"); $$ = $1;}
+command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{ $$ = $1;}
 |command_return';'{$$ = $1;}
+
 | TK_PR_BREAK';'  {$$ = new_leaf_node('b',$<valor_lexico>1);}
 |TK_PR_CONTINUE';' {$$ = new_leaf_node('.',$<valor_lexico>1);};
 
@@ -257,9 +258,9 @@ local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
 
 //Chamada de Função
 
-function_call: simple_identifier '(' call_parameter_list ')'{printf("function call\n");  $$ = new_function_call_node('K',$1,$3);};
+function_call: simple_identifier '(' call_parameter_list ')'{ $$ = new_function_call_node('K',$1,$3);};
 
-call_parameter_list:expression ',' call_parameter_list { printf("call parameters\n"); $$ = new_expression_list_node($1,$3);};| expression;
+call_parameter_list:expression ',' call_parameter_list {  $$ = new_expression_list_node($1,$3);};| expression;
 
 
 //Comando de Atribuição
@@ -285,7 +286,7 @@ shift: TK_OC_SL { $$ = new_leaf_node('L',$<valor_lexico>1);}
 shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,$2,$3);};
 
 //Retorno
-command_return: TK_PR_RETURN expression {$$ = new_return_command_node('R',$<valor_lexico>1,$2);};
+command_return: TK_PR_RETURN expression { $$ = new_return_command_node('R',$<valor_lexico>1,$2);};
 
 //If Statement
 if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_ifelse_node(':',$3,$5,$6);};
@@ -345,7 +346,6 @@ expression : literal_id;
 
 //era expression
 literal_id:  TK_IDENTIFICADOR{ 
-printf("(%s)\n",$<valor_lexico>1.value.str_value);
 
 $$ = new_leaf_node('I',$<valor_lexico>1);
 }
@@ -356,9 +356,12 @@ $$ = new_leaf_node('d',$<valor_lexico>1);
 $$ = new_leaf_node('f',$<valor_lexico>1);
 }
 |TK_LIT_CHAR{ 
+
+$1.var_type = TYPE_CHAR;
 $$ = new_leaf_node('c',$<valor_lexico>1);
 }
 |TK_LIT_STRING{ 
+$1.var_type = TYPE_STRING;
 $$ = new_leaf_node('s',$<valor_lexico>1);
 }
 |TK_LIT_TRUE{ 

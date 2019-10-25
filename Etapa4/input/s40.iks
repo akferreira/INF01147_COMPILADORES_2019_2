@@ -1,3 +1,4 @@
+//RETORNO 0
 x int;
 int f()
 {

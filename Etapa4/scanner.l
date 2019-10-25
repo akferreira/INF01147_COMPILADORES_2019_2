@@ -290,7 +290,7 @@ char_lexical();
 return TK_LIT_CHAR;}
 
 {literal_string} {
-printf("string lexical %s\n",yytext);
+//printf("string lexical %s\n",yytext);
 
 string_lexical();
 return TK_LIT_STRING;}

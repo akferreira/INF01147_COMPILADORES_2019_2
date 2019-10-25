@@ -1459,7 +1459,7 @@ case 79:
 YY_RULE_SETUP
 #line 292 "scanner.l"
 {
-printf("string lexical %s\n",yytext);
+//printf("string lexical %s\n",yytext);
 
 string_lexical();
 return TK_LIT_STRING;}
