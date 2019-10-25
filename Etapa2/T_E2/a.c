@@ -1,2 +1,5 @@
-int;
+
+int foo(){
+	foo();
+}
 

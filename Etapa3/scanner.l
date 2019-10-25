@@ -242,7 +242,7 @@ whitespace [ \n\t\r]+
 . {return identifier_lexical(TK_IDENTIFICADOR);}
 %%
 
-int get_line_number(){
+/*int get_line_number(){
     return yylineno;
-}
+}*/
 

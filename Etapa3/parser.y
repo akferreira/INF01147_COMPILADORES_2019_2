@@ -114,7 +114,8 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list;
+%type <ast_node> program grammars function_call expression  identifier  if_statement command_return shift_command shift  assignment_command TK_IDENTIFICADOR local_var_initialization primitive_type null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_parameters_argument function_parameters_list call_parameter_list ;
+
 null_node: {$$ = get_null();};
 
 
@@ -128,7 +129,7 @@ global_var_declaration: TK_PR_STATIC decl';';
 global_var_declaration: decl';';
 decl: primitive_type identifier|primitive_type array_identifier;
 primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
-identifier: TK_IDENTIFICADOR|;
+identifier: TK_IDENTIFICADOR;
 array_identifier:TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
@@ -171,8 +172,8 @@ local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_L
 
 
 //Comando de Atribuição
-assignment_command: identifier '=' expression;{$$ = new_assignment_node($1,$3);};
-assignment_command: identifier'['expression']' '=' expression;{$$ = new_assignment_node($1,$6);};
+assignment_command: identifier '=' expression {$$ = new_assignment_node($1,$3);};
+assignment_command: identifier'['expression']' '=' expression {$$ = new_assignment_node($1,$6);};
 
 
 
@@ -192,9 +193,9 @@ expression: '(' expression ')';
 
 
 //Chamada de Função
-function_call: TK_IDENTIFICADOR '('')'{$$ = new_function_call_node('K',$1,$3);};
-function_call: TK_IDENTIFICADOR '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
-call_parameter_list:expression ',' call_parameter_list | expression;
+//function_call: identifier '('')'{$$ = new_function_call_node('K',$1,$3);};
+function_call: identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
+call_parameter_list:expression ',' call_parameter_list | expression|;
 
 
 //shift
@@ -257,7 +258,7 @@ expression: expression '&' expression expression {$$ = new_binary_expression('^'
 expression: expression'?'expression':'expression { $$ =  new_ternary_expression('?', $1,$3,$5); };
 
 //Function Call
-expression:function_call;expression {$$ = new_binary_expression('^',$1,$3);};
+expression:function_call;
 //Boolean Values
 expression:TK_LIT_FALSE | TK_LIT_TRUE;
 

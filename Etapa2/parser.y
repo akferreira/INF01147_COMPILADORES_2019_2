@@ -180,9 +180,9 @@ expression: '(' expression ')';
 
 
 //Chamada de Função
-function_call: TK_IDENTIFICADOR '('')';
+///////////function_call: TK_IDENTIFICADOR '('')';
 function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
-call_parameter_list:expression ',' call_parameter_list | expression;
+call_parameter_list:expression ',' call_parameter_list | expression|;
 
 
 //shift
