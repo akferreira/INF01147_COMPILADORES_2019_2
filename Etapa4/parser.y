@@ -27,6 +27,7 @@ void yyerror (char const *s)
 {
 
 	 fprintf (stderr, "Line %d Column %d : %s\n", get_line_number(),yylloc.last_column,s);
+	 exit(1);
 }
 extern int yylex (void);
 int yyparse (void);
