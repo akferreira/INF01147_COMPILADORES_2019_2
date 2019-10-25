@@ -97,7 +97,8 @@ int yyparse (void);
 
 
 
-
+%left TK_OC_EQ
+%left TK_OC_LE TK_OC_GE
 
 %left   '|'
 %left   '&'
@@ -111,6 +112,11 @@ int yyparse (void);
 %right TK_PR_STATIC
 
 
+%left UNARY_QUESTION_MARK
+%right UNARY_PLUS UNARY_MINUS
+%right UNARY_ET UNARY_POINTER
+
+
 /*Mais Prioritário*/
 
 
@@ -120,9 +126,9 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization ;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization ;
 
-%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR ;
+%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR;
  
 %type <var_modifier> modifiers no_modifier;
 
@@ -134,7 +140,9 @@ create_new_scope();
 
 };
 
-exit_scope: {printf("exiting scope\n");  exit_scope();};
+exit_scope: {
+printf("\nexiting scope\n");  
+exit_scope();};
 
 null_node: {$$ = get_null();};
 
@@ -147,8 +155,8 @@ program: grammars program  {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
 grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
-global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR ';'{$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,1);};
-global_var_declaration: primitive_type TK_IDENTIFICADOR';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,1);};
+global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR ';'{$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,-1);};
+global_var_declaration: primitive_type TK_IDENTIFICADOR';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,-1);};
 
 global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';' {$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,$<valor_lexico>5.value.intvalue);};
 global_var_declaration: primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,$<valor_lexico>4.value.intvalue);};
@@ -156,28 +164,39 @@ global_var_declaration: primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';'{$$ = 
 
 //decl: primitive_type identifier;
 
-primitive_type: TK_PR_INT
-|TK_PR_FLOAT
-|TK_PR_CHAR
-|TK_PR_BOOL
-|TK_PR_STRING;
+primitive_type: TK_PR_INT { $1.var_type = TYPE_INT; $$ = $1;}
+|TK_PR_FLOAT { $1.var_type = TYPE_FLOAT; $$ = $1;}
+|TK_PR_CHAR{ $1.var_type = TYPE_CHAR; $$ = $1;}
+|TK_PR_BOOL{ $1.var_type = TYPE_BOOL; $$ = $1;}
+|TK_PR_STRING{ $1.var_type = TYPE_STRING; $$ = $1;};
 
 identifier: simple_identifier {$$ = $1;}
-|vector {$$ = new_leaf_node('V',$<valor_lexico>1);};
+|vector {$$ = $1;};
 
-simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
-vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
+simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
+vector: TK_IDENTIFICADOR'['TK_LIT_INT']' {    $$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); $$->  vector_position = $<valor_lexico>3.value.intvalue; }  ;
 
 
 
 //Function declaration
-function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block 
+function_declaration: TK_PR_STATIC function_id '('function_parameters_list')' command_block 
 {
-$$ = new_static_function_declaration_node('M',$2,$<valor_lexico>3,$5,$7);
+$$ = new_static_function_declaration_node('M',$2,$4,$6);
 
 };
-function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block {
-$$ = new_nonstatic_function_declaration_node('M',$1,$<valor_lexico>2,$4,$6);
+function_declaration: function_id '('function_parameters_list')' command_block {
+//insert_function_entry($<valor_lexico>2);
+$$ = new_nonstatic_function_declaration_node('M',$1,$3,$5);
+};
+
+//regra para definir o tipo do identificador da função
+function_id: primitive_type TK_IDENTIFICADOR {
+$<valor_lexico>2.var_type = $1.var_type;
+insert_function_entry($<valor_lexico>2);
+$$ = $<valor_lexico>2;
+
+free($1.value.str_value);
+
 };
 
 
@@ -238,14 +257,14 @@ local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
 
 //Chamada de Função
 
-function_call: simple_identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
+function_call: simple_identifier '(' call_parameter_list ')'{printf("function call\n");  $$ = new_function_call_node('K',$1,$3);};
 
 call_parameter_list:expression ',' call_parameter_list { printf("call parameters\n"); $$ = new_expression_list_node($1,$3);};| expression;
 
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
-$$ = new_assignment_node($1,$3);};
+$$ = new_assignment_node($1,$3,0);};
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression {$$ = new_io_node(INPUT_NODE,$<valor_lexico>1,$2);};
@@ -303,11 +322,11 @@ expression_list:  expression ',' expression_list { $$ = new_expression_list_node
 //literal: {};
 expression: '(' expression ')'{ $$ = $2;};
 //Unários
-expression:'+'expression{ $$ = $2;};
-expression:'-'expression{ $$ = new_unary_expression('-',$2);};
+expression:'+'expression %prec UNARY_PLUS { $$ = $2;};
+expression:'-'expression  %prec UNARY_MINUS { $$ = new_unary_expression('-',$2);};
 expression:'!'expression{ $$ = new_unary_expression('!',$2); };
-expression:'&'expression { $$ = new_unary_expression('@',$2); };
-expression:'*'expression {$$ = new_unary_expression('$',$2); };
+expression:'&'expression  %prec UNARY_ET { $$ = new_unary_expression('@',$2); };
+expression:'*'expression %prec UNARY_POINTER  {$$ = new_unary_expression('$',$2); };
 expression:'?'expression{$$ = new_unary_expression('~',$2); };
 expression:'#'expression{$$ = new_unary_expression('#',$2); };
 //Binários
@@ -326,6 +345,7 @@ expression : literal_id;
 
 //era expression
 literal_id:  TK_IDENTIFICADOR{ 
+printf("(%s)\n",$<valor_lexico>1.value.str_value);
 
 $$ = new_leaf_node('I',$<valor_lexico>1);
 }

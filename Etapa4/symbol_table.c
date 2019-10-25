@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-
+extern int returning_own_function;
 
 SYMBOL_STACK *semantic_stack = NULL;
 
@@ -36,7 +36,7 @@ int get_size(VALOR_LEXICO lexical){
 
 int initialize_stack(){
     if(semantic_stack == NULL){
-        //printf("First table\n");
+        //printf("First table\n\n");
         
         semantic_stack = malloc(sizeof(SYMBOL_STACK));
         if(semantic_stack != NULL){
@@ -173,6 +173,21 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
     
 }
 
+void insert_function_entry(VALOR_LEXICO lexical){
+    //char *function_name = strdup(lexical.value.str_value);
+    
+    insert_new_table_entry(lexical,1);
+    printf("ll name %s\n",lexical.value.str_value);
+    lexical.value.str_value = NULL;
+    
+    //lexical.value.str_value = function_name;
+    
+    //printf("ll name %s\n",lexical.value.str_value);
+    //printf("ff name %s\n",function_name);
+    //free(function_name);
+    
+}
+
 
 
 int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
@@ -190,12 +205,12 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
-            
+            top_table->symbol_info->size = get_size(lexical)*lenght;
             
             
             printf("%s size %d\n",lexical.value.str_value ,get_size(lexical)*lenght);
-            free(lexical.value.str_value);
-            lexical.value.str_value = NULL;
+            //free(lexical.value.str_value);
+            //lexical.value.str_value = NULL;
             return 0;
         }
         
@@ -208,6 +223,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
+            printf("ERR_DECLARED\n\n");
             exit(ERR_DECLARED);
         }
         
@@ -215,14 +231,14 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         SYMBOL_TABLE* current_table = top_table;
         //printf("Current: %p \nnext %p \n",current_table,current_table->next);
         
-        //printf("not first symbol\n");
+        //printf("not first symbol\n\n");
         
         while(current_table->next != NULL){
             printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
            //printf("Current: %p \nnext %p \n",current_table,current_table->next);
             
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                printf("já existe\n");
+                printf("ERR_DECLARED\n\n");
                 exit(ERR_DECLARED);
             }
             
@@ -232,7 +248,8 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         }
        printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                printf("já existe\n");exit(ERR_DECLARED);
+                printf("ERR_DECLARED\n\n");
+                exit(ERR_DECLARED);
             }
             
             
@@ -247,10 +264,14 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         
         if(current_table->symbol_info != NULL){
             
+            
+            
             copy_lexical_to_symbol(current_table->symbol_info,lexical);
-            printf("%s size %d\n",lexical.value.str_value ,get_size(lexical)*lenght);
-            free(lexical.value.str_value);
-            lexical.value.str_value = NULL;
+            current_table->symbol_info->size = get_size(lexical)*lenght;
+            
+            printf("%s size %d\n",lexical.value.str_value ,current_table->symbol_info->size );
+            //free(lexical.value.str_value);
+            //lexical.value.str_value = NULL;
             return 0;
         }
         
@@ -319,18 +340,56 @@ int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name,
 
 
 SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical){
-    
-}
-
-ARG_LIST* retrieve_arg_list(char *function_name){
-    
     SYMBOL_STACK* stack = semantic_stack;
     
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
     
     SYMBOL_TABLE* current_table = top_table;
     
-    printf("compare start\n");
+    //printf("compare start\n\n");
+        
+        
+        
+    while(current_table != NULL){
+        //printf("%p\n",current_table->symbol_info);
+        
+        while(current_table != NULL && current_table->symbol_info != NULL){
+            //printf("compare %p\n",current_table->symbol_info);   
+            
+            //printf("cmp %s\n",current_table->symbol_info->name);
+                
+            if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
+                printf("%s returned size %d\n",current_table->symbol_info->name,current_table->symbol_info->size);
+                return *(current_table->symbol_info);
+            }
+            
+            current_table = current_table->next;
+        
+        
+        }
+    
+    if(stack->next != NULL){
+        
+        //printf("next stack level\n\n");    
+        stack = stack->next;
+        current_table =  stack->symbol_table;
+    }
+    
+        
+    }
+    printf("ERR_UNDECLARED\n");
+    exit(ERR_UNDECLARED);
+    
+}
+
+ARG_LIST* retrieve_arg_list(char *function_name){
+    
+    
+    SYMBOL_STACK* stack = semantic_stack;
+    SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
+    SYMBOL_TABLE* current_table = top_table;
+    
+    printf("compare start\n\n");
         
         
         
@@ -343,12 +402,21 @@ ARG_LIST* retrieve_arg_list(char *function_name){
             printf("cmp %s\n",current_table->symbol_info->name);
                 
             if(strcmp(current_table->symbol_info->name,function_name) == 0){
-                if(current_table->symbol_info->nature == VARIABLE) exit(ERR_VARIABLE);
-                if(current_table->symbol_info->nature == VECTOR) exit(ERR_VECTOR);
-                if(current_table->symbol_info->nature == CONST) exit(ERR_VARIABLE);
-
-                
-                
+                if(current_table->symbol_info->nature == VARIABLE) {
+                    printf("ERR_VARIABLE\n");  
+                    exit(ERR_VARIABLE);
+                    
+                }
+                if(current_table->symbol_info->nature == VECTOR) {
+                    printf("ERR_VECTOR\n");
+                    exit(ERR_VECTOR);
+                    
+                }
+                if(current_table->symbol_info->nature == CONST) {
+                    printf("ERR_VARIABLE\n");
+                    exit(ERR_VARIABLE);
+                    
+                }
                 
                 return current_table->argument_list;
             }
@@ -358,28 +426,29 @@ ARG_LIST* retrieve_arg_list(char *function_name){
         
         }
     
-    if(stack->next != NULL){
-        
-        printf("next stack level\n");    
-        stack = stack->next;
-        current_table =  stack->symbol_table;
-    }
+        if(stack->next != NULL){
+            //printf("next stack level\n\n");    
+            stack = stack->next;
+            current_table =  stack->symbol_table;
+        }
     
         
     }
     
-    
+    return NULL;
     
 }
 
 int check_symbol(VALOR_LEXICO lexical){
+    printf("check function %d\n",returning_own_function);
+    
     SYMBOL_STACK* stack = semantic_stack;
     
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
     
     SYMBOL_TABLE* current_table = top_table;
     
-    printf("compare start\n");
+    printf("compare start\n\n");
         
         
         
@@ -402,25 +471,29 @@ int check_symbol(VALOR_LEXICO lexical){
     
     if(stack->next != NULL){
         
-        printf("next stack level\n");    
+        printf("next stack level\n\n");    
         stack = stack->next;
         current_table =  stack->symbol_table;
     }
     
         
     }
+    
+    if(returning_own_function) return -1;
+    
+    printf("ERR_UNDECLARED\n");
     exit(ERR_UNDECLARED);
     
     
 }
 int check_type_compatibility(int type1, int type2){
-    if(type1 == TYPE_STRING && type2 != TYPE_STRING) exit(ERR_STRING_TO_X);
-    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) exit(ERR_STRING_TO_X);
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) {printf("ERR_STRING_TO_X\n");  exit(ERR_STRING_TO_X);}
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) {printf("ERR_STRING_TO_X\n");  exit(ERR_STRING_TO_X);}
     else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
     
     
-   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) exit( ERR_CHAR_TO_X);
-    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) exit( ERR_CHAR_TO_X);
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) {printf("ERR_CHAR_TO_X\n");  exit(ERR_CHAR_TO_X);}
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) {printf("ERR_CHAR_TO_X\n");  exit(ERR_CHAR_TO_X);}
     else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
     
     if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
@@ -436,13 +509,13 @@ int check_type_compatibility(int type1, int type2){
 }
 
 int check_return_type_compatibility(int type1, int type2){
-    if(type1 == TYPE_STRING && type2 != TYPE_STRING) exit(ERR_WRONG_PAR_RETURN);
-    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) exit(ERR_WRONG_PAR_RETURN);
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) {printf("ERR_WRONG_PAR_RETURN\n");  exit(ERR_WRONG_PAR_RETURN);}
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) {printf("ERR_WRONG_PAR_RETURN\n");  exit(ERR_WRONG_PAR_RETURN);}
     else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
     
     
-   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) exit(ERR_WRONG_PAR_RETURN);
-    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) exit(ERR_WRONG_PAR_RETURN);
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) {printf("ERR_WRONG_PAR_RETURN\n");  exit(ERR_WRONG_PAR_RETURN);}
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) {printf("ERR_WRONG_PAR_RETURN\n");  exit(ERR_WRONG_PAR_RETURN);}
     else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
     
     if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
@@ -458,13 +531,13 @@ int check_return_type_compatibility(int type1, int type2){
 }
 
 int check_assignment_type_compatibility(int type1, int type2){
-    if(type1 == TYPE_STRING && type2 != TYPE_STRING) exit(ERR_WRONG_TYPE);
-    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) exit(ERR_WRONG_TYPE);
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) {printf("ERR_WRONG_TYPE\n");  exit(ERR_WRONG_TYPE);}
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) {printf("ERR_WRONG_TYPE\n");  exit(ERR_WRONG_TYPE);}
     else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
     
     
-   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) exit(ERR_WRONG_TYPE);
-    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) exit(ERR_WRONG_TYPE);
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) {printf("ERR_WRONG_TYPE\n");  exit(ERR_WRONG_TYPE);}
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) {printf("ERR_WRONG_TYPE\n");  exit(ERR_WRONG_TYPE);}
     else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
     
     if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;

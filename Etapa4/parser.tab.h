@@ -100,7 +100,12 @@ extern int yydebug;
     TK_LIT_CHAR = 299,
     TK_LIT_STRING = 300,
     TK_IDENTIFICADOR = 301,
-    TOKEN_ERRO = 302
+    TOKEN_ERRO = 302,
+    UNARY_QUESTION_MARK = 303,
+    UNARY_PLUS = 304,
+    UNARY_MINUS = 305,
+    UNARY_ET = 306,
+    UNARY_POINTER = 307
   };
 #endif
 
@@ -116,7 +121,7 @@ union YYSTYPE
   
   
 
-#line 120 "parser.tab.h"
+#line 125 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

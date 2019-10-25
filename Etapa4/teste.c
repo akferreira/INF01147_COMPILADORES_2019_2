@@ -1,15 +1,21 @@
-float funcao(int abc, int jm, int tym){
-    int l;
-    l = 5 + 9 + l;
-}
+int x[10];
+int global1;
 
+int g(int o, int l){
+    int x;
+    x =5;
+}
 
 int f()
 {
-  int x <= 2;
-  float y;
-  char m;
-  funcao(1,4,9);
+  char c;
+  int y;
+  y = 5;
+  x[10] = 2;
+  y = g + 5;
+  global1 = 6 + 6;
+  g(1,2);
   
-  return y;
+  return f;
+  
 }

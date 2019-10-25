@@ -79,10 +79,13 @@ void clean_stack(SYMBOL_STACK *stack);
 
 int create_new_scope();
 int exit_scope();
+void insert_function_entry(VALOR_LEXICO lexical);
 int insert_new_table_entry(VALOR_LEXICO lexical, int lenght);
 int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name, int lenght);
 ARG_LIST* retrieve_arg_list(char *function_name);
 SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical);
+
+int get_size(VALOR_LEXICO lexical);
 int check_symbol(VALOR_LEXICO lexical);
 int check_type_compatibility(int type1, int type2);
 int check_return_type_compatibility(int type1, int type2);
@@ -151,6 +154,12 @@ int type_coercion(int type1, int type2);
 #define ERR_CHAR_TO_X   32
 
 
+/*
+ * Atribuição feita a constante já inicializada
+ */
+#define ERR_CONST 33
+
+
 
 /*
  * Faltam argumentos em uma chamada de função.
@@ -191,6 +200,18 @@ int type_coercion(int type1, int type2);
  * No caso específico do comando return, o parâmetro não é compatível com tipo do retorno
  */
 #define ERR_WRONG_PAR_RETURN 52
+
+
+
+/*
+ * posição de vetor usada em atribuição fora do intervalo
+ */
+
+#define ERR_OUT_OF_BOUNDS 61
+
+/*
+ * 
+ */
 
 
 

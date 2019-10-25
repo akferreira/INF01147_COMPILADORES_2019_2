@@ -10,6 +10,7 @@
 extern void *arvore;
 extern SYMBOL_STACK *semantic_stack; 
 
+int returning_own_function = 0;
 int return_type = -1;
 
 void libera (void *arvore){
@@ -176,13 +177,28 @@ ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *tr
 ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression){
     if(node_type == INPUT_NODE){
         if(expression->ast_valor_lexico.token_type != TK_TYPE_ID){
+            printf("ERR_WRONG_PAR_INPUT\n");
             exit(ERR_WRONG_PAR_INPUT);
         }
         
     }
     
     else{
-        printf("%d-----%d",expression->ast_valor_lexico.token_type,expression->ast_valor_lexico.var_type);
+        int expression_type;
+        if(expression->ast_valor_lexico.token_type == TK_TYPE_ID){
+            expression_type = check_symbol(expression->ast_valor_lexico);
+        }
+        
+        else expression_type = expression->ast_valor_lexico.var_type;
+        
+        printf("%d-----%d",TYPE_CHAR,expression_type);
+        
+        
+        if(expression_type == TYPE_CHAR) {
+            printf("ERR_WRONG_PAR_OUTPUT\n");
+            exit(ERR_WRONG_PAR_OUTPUT);
+            
+        }
         
     }
     
@@ -210,6 +226,9 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     new_node->next_sibling = NULL;
     new_node->father = NULL;
     new_node->ast_valor_lexico = ast_valor_lexico;
+    
+    if(node_type == VECTOR_NODE) new_node->ast_valor_lexico.nature = VECTOR;
+    else if(node_type == ID_NODE) new_node->ast_valor_lexico.nature = VARIABLE;
     
     
     
@@ -270,15 +289,81 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
     
 }
 
-ast_node* new_assignment_node(ast_node *dest, ast_node *source){
+ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initialization){
     printf("assignment node \n");
     printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
     
     if(dest == NULL || source == NULL){
         return NULL;
     }
-    
     ast_node *new_node = new_empty_node();
+    
+    printf("used nat %d\t",dest->ast_valor_lexico.nature);
+    
+    
+    
+    SYMBOL_INFO dest_symbol = retrieve_symbol(dest->ast_valor_lexico);
+    
+    printf("nat %d\n",dest_symbol.nature);
+    printf("size %d\n",dest_symbol.size);
+    
+    if(dest_symbol.nature == VECTOR){
+        int max_vector_size = (dest_symbol.size/ get_size(dest->ast_valor_lexico))-1;
+        
+        if(dest->vector_position > max_vector_size){
+            printf("ERR_OUT_OF_BOUNDS\n");
+            exit(ERR_OUT_OF_BOUNDS);
+        }
+        
+        
+        
+        //printf("pos %d of %d \n",dest->vector_position,max_vector_size);
+    }
+    
+    if(dest_symbol.nature == VECTOR && dest->ast_valor_lexico.nature != VECTOR){
+        printf("ERR_VECTOR\n");
+        exit(ERR_VECTOR);
+    }
+    
+    //Constantes só podem ser atribuidas em inicializações
+    if(dest_symbol.nature == CONST && initialization == 0) {
+        printf("ERR_CONST\n");
+        exit(ERR_CONST);
+    }
+    
+    //Não pode se atribuir a uma função
+    if(dest_symbol.nature == FUNCTION){
+        printf("ERR_FUNCTION\n");
+        exit(ERR_FUNCTION);
+    }
+    int source_type;
+    
+    
+    //Obtenção do tipo da expressão fonte
+    if(source->ast_valor_lexico.token_type == TK_TYPE_ID){
+        SYMBOL_INFO source_symbol =  retrieve_symbol(source->ast_valor_lexico);
+        source_type = source_symbol.var_type;
+    }
+    
+    else{
+        source_type = source->ast_valor_lexico.var_type;
+    }
+    
+    
+    
+    if(dest_symbol.var_type == TYPE_STRING || dest_symbol.var_type == TYPE_CHAR){
+         new_node->ast_valor_lexico.var_type = check_assignment_type_compatibility(dest_symbol.var_type,source_type);
+    }
+    
+    else{
+        new_node->ast_valor_lexico.var_type = check_type_compatibility(dest_symbol.var_type,source_type);
+    }
+    
+    
+    
+    
+    
+    
     
     if(new_node != NULL){
         
@@ -458,53 +543,59 @@ ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_pa
     
 }
 
-ast_node* new_nonstatic_function_declaration_node(int node_type, VALOR_LEXICO var_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block){
-    return new_function_declaration_node(node_type,0,var_type, identifier,parameter_list,command_block);
+ast_node* new_nonstatic_function_declaration_node(int node_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block){
+    return new_function_declaration_node(node_type,0, identifier,parameter_list,command_block);
     
 }
 
 
 
 
-ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO var_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block){
+ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block){
     
-    return new_function_declaration_node(node_type,1,var_type,  identifier,parameter_list,command_block);
+    return new_function_declaration_node(node_type,1,  identifier,parameter_list,command_block);
 }
 
 
 
 
-ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXICO var_type, VALOR_LEXICO identifier, ast_node* parameter_list, ast_node* command_block)
+ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXICO identifier, ast_node* parameter_list, ast_node* command_block)
 {
-   initialize_stack();
+    initialize_stack();
 
     printf("function declaration %s\n",identifier.value.str_value);
         
-    identifier.var_type = var_type.var_type;
+    //identifier.var_type = var_type.var_type;
     identifier.nature = FUNCTION;
     
     
-    char *function_name;
-    function_name = strdup(identifier.value.str_value);
-    insert_new_table_entry(identifier,1);
-    printf("%s",function_name);
+    //char *function_name;
+    //function_name = strdup(identifier.value.str_value);
+    //insert_new_table_entry(identifier,1);
+    //printf("%s | %s\n",function_name,identifier.value.str_value);
     
     if(parameter_list != NULL){
         ast_node *next = parameter_list;
         
         while(next != NULL){
             
-            insert_parameters_function_entry(next->ast_valor_lexico,function_name,1);
+            insert_parameters_function_entry(next->ast_valor_lexico,identifier.value.str_value,1);
             next = next->next_sibling;
         }
         
         
     } 
     
+    if(returning_own_function){
+        return_type = identifier.var_type;
+        returning_own_function = 0;
+    }
+    
+    
     printf("return type %d\n",return_type);
     
-    if(return_type > 0){
-        check_return_type_compatibility(var_type.var_type,return_type);
+    if(return_type >= 0){
+        check_return_type_compatibility(identifier.var_type,return_type);
         
         return_type = -1;
         
@@ -512,8 +603,9 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
     
     
     erase_tree(parameter_list);
-    free(var_type.value.str_value);
-    free(function_name);
+    //free(var_type.value.str_value);
+    //free(function_name);
+    free(identifier.value.str_value);
         
         
     
@@ -559,8 +651,14 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
         
     }
     
-    if(next_arg != NULL && next_parameter == NULL) exit(ERR_MISSING_ARGS);
-    if(next_arg == NULL && next_parameter != NULL) exit(ERR_EXCESS_ARGS);
+    if(next_arg != NULL && next_parameter == NULL) {
+        printf("ERR_MISSING_ARGS\n");
+        exit(ERR_MISSING_ARGS);
+    }
+    if(next_arg == NULL && next_parameter != NULL) {
+        printf("ERR_EXCESS_ARGS\n");
+        exit(ERR_EXCESS_ARGS);
+    }
      
      
     
@@ -579,6 +677,11 @@ ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  
 }
 
 ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEXICO  var_type, VALOR_LEXICO identifier, int vector_lenght){
+    if(vector_lenght < 0) vector_lenght = 1;
+    else{
+        identifier.nature = VECTOR;
+    }
+    
     //ast_node* global_var_node = new_empty_node();
     printf("global declaration of lenght %d\n",vector_lenght);
     initialize_stack();
@@ -592,6 +695,8 @@ ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEX
     
     free(var_type.value.str_value);
     var_type.value.str_value = NULL;
+    free(identifier.value.str_value);
+    
     //erase_tree(global_var_node);
     return NULL;
 }
@@ -659,13 +764,17 @@ ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VAL
     printf("local var\n");
     
     identifier.var_type = var_type.var_type;
+    
+    if(modifiers.is_const) identifier.nature = CONST;
+    else identifier.nature = VARIABLE;
+    
     if( var_type.value.str_value != NULL) {
         free(var_type.value.str_value);
         var_type.value.str_value = NULL;
     }
     
     
-    char *name = strdup(identifier.value.str_value);
+    //char *name = strdup(identifier.value.str_value);
     
     insert_new_table_entry( identifier,1);
     
@@ -673,9 +782,9 @@ ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VAL
 
     if(initialization != NULL) {
         
-        identifier.value.str_value = name;
+        //identifier.value.str_value = name;
         
-        return new_assignment_node(new_leaf_node('I',identifier), initialization);
+        return new_assignment_node(new_leaf_node('I',identifier), initialization,1);
     }
         
         
@@ -685,7 +794,8 @@ ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VAL
 //         var_type.value.str_value = NULL;
 //     }
 //     
-    free(name);
+    //free(name);
+    free(identifier.value.str_value);
     return NULL;
     
     
@@ -718,7 +828,11 @@ ast_node* new_return_command_node(int node_type, VALOR_LEXICO lexico, ast_node* 
     //printf("%d return\n",expression->ast_valor_lexico.var_type);
     
     if(expression->ast_valor_lexico.token_type == TK_TYPE_ID){
+        printf("Expression Node type %c ",expression->node_type);
+        returning_own_function = 0;
         return_type = check_symbol(expression->ast_valor_lexico);
+        
+        
     }
     
     else{
