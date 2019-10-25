@@ -90,6 +90,7 @@ int check_symbol(VALOR_LEXICO lexical);
 int check_type_compatibility(int type1, int type2);
 int check_return_type_compatibility(int type1, int type2);
 int check_assignment_type_compatibility(int type1, int type2);
+int check_parameter_type_compatibility(int type1, int type2);
 int type_coercion(int type1, int type2);
 
 

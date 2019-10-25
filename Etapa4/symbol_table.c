@@ -176,8 +176,8 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 }
 
 void insert_function_entry(VALOR_LEXICO lexical){
+    initialize_stack();
     //char *function_name = strdup(lexical.value.str_value);
-    
     insert_new_table_entry(lexical,1);
     //printf("ll name %s\n",lexical.value.str_value);
     lexical.value.str_value = NULL;
@@ -442,7 +442,6 @@ ARG_LIST* retrieve_arg_list(char *function_name){
 }
 
 int check_symbol(VALOR_LEXICO lexical){
-    //printf("check function %d\n",returning_own_function);
     
     SYMBOL_STACK* stack = semantic_stack;
     
@@ -489,13 +488,13 @@ int check_symbol(VALOR_LEXICO lexical){
     
 }
 int check_type_compatibility(int type1, int type2){
-    if(type1 == TYPE_STRING && type2 != TYPE_STRING) {printf("ERR_STRING_TO_X\n");  exit(ERR_STRING_TO_X);}
-    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) {printf("ERR_STRING_TO_X\n");  exit(ERR_STRING_TO_X);}
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) {printf("Semantical error line %d, columns %d :  ERR_STRING_TO_X\n" ,line,column);  exit(ERR_STRING_TO_X);}
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) {printf("Semantical error line %d, columns %d :  ERR_STRING_TO_X\n" ,line,column);  exit(ERR_STRING_TO_X);}
     else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
     
     
-   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) {printf("ERR_CHAR_TO_X\n");  exit(ERR_CHAR_TO_X);}
-    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) {printf("ERR_CHAR_TO_X\n");  exit(ERR_CHAR_TO_X);}
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) {printf("Semantical error line %d, columns %d :  ERR_CHAR_TO_X\n" ,line,column);  exit(ERR_CHAR_TO_X);}
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) {printf("Semantical error line %d, columns %d :  ERR_CHAR_TO_X\n" ,line,column);  exit(ERR_CHAR_TO_X);}
     else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
     
     if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
@@ -540,6 +539,29 @@ int check_assignment_type_compatibility(int type1, int type2){
     
    if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) {printf("Semantical error line %d, columns %d : ERR_WRONG_TYPE\n",line,column);  exit(ERR_WRONG_TYPE);}
     else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) {printf("Semantical error line %d, columns %d : ERR_WRONG_TYPE\n",line,column);  exit(ERR_WRONG_TYPE);}
+    else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_INT || type2 == TYPE_INT) return TYPE_INT;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_BOOL || type2 == TYPE_BOOL) return TYPE_BOOL;
+    
+    
+    return -1;
+    
+}
+
+int check_parameter_type_compatibility(int type1, int type2){
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) {printf("Semantical error line %d, columns %d : ERR_WRONG_TYPE_ARGS\n",line,column);  exit(ERR_WRONG_TYPE_ARGS);}
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) {printf("Semantical error line %d, columns %d : ERR_WRONG_TYPE_ARGS\n",line,column);  exit(ERR_WRONG_TYPE_ARGS);}
+    else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
+    
+    
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) {printf("Semantical error line %d, columns %d : ERR_WRONG_TYPE_ARGS\n",line,column);  exit(ERR_WRONG_TYPE_ARGS);}
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) {printf("Semantical error line %d, columns %d : ERR_WRONG_TYPE_ARGS\n",line,column);  exit(ERR_WRONG_TYPE_ARGS);}
     else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
     
     if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;

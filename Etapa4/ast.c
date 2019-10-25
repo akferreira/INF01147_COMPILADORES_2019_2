@@ -291,15 +291,15 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 }
 
 ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initialization){
-   // printf("assignment node \n");
-   // printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
+    //printf("assignment node \n");
+  //  printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
     
     if(dest == NULL || source == NULL){
         return NULL;
     }
     ast_node *new_node = new_empty_node();
     
-   // printf("used nat %d\t",dest->ast_valor_lexico.nature);
+ //  printf("used nat %d\t\n",dest->ast_valor_lexico.nature);
     
     
     
@@ -326,11 +326,19 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
         exit(ERR_VECTOR);
     }
     
+    if(dest_symbol.nature == VARIABLE && dest->ast_valor_lexico.nature != VARIABLE  && dest->ast_valor_lexico.nature != CONST){
+        printf("Semantical error line %d, column %d : ERR_VARIABLE\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
+        exit(ERR_VARIABLE);
+    }
+    
+    
+    
     //Constantes só podem ser atribuidas em inicializações
     if(dest_symbol.nature == CONST && initialization == 0) {
         printf("Semantical error line %d, column %d : ERR_CONST\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
         exit(ERR_CONST);
     }
+    
     
     //Não pode se atribuir a uma função
     if(dest_symbol.nature == FUNCTION){
@@ -338,10 +346,11 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
         exit(ERR_FUNCTION);
     }
     int source_type;
-    
+   
     
     //Obtenção do tipo da expressão fonte
     if(source->ast_valor_lexico.token_type == TK_TYPE_ID){
+        
         SYMBOL_INFO source_symbol =  retrieve_symbol(source->ast_valor_lexico);
         source_type = source_symbol.var_type;
     }
@@ -625,18 +634,26 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
 ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* parameter_list){
     ast_node *function_call_node = new_empty_node();
     
-   // printf("function call\n");
+    //printf("function call\n");
+    //
     
     if(function_call_node != NULL){
         function_call_node->node_type = node_type;
+        function_call_node->ast_valor_lexico.token_type = identifier->ast_valor_lexico.token_type;
+        
         insert_child(function_call_node,identifier);
         if(parameter_list) insert_child(function_call_node,parameter_list);
-        function_call_node->ast_valor_lexico.value.str_value = identifier->ast_valor_lexico.value.str_value;
+        function_call_node->ast_valor_lexico.value.str_value = strdup(identifier->ast_valor_lexico.value.str_value);
         
         
         
         
     }
+    
+    else {
+        return NULL;
+    }
+    
     //printf("check %s\n",identifier->ast_valor_lexico.value.str_value);
     check_symbol(identifier->ast_valor_lexico);
     //printf("Function name check %d\n",check_symbol(identifier->ast_valor_lexico));
@@ -651,8 +668,14 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
     ast_node *next_parameter = parameter_list;
     
     while(next_arg != NULL && next_parameter != NULL){
+        if(next_parameter->ast_valor_lexico.token_type == TK_TYPE_ID){
+            next_parameter->ast_valor_lexico.var_type = check_symbol(next_parameter->ast_valor_lexico);
+        }
+        
+        
+        
         //printf("%d||%d\n",next_arg->arg_info->var_type,next_parameter->ast_valor_lexico.var_type);
-        check_type_compatibility(next_arg->arg_info->var_type,next_parameter->ast_valor_lexico.var_type);
+        check_parameter_type_compatibility(next_arg->arg_info->var_type,next_parameter->ast_valor_lexico.var_type);
         
         next_arg = next_arg->next_argument;
         next_parameter = next_parameter->next_sibling;
@@ -924,6 +947,7 @@ void erase_tree(ast_node *root){
     erase_tree(root->next_sibling);
     
     if(root->ast_valor_lexico.token_type == TK_TYPE_RESERVED_WORD || root->ast_valor_lexico.token_type == TK_TYPE_ID || root->ast_valor_lexico.var_type == TYPE_STRING ){
+        //printf("%d|%d\n",root->ast_valor_lexico.line,root->ast_valor_lexico.column);
         if(root->ast_valor_lexico.value.str_value) free(root->ast_valor_lexico.value.str_value);
         root->ast_valor_lexico.value.str_value = NULL;
     }

@@ -193,7 +193,9 @@ $$ = new_nonstatic_function_declaration_node('M',$1,$3,$5);
 
 //regra para definir o tipo do identificador da função
 function_id: primitive_type TK_IDENTIFICADOR {
+
 $<valor_lexico>2.var_type = $1.var_type;
+$<valor_lexico>2.nature = FUNCTION;
 insert_function_entry($<valor_lexico>2);
 $$ = $<valor_lexico>2;
 
@@ -263,7 +265,6 @@ function_call: simple_identifier '(' call_parameter_list ')'{ $$ = new_function_
 call_parameter_list:expression ',' call_parameter_list {  $$ = new_expression_list_node($1,$3);};
 | expression 
 | {
-printf("seg\n");
 $$ = get_null();};
 
 

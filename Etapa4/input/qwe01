@@ -1,5 +1,5 @@
 //Todos os identificadores devem ter sido declarados no momento do seu uso
-a int;
+int a ;
 int f()
 {
   a = 2;

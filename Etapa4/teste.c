@@ -22,7 +22,7 @@ int f()
   global1 = 6 + 6;
   g(1,2);
   {
-      c =  "abc"; 
+      c =  'l'; 
     };
   
   return f;

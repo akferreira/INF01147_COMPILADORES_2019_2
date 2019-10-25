@@ -1,6 +1,5 @@
 //ERR_DECLARED
-int f()
-{
+int f(){
   int x;
   {
     string x;
