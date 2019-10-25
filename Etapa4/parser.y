@@ -219,7 +219,7 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
 
 command_list: command command_list {$$ = new_command_list_node($1,$2);}
-|command_block';' command_list {$$ = $1;}
+|command_block';' command_list {new_command_list_node($1,$3);}
 | loops command_list {$$ = new_command_list_node($1,$2);}
 |{$$ = get_null();};
 

@@ -1772,7 +1772,7 @@ free((yyvsp[-1].valor_lexico).value.str_value);
 
   case 32:
 #line 222 "parser.y"
-    {(yyval.ast_node) = (yyvsp[-2].ast_node);}
+    {new_command_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
 #line 1777 "parser.tab.c"
     break;
 

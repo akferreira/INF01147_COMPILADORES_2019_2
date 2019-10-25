@@ -375,7 +375,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
         insert_child(new_node,dest);
         insert_child(new_node,source);
         
-        //printf("checking %s dest %d\n",dest->ast_valor_lexico.value.str_value,check_symbol(dest->ast_valor_lexico));
+       // printf("checking %s dest %d\n",dest->ast_valor_lexico.value.str_value,check_symbol(dest->ast_valor_lexico));
         
         
          
@@ -442,8 +442,7 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
-    //printf("heey %p\n",command_list);
-    //printf("command list %p\n",command_list);
+    //printf("heey %p %d\n",command_list,command_list->ast_valor_lexico.line);
     
     if(command_list == NULL) return NULL;
     
@@ -455,7 +454,7 @@ ast_node* new_command_block_node(int node_type,ast_node *command_list){
         insert_child(command_block,command_list);
     }
     
-       //printf("command block node %p//%p", command_block,command_list);
+    //printf("command block node %p//%p\n", command_block,command_list);
 
     return command_block;
 }
