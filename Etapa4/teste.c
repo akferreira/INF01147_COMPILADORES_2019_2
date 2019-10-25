@@ -7,6 +7,11 @@ int g(int o, int l){
     return 5.0;
 }
 
+int mak(){
+    
+    return 6;
+}
+
 int f()
 {
   char c;
@@ -15,9 +20,9 @@ int f()
   x[2] = 2;
   y = g + 5;
   global1 = 6 + 6;
-  //g(1,2);
+  g(1,2);
   {
-      y = 5; 
+      c =  "abc"; 
     };
   
   return f;

@@ -7,6 +7,7 @@
 
 
 enum _node_types{
+    FUNCTION_CALL_NODE,
     VECTOR_NODE,
     ID_NODE,
     INPUT_NODE,

@@ -630,7 +630,11 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
     if(function_call_node != NULL){
         function_call_node->node_type = node_type;
         insert_child(function_call_node,identifier);
-        insert_child(function_call_node,parameter_list);
+        if(parameter_list) insert_child(function_call_node,parameter_list);
+        function_call_node->ast_valor_lexico.value.str_value = identifier->ast_valor_lexico.value.str_value;
+        
+        
+        
         
     }
     //printf("check %s\n",identifier->ast_valor_lexico.value.str_value);

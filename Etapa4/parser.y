@@ -128,7 +128,7 @@ int yyparse (void);
 %%
 %type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization ;
 
-%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR TK_LIT_CHAR TK_LIT_STRING;
+%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR TK_LIT_CHAR TK_LIT_STRING TK_LIT_FLOAT TK_LIT_INT;
  
 %type <var_modifier> modifiers no_modifier;
 
@@ -258,9 +258,13 @@ local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
 
 //Chamada de Função
 
-function_call: simple_identifier '(' call_parameter_list ')'{ $$ = new_function_call_node('K',$1,$3);};
+function_call: simple_identifier '(' call_parameter_list ')'{ $$ = new_function_call_node(FUNCTION_CALL_NODE,$1,$3);};
 
-call_parameter_list:expression ',' call_parameter_list {  $$ = new_expression_list_node($1,$3);};| expression;
+call_parameter_list:expression ',' call_parameter_list {  $$ = new_expression_list_node($1,$3);};
+| expression 
+| {
+printf("seg\n");
+$$ = get_null();};
 
 
 //Comando de Atribuição
@@ -349,10 +353,16 @@ literal_id:  TK_IDENTIFICADOR{
 
 $$ = new_leaf_node('I',$<valor_lexico>1);
 }
+| function_call {
+$$ = $1;
+}
+
 |TK_LIT_INT{ 
+$1.var_type = TYPE_INT;
 $$ = new_leaf_node('d',$<valor_lexico>1);
 }
 |TK_LIT_FLOAT{ 
+$1.var_type = TYPE_FLOAT;
 $$ = new_leaf_node('f',$<valor_lexico>1);
 }
 |TK_LIT_CHAR{ 
