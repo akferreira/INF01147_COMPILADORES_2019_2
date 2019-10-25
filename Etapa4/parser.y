@@ -120,10 +120,10 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization ;
 
-%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR;
-
+%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR ;
+ 
 %type <var_modifier> modifiers no_modifier;
 
 
@@ -232,6 +232,9 @@ $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
 local_var_declaration: primitive_type TK_IDENTIFICADOR null_node no_modifier{
 $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3) ;
 };
+//Local Var Initialization
+local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
+
 
 //Chamada de Função
 
@@ -296,8 +299,8 @@ expression_list:  expression ',' expression_list { $$ = new_expression_list_node
 
 //expression: literal { printf("literal rule\n"); $$ = $1;};
 //expression: expression_unary | expression_binary| expression_ternary;
-literal: {};
 
+//literal: {};
 expression: '(' expression ')'{ $$ = $2;};
 //Unários
 expression:'+'expression{ $$ = $2;};
@@ -319,11 +322,10 @@ expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
 //Ternários
 expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
       
+expression : literal_id;
 
-//Local Var Initialization
-local_var_initialization: TK_OC_LE literal { $$ = $2;};
-
-expression:  TK_IDENTIFICADOR{ 
+//era expression
+literal_id:  TK_IDENTIFICADOR{ 
 
 $$ = new_leaf_node('I',$<valor_lexico>1);
 }

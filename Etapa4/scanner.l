@@ -148,7 +148,7 @@ yylval.valor_lexico.token_type = token_type;
 yylval.valor_lexico.value.str_value = strdup(yytext);
 
 
-//yylval.valor_lexico.var_type = var_type;
+yylval.valor_lexico.var_type = -1;
 
 return TK_IDENTIFICADOR;
 

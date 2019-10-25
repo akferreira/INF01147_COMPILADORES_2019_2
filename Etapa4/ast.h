@@ -149,6 +149,9 @@ ast_node* new_unary_expression(int node_type, ast_node *expression);
 
 
 
+void free_lexical(VALOR_LEXICO lexical);
+
+
 
 #endif // AST_H_INCLUDED
 

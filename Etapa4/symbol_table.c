@@ -434,3 +434,48 @@ int check_type_compatibility(int type1, int type2){
     
     return -1;
 }
+
+int check_return_type_compatibility(int type1, int type2){
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) exit(ERR_WRONG_PAR_RETURN);
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) exit(ERR_WRONG_PAR_RETURN);
+    else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
+    
+    
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) exit(ERR_WRONG_PAR_RETURN);
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) exit(ERR_WRONG_PAR_RETURN);
+    else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_INT || type2 == TYPE_INT) return TYPE_INT;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_BOOL || type2 == TYPE_BOOL) return TYPE_BOOL;
+    
+    
+    return -1;
+}
+
+int check_assignment_type_compatibility(int type1, int type2){
+    if(type1 == TYPE_STRING && type2 != TYPE_STRING) exit(ERR_WRONG_TYPE);
+    else if(type2 == TYPE_STRING && type1 != TYPE_STRING) exit(ERR_WRONG_TYPE);
+    else if(type2 == TYPE_STRING && type1 == TYPE_STRING) return TYPE_STRING;
+    
+    
+   if(type1 == TYPE_CHAR && type2 != TYPE_CHAR) exit(ERR_WRONG_TYPE);
+    else if(type2 == TYPE_CHAR && type1 != TYPE_CHAR) exit(ERR_WRONG_TYPE);
+    else if(type2 == TYPE_CHAR && type1 == TYPE_CHAR) return TYPE_CHAR;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_INT || type2 == TYPE_INT) return TYPE_INT;
+    
+    if(type1 == TYPE_FLOAT || type2 == TYPE_FLOAT) return TYPE_FLOAT;
+    
+    if(type1 == TYPE_BOOL || type2 == TYPE_BOOL) return TYPE_BOOL;
+    
+    
+    return -1;
+    
+}

@@ -10,6 +10,8 @@
 extern void *arvore;
 extern SYMBOL_STACK *semantic_stack; 
 
+int return_type = -1;
+
 void libera (void *arvore){
     printf("erase\n");
     erase_tree(arvore);
@@ -269,7 +271,8 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 }
 
 ast_node* new_assignment_node(ast_node *dest, ast_node *source){
-    //printf("assignment node\n");
+    printf("assignment node \n");
+    printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
     
     if(dest == NULL || source == NULL){
         return NULL;
@@ -498,7 +501,15 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
         
     } 
     
-    //erase_tree(parameter_list);
+    printf("return type %d\n",return_type);
+    
+    if(return_type > 0){
+        check_return_type_compatibility(var_type.var_type,return_type);
+        
+        return_type = -1;
+        
+    }
+    
     
     erase_tree(parameter_list);
     free(var_type.value.str_value);
@@ -648,26 +659,33 @@ ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VAL
     printf("local var\n");
     
     identifier.var_type = var_type.var_type;
-    insert_new_table_entry( identifier,1);
-    
-    printf("local var 2\n");
-
-    if(initialization != NULL) {
-        ast_node *new_node = new_empty_node();
-        new_node->node_type = node_type;
-        insert_child(new_node,new_leaf_node('I',identifier));
-        insert_child(new_node,initialization);
-        return new_node;
-    }
-        
-        
-    
     if( var_type.value.str_value != NULL) {
         free(var_type.value.str_value);
         var_type.value.str_value = NULL;
     }
     
     
+    char *name = strdup(identifier.value.str_value);
+    
+    insert_new_table_entry( identifier,1);
+    
+    printf("local var 2\n");
+
+    if(initialization != NULL) {
+        
+        identifier.value.str_value = name;
+        
+        return new_assignment_node(new_leaf_node('I',identifier), initialization);
+    }
+        
+        
+    
+//     if( var_type.value.str_value != NULL) {
+//         free(var_type.value.str_value);
+//         var_type.value.str_value = NULL;
+//     }
+//     
+    free(name);
     return NULL;
     
     
@@ -696,6 +714,18 @@ ast_node* new_return_command_node(int node_type, VALOR_LEXICO lexico, ast_node* 
         
         
     }
+    
+    //printf("%d return\n",expression->ast_valor_lexico.var_type);
+    
+    if(expression->ast_valor_lexico.token_type == TK_TYPE_ID){
+        return_type = check_symbol(expression->ast_valor_lexico);
+    }
+    
+    else{
+        return_type = expression->ast_valor_lexico.var_type;
+    }
+    
+    
     
     return return_node;
     
@@ -799,6 +829,15 @@ void erase_tree(ast_node *root){
 }
 
 
+void free_lexical(VALOR_LEXICO lexical){
+    if(lexical.value.str_value == NULL){
+        return;
+    }
+    
+    free(lexical.value.str_value);
+    lexical.value.str_value = NULL;
+    
+}
 
 
 
