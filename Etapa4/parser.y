@@ -321,7 +321,7 @@ loop_for_command: local_var_declaration| shift_command | assignment_command;
 
 
 expression_list:  expression ',' expression_list { $$ = new_expression_list_node($1,$3);};
-|  ',' expression { $$ = $2;};
+|  expression ',' expression { $$ = new_expression_list_node($1,$3);};
 
 //expression: literal { printf("literal rule\n"); $$ = $1;};
 //expression: expression_unary | expression_binary| expression_ternary;
@@ -348,12 +348,20 @@ expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
 //Ternários
 expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
       
-expression : literal_id;
+expression : literal_id {$$ = $1;};
 
 //era expression
 literal_id:  TK_IDENTIFICADOR{ 
 
-$$ = new_leaf_node('I',$<valor_lexico>1);
+$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
+SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+if(id_info.nature == FUNCTION){
+    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
+    exit(ERR_FUNCTION);
+}
+
+
+
 }
 | function_call {
 $$ = $1;

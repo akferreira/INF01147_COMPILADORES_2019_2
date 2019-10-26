@@ -176,17 +176,37 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 }
 
 void insert_function_entry(VALOR_LEXICO lexical){
+    
     initialize_stack();
-    //char *function_name = strdup(lexical.value.str_value);
     insert_new_table_entry(lexical,1);
-    //printf("ll name %s\n",lexical.value.str_value);
     lexical.value.str_value = NULL;
     
-    //lexical.value.str_value = function_name;
+}
+
+
+void check_if_declared_as_parameter(VALOR_LEXICO lexical){
+    if(semantic_stack->next == NULL) return;
     
-    //printf("ll name %s\n",lexical.value.str_value);
-    //printf("ff name %s\n",function_name);
-    //free(function_name);
+    SYMBOL_TABLE *current_table = semantic_stack->next->symbol_table;
+    
+    if(current_table != NULL){
+        while(current_table->next != NULL) current_table = current_table->next;
+        
+        if(current_table->symbol_info->nature == FUNCTION){
+            ARG_LIST* arg_list = current_table->argument_list;
+    
+            while(arg_list != NULL){
+                
+            if(strcmp(arg_list->arg_info->name,lexical.value.str_value)  == 0){
+                printf("Semantical error line %d, column %d : ERR_DECLARED\n",lexical.line, lexical.column);
+                exit(ERR_DECLARED);
+            }
+            
+            arg_list = arg_list->next_argument;
+        
+            }
+        }
+    }
     
 }
 
@@ -198,7 +218,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
      //printf("table %p\n",top_table);
     
     if(top_table->symbol_info == NULL){
-        //printf("First symbol %s\n",lexical.value.str_value);
+        //("First symbol %s\n",lexical.value.str_value);
         
         top_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
@@ -208,6 +228,8 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
             top_table->symbol_info->size = get_size(lexical)*lenght;
+            
+            check_if_declared_as_parameter(lexical);
             
             
             //printf("%s size %d\n",lexical.value.str_value ,get_size(lexical)*lenght);
@@ -221,11 +243,11 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     }
     
     else{
-        //printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+       // printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
-            printf("ERR_DECLARED\n\n");
+            printf("Semantical error line %d, column %d : ERR_DECLARED\n",lexical.line, lexical.column);
             exit(ERR_DECLARED);
         }
         
@@ -240,7 +262,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
            //printf("Current: %p \nnext %p \n",current_table,current_table->next);
             
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                printf("ERR_DECLARED\n\n");
+                printf("Semantical error line %d, column %d : ERR_DECLARED\n",lexical.line, lexical.column);
                 exit(ERR_DECLARED);
             }
             
@@ -250,7 +272,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         }
        //printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
         if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                printf("ERR_DECLARED\n\n");
+                printf("Semantical error line %d, column %d : ERR_DECLARED\n",lexical.line, lexical.column);
                 exit(ERR_DECLARED);
             }
             
@@ -270,7 +292,8 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
             
             copy_lexical_to_symbol(current_table->symbol_info,lexical);
             current_table->symbol_info->size = get_size(lexical)*lenght;
-            
+            check_if_declared_as_parameter(lexical);
+
             //printf("%s size %d\n",lexical.value.str_value ,current_table->symbol_info->size );
             //free(lexical.value.str_value);
             //lexical.value.str_value = NULL;
@@ -299,7 +322,6 @@ int insert_parameters_function(VALOR_LEXICO argument){
         
                 current_table->argument_list->arg_info = (SYMBOL_INFO*) malloc(sizeof(VALOR_LEXICO));
                 copy_lexical_to_symbol(current_table->argument_list->arg_info,argument);
-                return 0;
             }
             
             else{
@@ -312,8 +334,6 @@ int insert_parameters_function(VALOR_LEXICO argument){
                 
                 copy_lexical_to_symbol(arg_list->next_argument->arg_info,argument);
                 
-                return 0;
-                
             }
             
             
@@ -322,6 +342,8 @@ int insert_parameters_function(VALOR_LEXICO argument){
         }
     
 }
+
+
 
 return 0;
 }
@@ -423,10 +445,45 @@ SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical){
     
         
     }
+    
+    current_table = semantic_stack->next->symbol_table;
+    
+    if(current_table != NULL){
+        while(current_table->next != NULL) current_table = current_table->next;
+        
+        if(current_table->symbol_info->nature == FUNCTION){
+            ARG_LIST* arg_list = current_table->argument_list;
+            
+            
+            
+            while(arg_list != NULL){
+                
+            if(strcmp(arg_list->arg_info->name,lexical.value.str_value)  == 0){
+                 return *(arg_list->arg_info);
+            }
+            
+            arg_list = arg_list->next_argument;
+            
+        
+            
+            }
+        }
+        
+        
+    
+    
+    }
+    
+    
+    
     printf("ERR_UNDECLARED\n");
     exit(ERR_UNDECLARED);
     
 }
+
+
+
+
 
 ARG_LIST* retrieve_arg_list(char *function_name){
     

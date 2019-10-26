@@ -8,7 +8,7 @@ int g(int o, int l){
     s1 = "abc";
     s2 = "lol";
     
-    return "ll";
+    return g;
     
     
 }

@@ -700,7 +700,7 @@ for (i=1;i<=lenght;i++){
 
 
 
-printf("string read %s\n",yylval.valor_lexico.value.str_value);
+//printf("string read %s\n",yylval.valor_lexico.value.str_value);
 
 
 

@@ -11,7 +11,8 @@ enum _node_types{
     VECTOR_NODE,
     ID_NODE,
     INPUT_NODE,
-    OUTPUT_NODE
+    OUTPUT_NODE,
+    EXPRESSION_LIST_NODE
     
 } NODES_TYPES;
 

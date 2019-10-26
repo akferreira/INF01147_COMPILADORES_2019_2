@@ -175,6 +175,10 @@ ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *tr
     
 }
 
+
+
+
+
 ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression){
     if(node_type == INPUT_NODE){
         if(expression->ast_valor_lexico.token_type != TK_TYPE_ID){
@@ -278,11 +282,25 @@ ast_node* new_loop_while_node(int node_type, ast_node* expression, ast_node* com
 
 
 ast_node* new_unary_expression(int node_type, ast_node *expression){
+    printf("unary\n");
+    
+    if(expression->node_type == ID_NODE){
+        SYMBOL_INFO exp_symbol = retrieve_symbol(expression->ast_valor_lexico);
+        if(exp_symbol.nature == FUNCTION){
+            printf("Semantical error line %d, column %d : ERR_FUNCTION\n",expression->ast_valor_lexico.line,expression->ast_valor_lexico.column);
+            exit(ERR_FUNCTION);
+    }
+        
+    }
+    
+    
     ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
 
     new_node->node_type = node_type;
     new_node->first_child = expression;
     new_node->next_sibling = NULL;
+    new_node->father = NULL;
+    
     
     
     
@@ -433,17 +451,25 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
         else type2 = right->ast_valor_lexico.var_type;
         
             
+        if(left->node_type == ID_NODE){
+            SYMBOL_INFO left_info = retrieve_symbol(left->ast_valor_lexico);
+            if(left_info.nature == FUNCTION){
+                printf("Semantical error line %d, column %d : ERR_FUNCTION\n",left->ast_valor_lexico.line,left->ast_valor_lexico.column);
+                exit(ERR_FUNCTION);
+            }
             
-            
-            
+        }
         
-        //printf("binary %d//%d\n",type1,type2);
+         if(right->node_type == ID_NODE){
+            SYMBOL_INFO right_info = retrieve_symbol(right->ast_valor_lexico);
+            if(right_info.nature == FUNCTION){
+                printf("Semantical error line %d, column %d : ERR_FUNCTION\n",right->ast_valor_lexico.line,right->ast_valor_lexico.column);
+                exit(ERR_FUNCTION);
+            }
+            
+        }
         
         new_node->ast_valor_lexico.var_type = check_type_compatibility(type1,type2);
-        
-//         printf("new_node");
-//         print_node_info(new_node);
-//         printf("left and right");
          
         
     }
@@ -491,6 +517,26 @@ ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_
     if(next_expressions == NULL) return NULL;
     
     if(current_expressions != NULL){
+        
+        
+        if(current_expressions->node_type == ID_NODE){
+            SYMBOL_INFO current_exp_symbol = retrieve_symbol(current_expressions->ast_valor_lexico);
+            if(current_exp_symbol.nature == FUNCTION && current_expressions->node_type == ID_NODE){
+                printf("Semantical error line %d, column %d : ERR_FUNCTION\n",current_expressions->ast_valor_lexico.line,current_expressions->ast_valor_lexico.column);
+                exit(ERR_FUNCTION);
+            }
+        }
+        
+        
+        if(next_expressions->node_type == ID_NODE){        
+            SYMBOL_INFO next_exp_symbol = retrieve_symbol(next_expressions->ast_valor_lexico);
+
+            if(next_exp_symbol.nature == FUNCTION && next_expressions->node_type == ID_NODE){
+                printf("Semantical error line %d, column %d : ERR_FUNCTION\n",current_expressions->ast_valor_lexico.line,current_expressions->ast_valor_lexico.column);
+                exit(ERR_FUNCTION);
+            }
+        }
+       
        
         
         insert_sibling(current_expressions,next_expressions);
@@ -677,7 +723,8 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
         }
         
         
-        
+        line = next_parameter->ast_valor_lexico.line;
+        column = next_parameter->ast_valor_lexico.column;
         //printf("%d||%d\n",next_arg->arg_info->var_type,next_parameter->ast_valor_lexico.var_type);
         check_parameter_type_compatibility(next_arg->arg_info->var_type,next_parameter->ast_valor_lexico.var_type);
         
