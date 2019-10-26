@@ -75,6 +75,23 @@ int yyparse (void);
 %token TOKEN_ERRO
 
 
+
+
+%type <ast_node> program
+%type <ast_node> grammars
+%type <ast_node> global_var_declaration
+%type <ast_node> function_declaration
+%type <ast_node> null_node
+%type <ast_node> expression
+%type <ast_node> expression_list
+%type <ast_node> command_block
+%type <ast_node> command_list
+%type <ast_node> command
+
+
+
+
+
 /*Menos Prioritário*/
 
 //https://en.cppreference.com/w/c/language/operator_precedence
@@ -114,7 +131,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars function_call expression  identifier  if_statement command_return shift_command shift  assignment_command TK_IDENTIFICADOR local_var_initialization primitive_type null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_parameters_argument function_parameters_list call_parameter_list ;
+%type <ast_node>  loops loop_for loop_while loop_for_command loop_for_command_list    TK_IDENTIFICADOR TK_LIT_INT TK_LIT_FLOAT TK_LIT_TRUE TK_LIT_FALSE TK_PR_INT TK_PR_FLOAT TK_PR_CHAR TK_PR_BOOL TK_PR_STRING ;
 
 null_node: {$$ = get_null();};
 
@@ -125,20 +142,20 @@ program:grammars program {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
 grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
-global_var_declaration: TK_PR_STATIC decl';';
-global_var_declaration: decl';';
+global_var_declaration: TK_PR_STATIC decl';'{$<valor_lexico>1;};
+global_var_declaration: decl';'{$<valor_lexico>1;};
 decl: primitive_type identifier|primitive_type array_identifier;
-primitive_type: TK_PR_INT|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
+primitive_type: TK_PR_INT{'t',$<valor_lexico>1;}|TK_PR_FLOAT|TK_PR_CHAR|TK_PR_BOOL|TK_PR_STRING;
 identifier: TK_IDENTIFICADOR;
 array_identifier:TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
 
 //Function declaration
-function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
-function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block;
-function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('')' command_block;
-function_declaration: primitive_type TK_IDENTIFICADOR '('')' command_block;
+function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block{'M',$<valor_lexico>1;};
+function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block{'M',$<valor_lexico>1;};
+function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('')' command_block{'M',$<valor_lexico>1;};
+function_declaration: primitive_type TK_IDENTIFICADOR '('')' command_block{'M',$<valor_lexico>1;};
 
 function_parameters_list:function_parameters_argument|function_parameters_argument','function_parameters_list;
 function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
@@ -147,7 +164,11 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 //Command Block
 
 command_block: '{'command_list'}';
-command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block';'|;
+command_list: command';' command_list{$$ = new_command_list_node($1,$3);} | loop_while command_list{$$ = new_command_list_node($1,$2);}|loop_for command_list{$$ = new_command_list_node($1,$2);} |command_block';'{$$ = $1;}|{$$ = get_null();};
+
+
+
+
 command: local_var_declaration|assignment_command|input_command|output_command|function_call|shift_command|command_return|TK_PR_BREAK|TK_PR_CONTINUE|if_statement|loop_for|loop_while;
 
 //Local Var declaration
@@ -172,8 +193,8 @@ local_var_initialization: TK_OC_LE TK_IDENTIFICADOR|TK_OC_LE TK_LIT_CHAR|TK_OC_L
 
 
 //Comando de Atribuição
-assignment_command: identifier '=' expression {$$ = new_assignment_node($1,$3);};
-assignment_command: identifier'['expression']' '=' expression {$$ = new_assignment_node($1,$6);};
+assignment_command: identifier '=' expression;
+assignment_command: identifier'['expression']' '=' expression;
 
 
 
@@ -185,28 +206,24 @@ output_command: TK_PR_OUTPUT expression expression_list;
 //output_command: TK_PR_OUTPUT TK_IDENTIFICADOR output_id_list;
 //output_id_list: |','output_id_list;
 
-//Operaçoes basicasLALR
-expression_list: ','expression expression_list|;
-expression: TK_IDENTIFICADOR|TK_LIT_INT|TK_LIT_FLOAT;
-expression: '(' expression ')';
 
 
 
 //Chamada de Função
 //function_call: identifier '('')'{$$ = new_function_call_node('K',$1,$3);};
-function_call: identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
+function_call: identifier '(' call_parameter_list ')';
 call_parameter_list:expression ',' call_parameter_list | expression|;
 
 
 //shift
-shift: TK_OC_SL { $$ = new_leaf_node('L',$<valor_lexico>1);}| TK_OC_SR{ $$ = new_leaf_node('R',$<valor_lexico>1);};
-shift_command: identifier shift expression{ $$ = new_shift_command_node('X',$1,$2,$3);};
+shift: TK_OC_SL| TK_OC_SR;
+shift_command: identifier shift expression;
 
 //Retorno
 command_return: TK_PR_RETURN expression;
 
 //If Statement
-if_statement: TK_PR_IF '(' expression ')' command_block;
+if_statement: TK_PR_IF '(' expression ')' command_block null_node;
 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block;
 
 //Loops
@@ -223,6 +240,10 @@ if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 
 
+//Operaçoes basicasLALR
+expression_list: ','expression expression_list{ $$ = new_expression_list_node($2,$3);}|{$$ = get_null();};
+expression: TK_IDENTIFICADOR{ $$ = $1;}|TK_LIT_INT{ $$ = $1;}|TK_LIT_FLOAT{ $$ = $1;};
+expression: '(' expression ')'{ $$ = $2;};
 
 
 

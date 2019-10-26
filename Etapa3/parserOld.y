@@ -134,7 +134,7 @@ grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
 global_var_declaration: TK_PR_STATIC primitive_type identifier';'{$$ = new_static_global_var_declaration_node('g',$<valor_lexico>1,$2,$3);};
-global_var_declaration: primitive_type identifier';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$2);};
+global_var_'declaration: primitive_type identifier';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$2);};
 //decl: primitive_type identifier;
 
 primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}
