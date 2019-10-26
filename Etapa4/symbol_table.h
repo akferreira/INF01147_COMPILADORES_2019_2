@@ -81,6 +81,7 @@ int create_new_scope();
 int exit_scope();
 void insert_function_entry(VALOR_LEXICO lexical);
 int insert_new_table_entry(VALOR_LEXICO lexical, int lenght);
+int insert_parameters_function(VALOR_LEXICO argument);
 int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name, int lenght);
 ARG_LIST* retrieve_arg_list(char *function_name);
 SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical);

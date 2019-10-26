@@ -282,6 +282,50 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     
 }
 
+int insert_parameters_function(VALOR_LEXICO argument){
+    SYMBOL_TABLE* current_table = semantic_stack->symbol_table;
+    
+    if(current_table != NULL){
+        
+        while(current_table->next != NULL) current_table = current_table->next;
+        
+        if(current_table->symbol_info->nature == FUNCTION){
+            ARG_LIST* arg_list = current_table->argument_list;
+            
+            if(arg_list == NULL){
+                
+                current_table->argument_list = malloc(sizeof(ARG_LIST));
+                current_table->argument_list->next_argument = NULL;
+        
+                current_table->argument_list->arg_info = (SYMBOL_INFO*) malloc(sizeof(VALOR_LEXICO));
+                copy_lexical_to_symbol(current_table->argument_list->arg_info,argument);
+                return 0;
+            }
+            
+            else{
+                while(arg_list->next_argument != NULL) arg_list = arg_list->next_argument;
+                
+                arg_list->next_argument = malloc(sizeof(ARG_LIST));
+                arg_list->next_argument->next_argument = NULL;
+                
+                arg_list->next_argument->arg_info = (SYMBOL_INFO*) malloc(sizeof(VALOR_LEXICO));
+                
+                copy_lexical_to_symbol(arg_list->next_argument->arg_info,argument);
+                
+                return 0;
+                
+            }
+            
+            
+            
+        
+        }
+    
+}
+
+return 0;
+}
+
 int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name, int lenght){
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
     
@@ -289,7 +333,7 @@ int insert_parameters_function_entry(VALOR_LEXICO argument, char *function_name,
         //printf("%s name entry %s\n",function_name,top_table->symbol_info->name);
         top_table = top_table->next;
     }
-    //printf("%s name entry %s\n",function_name,top_table->symbol_info->name);
+   // printf("%s name entry %s\n",function_name,top_table->symbol_info->name);
     //printf("\n\nArgument list for %s\n\n",semantic_stack->symbol_table->symbol_info->name);
     
     
@@ -444,10 +488,9 @@ ARG_LIST* retrieve_arg_list(char *function_name){
 int check_symbol(VALOR_LEXICO lexical){
     
     SYMBOL_STACK* stack = semantic_stack;
-    
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
-    
     SYMBOL_TABLE* current_table = top_table;
+    
     
    // printf("compare start\n\n");
         
@@ -480,8 +523,34 @@ int check_symbol(VALOR_LEXICO lexical){
         
     }
     
-    if(returning_own_function) return -1;
     
+    current_table = semantic_stack->next->symbol_table;
+    
+    if(current_table != NULL){
+        while(current_table->next != NULL) current_table = current_table->next;
+        
+        if(current_table->symbol_info->nature == FUNCTION){
+            ARG_LIST* arg_list = current_table->argument_list;
+            
+            
+            
+            while(arg_list != NULL){
+                
+            if(strcmp(arg_list->arg_info->name,lexical.value.str_value)  == 0){
+                return arg_list->arg_info->var_type;
+            }
+            
+            arg_list = arg_list->next_argument;
+            
+        
+            
+            }
+        }
+        
+        
+    
+    
+    }
     printf("ERR_UNDECLARED\n");
     exit(ERR_UNDECLARED);
     

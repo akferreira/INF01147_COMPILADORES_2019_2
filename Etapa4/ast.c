@@ -300,7 +300,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
     }
     ast_node *new_node = new_empty_node();
     
- //  printf("used nat %d\t\n",dest->ast_valor_lexico.nature);
+    //printf("used nat %d\t\n",dest->ast_valor_lexico.nature);
     
     
     
@@ -308,6 +308,11 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
     
     //printf("nat %d\n",dest_symbol.nature);
    // printf("size %d\n",dest_symbol.size);
+    
+    if(dest_symbol.nature == VECTOR && dest->ast_valor_lexico.nature != VECTOR){
+        printf("Semantical error line %d, column %d : ERR_VECTOR\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
+        exit(ERR_VECTOR);
+    }
     
     if(dest_symbol.nature == VECTOR){
         int max_vector_size = (dest_symbol.size/ get_size(dest->ast_valor_lexico))-1;
@@ -322,10 +327,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
         //printf("pos %d of %d \n",dest->vector_position,max_vector_size);
     }
     
-    if(dest_symbol.nature == VECTOR && dest->ast_valor_lexico.nature != VECTOR){
-        printf("Semantical error line %d, column %d : ERR_VECTOR\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
-        exit(ERR_VECTOR);
-    }
+    
     
     if(dest_symbol.nature == VARIABLE && dest->ast_valor_lexico.nature != VARIABLE  && dest->ast_valor_lexico.nature != CONST){
         printf("Semantical error line %d, column %d : ERR_VARIABLE\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
@@ -369,6 +371,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
     }
     
     else{
+        line = dest->ast_valor_lexico.line; column = dest->ast_valor_lexico.column;
         new_node->ast_valor_lexico.var_type = check_type_compatibility(dest_symbol.var_type,source_type);
     }
     
@@ -507,7 +510,7 @@ ast_node* new_nonconst_parameter_node(int node_type,VALOR_LEXICO parameter_type,
 }
 
 ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_type,VALOR_LEXICO identifier){
-   // printf("Paramter %p \n %s\n", identifier, identifier->ast_valor_lexico.value.str_value);
+   //printf("Paramter  %s\n", identifier.value.str_value);
     
     
     
@@ -521,7 +524,7 @@ ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_t
     
     identifier.var_type = parameter_type.var_type;
     
-    //erase_tree(identifier);
+    insert_parameters_function(identifier);
     
     free(parameter_type.value.str_value);
     //return NULL;
@@ -586,17 +589,17 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
     //insert_new_table_entry(identifier,1);
     //printf("%s | %s\n",function_name,identifier.value.str_value);
     
-    if(parameter_list != NULL){
-        ast_node *next = parameter_list;
-        
-        while(next != NULL){
-            
-            insert_parameters_function_entry(next->ast_valor_lexico,identifier.value.str_value,1);
-            next = next->next_sibling;
-        }
-        
-        
-    } 
+//     if(parameter_list != NULL){
+//         ast_node *next = parameter_list;
+//         
+//         while(next != NULL){
+//             
+//             insert_parameters_function_entry(next->ast_valor_lexico,identifier.value.str_value,1);
+//             next = next->next_sibling;
+//         }
+//         
+//         
+//     } 
     
 //     if(returning_own_function){
 //         return_type = identifier.var_type;

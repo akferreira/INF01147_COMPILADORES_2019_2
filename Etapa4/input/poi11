@@ -1,5 +1,5 @@
 //Variáveis com o mesmo nome podem existir em escopos diferentes.
-a int;
+int a;
 int main()
 {
   float a;

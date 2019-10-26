@@ -6,6 +6,7 @@
 %option yylineno
 %x BLOCK_COMMENT
 %x LINE_COMMENT
+%x QUOTES
 
 %{
 #include <stdio.h>
@@ -98,9 +99,9 @@ for (i=1;i<=lenght;i++){
 }
 
 
-/*
-printf("string lenght %d\n\n\n\n", strlen(yytext));
-printf("%s",yylval.valor_lexico.value.str_value);*/
+
+
+printf("string read %s\n",yylval.valor_lexico.value.str_value);
 
 
 
@@ -167,7 +168,8 @@ id [a-zA-Z_][a-zA-Z0-9_]*
 
 literal_char '{ASCII}'
 literal_int {integer}
-literal_string \"{ASCII}+\"
+
+literal_string \"([^\\\"]|\\.)*\"
 
 power (["e"|"E"]{integer})
 literal_float {integer}"."({integer}?)({power}?)
@@ -294,6 +296,7 @@ return TK_LIT_CHAR;}
 
 string_lexical();
 return TK_LIT_STRING;}
+
 {literal_float} {
 float_lexical();
 return TK_LIT_FLOAT;}
