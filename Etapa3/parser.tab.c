@@ -1629,7 +1629,7 @@ yyreduce:
 
   case 4:
 #line 133 "parser.y" /* yacc.c:1646  */
-    {printf("sla");new_global_grammar_node('|',arvore,(yyvsp[-1].ast_node),(yyvsp[0].ast_node));}
+    {new_global_grammar_node('|',arvore,(yyvsp[-1].ast_node),(yyvsp[0].ast_node));}
 #line 1634 "parser.tab.c" /* yacc.c:1646  */
     break;
 
