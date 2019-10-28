@@ -15,7 +15,7 @@ void libera (void *arvore){
 void exporta (void *arvore){
     
      FILE *arq1;
-     arq1=fopen("e3.csv","w+");
+     arq1=fopen("output/e3.csv","w+");
      Percorrer_imprimir_file_DFS(arvore,arq1);
      fclose(arq1);
     
@@ -389,6 +389,7 @@ ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_pa
 }
 
 ast_node* new_nonstatic_function_declaration_node(int node_type, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
+	printf("inicio func");
     return new_function_declaration_node(node_type,NULL,var_type, identifier,parameter_list,command_block);
     
 }
@@ -467,6 +468,7 @@ ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_stat
 
 ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *current_global_node, ast_node* next_global_nodes){
    
+	printf("new grammar inicio");
     
     if(ast_root == NULL){
         ast_node* temp_node = new_empty_node();

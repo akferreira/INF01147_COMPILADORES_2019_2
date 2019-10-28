@@ -126,19 +126,21 @@ int yyparse (void);
 %type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR  local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument call_parameter_list function_parameters_list TK_LIT_FALSE TK_LIT_TRUE;
 
 
-null_node: {$$ = get_null();};
+null_node: {$$ = get_null();};	
 
 //programa:
 program: /* empty */{$$ = get_null();};
-program:grammars program {'|',arvore,$1,$2;};
+program:grammars program {new_global_grammar_node('|',arvore,$1,$2);};
 
 grammars:global_var_declaration|function_declaration;
-	
+
+
 //Declaração de variaveis globais
-global_var_declaration: TK_PR_STATIC primitive_type identifier';'{'g',$<valor_lexico>1,$2,$3;};
-global_var_declaration: primitive_type identifier';'{'g',$1,$2;};
-global_var_declaration: TK_PR_STATIC primitive_type identifier'['TK_LIT_INT']'';'{'g',$2,$3;};
-global_var_declaration: primitive_type identifier'['TK_LIT_INT']'';'{'g',$1,$2;};
+global_var_declaration: TK_PR_STATIC primitive_type identifier';'{$$ = new_static_global_var_declaration_node('g',$<valor_lexico>1,$2,$3);};
+global_var_declaration: primitive_type identifier';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$2);};
+//decl: primitive_type identifier;
+global_var_declaration: TK_PR_STATIC primitive_type identifier'['TK_LIT_INT']'';'{$$ = new_nonstatic_global_var_declaration_node('g',$2,$3);};
+global_var_declaration: primitive_type identifier'['TK_LIT_INT']'';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$2);};
 //decl: primitive_type identifier;
 
 primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_FLOAT{$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_CHAR{$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_BOOL{$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_STRING{$$ = new_leaf_node('t',$<valor_lexico>1);};
