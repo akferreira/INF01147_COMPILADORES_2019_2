@@ -249,6 +249,40 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
 
     
 
+ast_node* new_assignment_node_array(ast_node *dest,ast_node *index, ast_node *source){
+    if(dest == NULL ||index|| source == NULL){
+        return NULL;
+    }
+    
+    ast_node *new_node = new_empty_node();
+    
+    if(new_node != NULL){
+        
+        
+        new_node->node_type = '=';
+        insert_child(new_node,dest);
+	new_node->node_type = '[';
+	insert_child(new_node,index);
+	new_node->node_type = ']';
+        insert_child(new_node,source);
+        
+        
+         
+        
+    }
+    
+    return new_node;
+
+}
+
+
+
+
+
+
+
+
+
 
 
 ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){

@@ -43,8 +43,9 @@ extern int yydebug;
 #line 1 "parser.y" /* yacc.c:1909  */
 
     #include "ast.h"
+    //extern void *arvore;
 
-#line 48 "parser.tab.h" /* yacc.c:1909  */
+#line 49 "parser.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -109,12 +110,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 6 "parser.y" /* yacc.c:1909  */
+#line 7 "parser.y" /* yacc.c:1909  */
 
-	ast_node* ast_node;
-	VALOR_LEXICO valor_lexico;
+  ast_node* ast_node;
+  VALOR_LEXICO valor_lexico;
+  
+  
 
-#line 118 "parser.tab.h" /* yacc.c:1909  */
+#line 121 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

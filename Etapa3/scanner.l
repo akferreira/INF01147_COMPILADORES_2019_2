@@ -1,19 +1,24 @@
+
+
+
+
+
 %option yylineno
 %x BLOCK_COMMENT
 %x LINE_COMMENT
 
 %{
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "parser.tab.h"
-//#include "tokens.h"
-#define YY_USER_ACTION token_location();
-
-
+#include "tokens.h"
 
 int offset;
 extern YYLTYPE yylloc;
+
+#define YY_USER_ACTION token_location();
+
+
 
 int get_line_number(){
     return yylineno;
@@ -24,12 +29,13 @@ int get_column_number(){
 }
 
 void update_lexical_location(){
-	yylval.valor_lexico.line = get_line_number();
-	yylval.valor_lexico.column = get_column_number();
+yylval.valor_lexico.line = get_line_number();
+yylval.valor_lexico.column = get_column_number();
 }
 
 
 void token_location(){
+
     yylloc.first_column = yylloc.last_column; 
     yylloc.first_line = yylloc.last_line;
     for(int i = 0; yytext[i] != '\0'; i++) { 
@@ -37,89 +43,94 @@ void token_location(){
             yylloc.last_column = 0; 
             yylloc.last_line = yylineno;
         } 
-        else 
+        else { 
             yylloc.last_column++; 
+        } 
     }
 
 }
 
 
 void integer_lexical(){
-	update_lexical_location();
-	yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-	yylval.valor_lexico.intvalue = atoi(yytext);
-	yylval.valor_lexico.var_type = TK_PR_INT;
-	yylval.valor_lexico.value = NULL;
+update_lexical_location();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.intvalue = atoi(yytext);
+yylval.valor_lexico.var_type = TK_PR_INT;
+yylval.valor_lexico.value = NULL;
 }
 
 void char_lexical(){
- 	char *literal_char = yytext;
- 	literal_char[strlen(literal_char) - 1] = 0;
- 	literal_char = literal_char + 1;
-	update_lexical_location();
-	
-	yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-	yylval.valor_lexico.charvalue = atoi(literal_char);
-	yylval.valor_lexico.intvalue = atoi(literal_char);
-	yylval.valor_lexico.var_type = TK_LIT_CHAR;
-	yylval.valor_lexico.value = NULL;
+ char *literal_char = yytext;
+ literal_char[strlen(literal_char) - 1] = 0;
+ literal_char = literal_char + 1;
+
+
+update_lexical_location();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.charvalue = atoi(literal_char);
+yylval.valor_lexico.intvalue = atoi(literal_char);
+yylval.valor_lexico.var_type = TK_LIT_CHAR;
+yylval.valor_lexico.value = NULL;
+
+
+
 }
 
 void string_lexical(){
-	char *literal_char = strdup(yytext);
-	literal_char[strlen(literal_char) - 1] = 0;
-	literal_char = literal_char + 1;
+char *literal_char = strdup(yytext);
+literal_char[strlen(literal_char) - 1] = 0;
+literal_char = literal_char + 1;
 
-	update_lexical_location();
-	yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-	yylval.valor_lexico.value = literal_char ;
-	yylval.valor_lexico.var_type = TK_LIT_STRING;
+
+update_lexical_location();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.value = literal_char ;
+yylval.valor_lexico.var_type = TK_LIT_STRING;
 }
 
 
 
 void float_lexical(){
-	update_lexical_location();
-	yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-	yylval.valor_lexico.fvalue = atof(yytext);
-	yylval.valor_lexico.var_type = TK_LIT_FLOAT;
-	yylval.valor_lexico.value = NULL;
+update_lexical_location();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.fvalue = atof(yytext);
+yylval.valor_lexico.var_type = TK_LIT_FLOAT;
+yylval.valor_lexico.value = NULL;
 }
 
 void bool_lexical(int bool_value){
-	update_lexical_location();
-	yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
-	yylval.valor_lexico.intvalue = bool_value;
-	yylval.valor_lexico.value = NULL;
-	yylval.valor_lexico.var_type = TK_PR_BOOL;
+update_lexical_location();
+yylval.valor_lexico.token_type = TK_TYPE_LITERAL;
+yylval.valor_lexico.intvalue = bool_value;
+yylval.valor_lexico.value = NULL;
+yylval.valor_lexico.var_type = TK_PR_BOOL;
 }
 
 int keyword_lexical(int var_type){
-	update_lexical_location();
-	yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
-	yylval.valor_lexico.value = strdup(yytext);
-	yylval.valor_lexico.var_type = var_type;
+update_lexical_location();
+yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
+yylval.valor_lexico.value = strdup(yytext);
+yylval.valor_lexico.var_type = var_type;
 
-	return var_type;
+return var_type;
+
+
 }
 
 
 int identifier_lexical(int var_type){
-	update_lexical_location();
-	yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
+update_lexical_location();
+yylval.valor_lexico.token_type = TK_TYPE_RESERVED_WORD;
 
-	yylval.valor_lexico.value = strdup(yytext);
+yylval.valor_lexico.value = strdup(yytext);
 
 
-	yylval.valor_lexico.var_type = var_type;
+yylval.valor_lexico.var_type = var_type;
 
-	return var_type;
+return var_type;
+
 
 }
-
-
-
-
 
 %}
 
@@ -198,14 +209,26 @@ whitespace [ \n\t\r]+
 "%>%" {return TK_OC_FORWARD_PIPE;}
 "%|%" {return TK_OC_BASH_PIPE;}
 
+"false" {
+bool_lexical(0);
 
+return TK_LIT_FALSE;}
+
+
+"true" {
+bool_lexical(1);
+
+
+return TK_LIT_TRUE;}
 
 	/* palavras reservadas */
-"int" {return keyword_lexical(TK_PR_INT);}
-"float" {return keyword_lexical(TK_PR_FLOAT);}
+"int" {return keyword_lexical(TK_PR_INT);return TK_PR_INT;}
+
+
+"float" { return keyword_lexical(TK_PR_FLOAT);}
 "bool" {return keyword_lexical(TK_PR_BOOL);}
 "char" {return keyword_lexical(TK_PR_CHAR);}
-"string" {return keyword_lexical(TK_PR_STRING);}
+"string" {return keyword_lexical( TK_PR_STRING);}
 "if" {return keyword_lexical(TK_PR_IF);}
 "then" {return keyword_lexical(TK_PR_THEN);}
 "else" {return keyword_lexical(TK_PR_ELSE);}
@@ -229,20 +252,19 @@ whitespace [ \n\t\r]+
 "end" {return keyword_lexical(TK_PR_END);}
 "default" {return keyword_lexical(TK_PR_DEFAULT);}
 
+
+
 {literal_char} {char_lexical(); return TK_LIT_CHAR;}
-{literal_string} {string_lexical(); return TK_LIT_STRING;}
-{literal_float} {float_lexical(); return TK_LIT_FLOAT;}
-{literal_int} {integer_lexical(); return TK_LIT_INT;}
+{literal_string} {string_lexical();return TK_LIT_STRING;}
+{literal_float} {float_lexical();return TK_LIT_FLOAT;}
+{literal_int} {integer_lexical();return TK_LIT_INT;}
 
-"false" {bool_lexical(0); return TK_LIT_FALSE;}
-"true" {bool_lexical(1); return TK_LIT_TRUE;}
 
-{id} {return TK_IDENTIFICADOR;}
+{id} {return identifier_lexical(TK_IDENTIFICADOR);}
 
-. {return identifier_lexical(TK_IDENTIFICADOR);}
+
+. {return TOKEN_ERRO; }
 %%
 
-/*int get_line_number(){
-    return yylineno;
-}*/
+
 

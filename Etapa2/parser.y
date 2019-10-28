@@ -126,9 +126,8 @@ function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR;
 function_parameters_argument:primitive_type TK_IDENTIFICADOR;
 
 //Command Block
-//command_block: '{'command_block'}';
+
 command_block: '{'command_list'}';
-//command_block: command_list;
 
 command_list: command';' command_list | loop_while command_list|loop_for command_list |command_block';'|;
 

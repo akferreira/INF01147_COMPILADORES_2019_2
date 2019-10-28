@@ -165,7 +165,7 @@ ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_no
 
 ast_node* new_unary_expression(int node_type, ast_node *expression);
 
-
+ast_node* new_assignment_node_array(ast_node *dest,ast_node *index, ast_node *source);
 
 
 #endif // AST_H_INCLUDED
