@@ -144,10 +144,9 @@ global_var_declaration: primitive_type identifier'['TK_LIT_INT']'';'{$$ = new_no
 
 primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_FLOAT{$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_CHAR{$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_BOOL{$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_STRING{$$ = new_leaf_node('t',$<valor_lexico>1);};
 
-identifier: simple_identifier {$$ = $1;};/*|vector {$$ = new_leaf_node('V',$<valor_lexico>1);};*/
+identifier: simple_identifier {$$ = $1;};
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
-//vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
 
 
 
@@ -207,7 +206,7 @@ literal:  TK_IDENTIFICADOR{ $$ = new_leaf_node('I',$<valor_lexico>1);}|TK_LIT_IN
 
 
 //Chamada de Função
-function_call: simple_identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
+function_call: simple_identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',get_null(),$3);};
 
 call_parameter_list:expression ',' call_parameter_list { $$ = new_expression_list_node($1,$3);} | expression{ $$ = $1;}|null_node;
 
@@ -242,9 +241,10 @@ command_return: TK_PR_RETURN expression {$$ = new_return_command_node('R',$<valo
 if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_ifelse_node(':',$3,$5,$6);};
 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = new_ifelse_node(':',$3,$5,$7);};
 
+
 //Loops
- command_block_loop: '{'command_block_loop'}' {$$ = $2;};
- command_block_loop: '{''}' {$$ = get_null();};
+ command_block_loop: '{'command_block_loop'}' {$$ = new_command_block_node('_',$2);};/*{$$ = $2;};*/
+ command_block_loop: '{''}'/* {$$ = get_null();};*/{$$ = new_command_block_node('_',get_null());};
  command_block_loop: command;
 
 loops: loop_for | loop_while; 
@@ -278,7 +278,7 @@ expression: literal { $$ = $1;};
 
 expression: '(' expression ')'{ $$ = $2;};
 //Unários
-expression:'+'expression %prec UNARY_PLUS{ $$ = $2;};
+expression:'+'expression %prec UNARY_PLUS{ $$ = new_unary_expression('+',$2);};
 expression:'-'expression %prec UNARY_MINUS{ $$ = new_unary_expression('-',$2);};
 expression:'!'expression{ $$ = new_unary_expression('!',$2); };
 expression:'&'expression %prec UNARY_ET{ $$ = new_unary_expression('@',$2); };

@@ -1,21 +1,21 @@
 Terminals unused in grammar
 
-    TK_PR_THEN
-    TK_PR_FOREACH
-    TK_PR_SWITCH
-    TK_PR_CASE
-    TK_PR_CLASS
-    TK_PR_PRIVATE
-    TK_PR_PUBLIC
-    TK_PR_PROTECTED
-    TK_PR_END
-    TK_PR_DEFAULT
-    TK_OC_NE
-    TK_OC_AND
-    TK_OC_OR
-    TK_OC_FORWARD_PIPE
-    TK_OC_BASH_PIPE
-    TOKEN_ERRO
+   TK_PR_THEN
+   TK_PR_FOREACH
+   TK_PR_SWITCH
+   TK_PR_CASE
+   TK_PR_CLASS
+   TK_PR_PRIVATE
+   TK_PR_PUBLIC
+   TK_PR_PROTECTED
+   TK_PR_END
+   TK_PR_DEFAULT
+   TK_OC_NE
+   TK_OC_AND
+   TK_OC_OR
+   TK_OC_FORWARD_PIPE
+   TK_OC_BASH_PIPE
+   TOKEN_ERRO
 
 
 Grammar
@@ -165,187 +165,157 @@ Grammar
 
 Terminals, with rules where they appear
 
-    $end (0) 0
-    '!' (33) 87
-    '#' (35) 91
-    '%' (37) 96
-    '&' (38) 88 99
-    '(' (40) 17 18 19 20 54 66 67 73 74 75 84
-    ')' (41) 17 18 19 20 54 66 67 73 74 75 84
-    '*' (42) 89 94
-    '+' (43) 85 92
-    ',' (44) 22 55 76 81
-    '-' (45) 86 93
-    '/' (47) 95
-    ':' (58) 75 103
-    ';' (59) 6 7 8 9 26 28
-    '=' (61) 58 59
-    '?' (63) 90 103
-    '[' (91) 8 9 59
-    ']' (93) 8 9 59
-    '^' (94) 97
-    '{' (123) 25 68 69
-    '|' (124) 98
-    '}' (125) 25 68 69
-    error (256)
-    TK_PR_INT (258) 10
-    TK_PR_FLOAT (259) 11
-    TK_PR_BOOL (260) 13
-    TK_PR_CHAR (261) 12
-    TK_PR_STRING (262) 14
-    TK_PR_IF (263) 66 67
-    TK_PR_THEN (264)
-    TK_PR_ELSE (265) 67
-    TK_PR_WHILE (266) 73 74
-    TK_PR_DO (267) 74
-    TK_PR_INPUT (268) 60
-    TK_PR_OUTPUT (269) 61
-    TK_PR_RETURN (270) 65
-    TK_PR_CONST (271) 23 41 43
-    TK_PR_STATIC (272) 6 8 17 19 41 42
-    TK_PR_FOREACH (273)
-    TK_PR_FOR (274) 75
-    TK_PR_SWITCH (275)
-    TK_PR_CASE (276)
-    TK_PR_BREAK (277) 37
-    TK_PR_CONTINUE (278) 38
-    TK_PR_CLASS (279)
-    TK_PR_PRIVATE (280)
-    TK_PR_PUBLIC (281)
-    TK_PR_PROTECTED (282)
-    TK_PR_END (283)
-    TK_PR_DEFAULT (284)
-    TK_OC_LE (285) 48 101
-    TK_OC_GE (286) 102
-    TK_OC_EQ (287) 100
-    TK_OC_NE (288)
-    TK_OC_AND (289)
-    TK_OC_OR (290)
-    TK_OC_SL (291) 62
-    TK_OC_SR (292) 63
-    TK_OC_FORWARD_PIPE (293)
-    TK_OC_BASH_PIPE (294)
-    TK_LIT_INT (295) 8 9 50
-    TK_LIT_FLOAT (296) 51
-    TK_LIT_FALSE <ast_node> (297) 105
-    TK_LIT_TRUE <ast_node> (298) 106
-    TK_LIT_CHAR (299) 52
-    TK_LIT_STRING (300) 53
-    TK_IDENTIFICADOR <ast_node> (301) 16 44 45 49
-    TOKEN_ERRO (302)
-    UNARY_QUESTION_MARK (303)
-    UNARY_PLUS (304)
-    UNARY_MINUS (305)
-    UNARY_ET (306)
-    UNARY_POINTER (307)
+$end (0) 0
+'!' (33) 87
+'#' (35) 91
+'%' (37) 96
+'&' (38) 88 99
+'(' (40) 17 18 19 20 54 66 67 73 74 75 84
+')' (41) 17 18 19 20 54 66 67 73 74 75 84
+'*' (42) 89 94
+'+' (43) 85 92
+',' (44) 22 55 76 81
+'-' (45) 86 93
+'/' (47) 95
+':' (58) 75 103
+';' (59) 6 7 8 9 26 28
+'=' (61) 58 59
+'?' (63) 90 103
+'[' (91) 8 9 59
+']' (93) 8 9 59
+'^' (94) 97
+'{' (123) 25 68 69
+'|' (124) 98
+'}' (125) 25 68 69
+error (256)
+TK_PR_INT (258) 10
+TK_PR_FLOAT (259) 11
+TK_PR_BOOL (260) 13
+TK_PR_CHAR (261) 12
+TK_PR_STRING (262) 14
+TK_PR_IF (263) 66 67
+TK_PR_THEN (264)
+TK_PR_ELSE (265) 67
+TK_PR_WHILE (266) 73 74
+TK_PR_DO (267) 74
+TK_PR_INPUT (268) 60
+TK_PR_OUTPUT (269) 61
+TK_PR_RETURN (270) 65
+TK_PR_CONST (271) 23 41 43
+TK_PR_STATIC (272) 6 8 17 19 41 42
+TK_PR_FOREACH (273)
+TK_PR_FOR (274) 75
+TK_PR_SWITCH (275)
+TK_PR_CASE (276)
+TK_PR_BREAK (277) 37
+TK_PR_CONTINUE (278) 38
+TK_PR_CLASS (279)
+TK_PR_PRIVATE (280)
+TK_PR_PUBLIC (281)
+TK_PR_PROTECTED (282)
+TK_PR_END (283)
+TK_PR_DEFAULT (284)
+TK_OC_LE (285) 48 101
+TK_OC_GE (286) 102
+TK_OC_EQ (287) 100
+TK_OC_NE (288)
+TK_OC_AND (289)
+TK_OC_OR (290)
+TK_OC_SL (291) 62
+TK_OC_SR (292) 63
+TK_OC_FORWARD_PIPE (293)
+TK_OC_BASH_PIPE (294)
+TK_LIT_INT (295) 8 9 50
+TK_LIT_FLOAT (296) 51
+TK_LIT_FALSE (297) 105
+TK_LIT_TRUE (298) 106
+TK_LIT_CHAR (299) 52
+TK_LIT_STRING (300) 53
+TK_IDENTIFICADOR (301) 16 44 45 49
+TOKEN_ERRO (302)
+UNARY_QUESTION_MARK (303)
+UNARY_PLUS (304)
+UNARY_MINUS (305)
+UNARY_ET (306)
+UNARY_POINTER (307)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (74)
-        on left: 0
-    null_node <ast_node> (75)
-        on left: 1
-        on right: 45 47 57 66 82
-    program <ast_node> (76)
-        on left: 2 3
-        on right: 0 3
-    grammars <ast_node> (77)
-        on left: 4 5
-        on right: 3
-    global_var_declaration <ast_node> (78)
-        on left: 6 7 8 9
-        on right: 4
-    primitive_type <ast_node> (79)
-        on left: 10 11 12 13 14
-        on right: 6 7 8 9 17 18 19 20 23 24 44 45 46 47
-    identifier <ast_node> (80)
-        on left: 15
-        on right: 6 7 8 9 64
-    simple_identifier <ast_node> (81)
-        on left: 16
-        on right: 15 17 18 19 20 23 24 46 47 54 58 59
-    function_declaration <ast_node> (82)
-        on left: 17 18 19 20
-        on right: 5
-    function_parameters_list <ast_node> (83)
-        on left: 21 22
-        on right: 17 18 22
-    function_parameters_argument <ast_node> (84)
-        on left: 23 24
-        on right: 21 22
-    command_block <ast_node> (85)
-        on left: 25
-        on right: 17 18 19 20 28 66 67
-    command_list <ast_node> (86)
-        on left: 26 27 28 29
-        on right: 25 26 27
-    command <ast_node> (87)
-        on left: 30 31 32 33 34 35 36 37 38 39 40
-        on right: 26 70
-    modifiers <ast_node> (88)
-        on left: 41 42 43
-        on right: 44 45
-    local_var_declaration <ast_node> (89)
-        on left: 44 45 46 47
-        on right: 30 78
-    local_var_initialization <ast_node> (90)
-        on left: 48
-        on right: 44 46
-    literal <ast_node> (91)
-        on left: 49 50 51 52 53
-        on right: 48 83
-    function_call <ast_node> (92)
-        on left: 54
-        on right: 34 104
-    call_parameter_list <ast_node> (93)
-        on left: 55 56 57
-        on right: 54 55
-    assignment_command <ast_node> (94)
-        on left: 58 59
-        on right: 31 80
-    input_command <ast_node> (95)
-        on left: 60
-        on right: 32
-    output_command <ast_node> (96)
-        on left: 61
-        on right: 33
-    shift <ast_node> (97)
-        on left: 62 63
-        on right: 64
-    shift_command <ast_node> (98)
-        on left: 64
-        on right: 35 79
-    command_return <ast_node> (99)
-        on left: 65
-        on right: 36
-    if_statement <ast_node> (100)
-        on left: 66 67
-        on right: 39
-    command_block_loop <ast_node> (101)
-        on left: 68 69 70
-        on right: 68 73 74 75
-    loops <ast_node> (102)
-        on left: 71 72
-        on right: 27 40
-    loop_while <ast_node> (103)
-        on left: 73 74
-        on right: 72
-    loop_for <ast_node> (104)
-        on left: 75
-        on right: 71
-    loop_for_command_list <ast_node> (105)
-        on left: 76 77
-        on right: 75 76
-    loop_for_command <ast_node> (106)
-        on left: 78 79 80
-        on right: 76 77
-    expression_list <ast_node> (107)
-        on left: 81 82
-        on right: 61 81
-    expression <ast_node> (108)
-        on left: 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106
-        on right: 55 56 58 59 60 61 64 65 66 67 73 74 75 81 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103
+$accept (74)
+    on left: 0
+null_node (75)
+    on left: 1, on right: 45 47 57 66 82
+program (76)
+    on left: 2 3, on right: 0 3
+grammars (77)
+    on left: 4 5, on right: 3
+global_var_declaration (78)
+    on left: 6 7 8 9, on right: 4
+primitive_type (79)
+    on left: 10 11 12 13 14, on right: 6 7 8 9 17 18 19 20 23 24 44
+    45 46 47
+identifier (80)
+    on left: 15, on right: 6 7 8 9 64
+simple_identifier (81)
+    on left: 16, on right: 15 17 18 19 20 23 24 46 47 54 58 59
+function_declaration (82)
+    on left: 17 18 19 20, on right: 5
+function_parameters_list (83)
+    on left: 21 22, on right: 17 18 22
+function_parameters_argument (84)
+    on left: 23 24, on right: 21 22
+command_block (85)
+    on left: 25, on right: 17 18 19 20 28 66 67
+command_list (86)
+    on left: 26 27 28 29, on right: 25 26 27
+command (87)
+    on left: 30 31 32 33 34 35 36 37 38 39 40, on right: 26 70
+modifiers (88)
+    on left: 41 42 43, on right: 44 45
+local_var_declaration (89)
+    on left: 44 45 46 47, on right: 30 78
+local_var_initialization (90)
+    on left: 48, on right: 44 46
+literal (91)
+    on left: 49 50 51 52 53, on right: 48 83
+function_call (92)
+    on left: 54, on right: 34 104
+call_parameter_list (93)
+    on left: 55 56 57, on right: 54 55
+assignment_command (94)
+    on left: 58 59, on right: 31 80
+input_command (95)
+    on left: 60, on right: 32
+output_command (96)
+    on left: 61, on right: 33
+shift (97)
+    on left: 62 63, on right: 64
+shift_command (98)
+    on left: 64, on right: 35 79
+command_return (99)
+    on left: 65, on right: 36
+if_statement (100)
+    on left: 66 67, on right: 39
+command_block_loop (101)
+    on left: 68 69 70, on right: 68 73 74 75
+loops (102)
+    on left: 71 72, on right: 27 40
+loop_while (103)
+    on left: 73 74, on right: 72
+loop_for (104)
+    on left: 75, on right: 71
+loop_for_command_list (105)
+    on left: 76 77, on right: 75 76
+loop_for_command (106)
+    on left: 78 79 80, on right: 76 77
+expression_list (107)
+    on left: 81 82, on right: 61 81
+expression (108)
+    on left: 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100
+    101 102 103 104 105 106, on right: 55 56 58 59 60 61 64 65 66 67
+    73 74 75 81 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100
+    101 102 103
 
 
 State 0
