@@ -268,6 +268,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
 
 
 	printf("new_assignment_node - I\n");
+    printf("%p,%p\n",dest,source);
 
 	if(dest == NULL || source == NULL){
 		return NULL;
@@ -360,7 +361,7 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
 
-	printf("new_command_block_node - I\n");
+	printf("new_command_block_node - I | %p\n",command_list);
 
 	if(command_list == NULL) return NULL;
 
@@ -381,14 +382,20 @@ ast_node* new_command_block_node(int node_type,ast_node *command_list){
 
 ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_commands){
 	printf("new_command_list_node - I\n");
+    printf("%p||||%p\n",current_commands,next_commands);
 
-
-	if(next_commands == NULL) 
+	if(next_commands == NULL){ 
+        printf("new_command_list_node - F. Current %p\n",current_commands);
 		return current_commands;
-
+        
+    }
 	if(current_commands != NULL){
 		insert_sibling(current_commands,next_commands);
 	}
+	
+	else{
+        return next_commands;
+    }
 
 	printf("new_command_list_node - F\n");
 	return current_commands;
@@ -507,6 +514,8 @@ erase_tree(modifier_static);
 erase_tree(var_type);
 erase_tree(identifier);
 erase_tree(parameter_list);
+
+printf("%p command\n",command_block);
 
 return command_block;
 
@@ -653,13 +662,13 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
 
 	erase_tree(modifiers);
 	erase_tree(var_type);
-	erase_tree(initialization);
+	erase_tree( identifier);
 
 	
 	
 
 	printf("new_local_var_declaration_node - F  \n");
-	return identifier;
+	return initialization;
 
 
 }
@@ -770,15 +779,18 @@ void print_node_info_csv(ast_node * node, FILE *arq){
 
 
 void erase_tree(ast_node *root){
-	printf("erase_tree - I  \n");  
 	if(root == NULL) return;
 
 	erase_tree(root->first_child);
 	erase_tree(root->next_sibling);
 
+    
+	printf("erase_tree - I %d [%c]\n",root->ast_valor_lexico.line,root->node_type);  
+    if(root->ast_valor_lexico.value) printf("%s\n", root->ast_valor_lexico.value);
+    
 
     //printf("\naaa   %d | %p | %c | %s\n",root->ast_valor_lexico.column,root->ast_valor_lexico.value,root->node_type,root->ast_valor_lexico.value);
-	free(root->ast_valor_lexico.value);
+	if(root->ast_valor_lexico.value) free(root->ast_valor_lexico.value);
 	root->ast_valor_lexico.value = NULL;
 	free(root);
 	root = NULL;

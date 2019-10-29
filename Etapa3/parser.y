@@ -157,7 +157,7 @@ function_declaration: TK_PR_STATIC primitive_type simple_identifier '('function_
 function_declaration: primitive_type simple_identifier '('function_parameters_list')' command_block{$$ = new_nonstatic_function_declaration_node('M',$1,$2,$4,$6);};
 function_declaration: TK_PR_STATIC primitive_type simple_identifier '('')' command_block 
 {$$ = new_static_function_declaration_node('M',$<valor_lexico>1,$2,$3,NULL,$6);};
-function_declaration: primitive_type simple_identifier '('')' command_block{$$ = new_nonstatic_function_declaration_node('M',$1,$2,NULL,$5);};
+function_declaration: primitive_type simple_identifier '('')' command_block{printf("heeey\n"); $$ = new_nonstatic_function_declaration_node('M',$1,$2,NULL,$5);};
 	
 
 function_parameters_list: function_parameters_argument |function_parameters_argument','function_parameters_list {$$ = new_parameter_list_node($1,$3);};
@@ -182,13 +182,13 @@ modifiers: TK_PR_STATIC TK_PR_CONST { $$ = new_modifier_node('S','C',$<valor_lex
 
 
 //Local Var declaration
-local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {/*$$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;*/};
+local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {$$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;};
 
-local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR null_node {/*$$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;*/};
+local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR null_node {$$ = new_local_var_declaration_node('<',$1,$2,$3,$4 ) ;};
 
 
-local_var_declaration: primitive_type simple_identifier local_var_initialization{/*$$ = new_local_var_declaration_node('<', NULL ,$1,$2,$3 ) ;*/};
-local_var_declaration: primitive_type simple_identifier null_node{/*$$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;*/};
+local_var_declaration: primitive_type simple_identifier local_var_initialization{$$ = new_local_var_declaration_node('<', NULL ,$1,$2,$3 ) ;};
+local_var_declaration: primitive_type simple_identifier null_node{$$ = new_local_var_declaration_node('<', $3 ,$1,$2,$3) ;};
 
 
 
