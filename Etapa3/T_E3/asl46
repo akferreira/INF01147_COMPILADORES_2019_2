@@ -1,4 +1,5 @@
 //Identificadores de tipos primitivos simples podem receber valores assim:
+int a;
 int f()
 {
   int a;
