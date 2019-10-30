@@ -31,7 +31,7 @@ ast_node* new_empty_node(){
 	ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
 
 
-	printf("new_empty_node - I\n");
+	////printf("new_empty_node - I\n");
 
 
 
@@ -51,7 +51,7 @@ ast_node* new_empty_node(){
 		new_node->ast_valor_lexico = new_valor_lexico;
 	}
 
-	printf("new_empty_node - F\n");
+	//printf("new_empty_node - F\n");
 
 	return new_node;
 
@@ -65,18 +65,18 @@ ast_node* insert_child(ast_node *node, ast_node *child)
 	if (child == NULL)
 		return node;
 
-	printf("insert_child - I\n");
+	//printf("insert_child - I\n");
 
 	if(node == NULL) 
 		return NULL;
 
 	if(node->first_child == NULL)
 	{
-		printf("		insert_child - t1\n");
+		//printf("		insert_child - t1\n");
 		node->first_child = child;
-		printf("		insert_child - t2\n");
+		//printf("		insert_child - t2\n");
 		node->first_child->father = node;
-		printf("		insert_child - t1\n");
+		//printf("		insert_child - t1\n");
 
 
 		ast_node *temp = node->first_child;
@@ -89,14 +89,14 @@ ast_node* insert_child(ast_node *node, ast_node *child)
 		}
 
 
-		printf("insert_child - F1\n");
+		//printf("insert_child - F1\n");
 		return node;
 	}
 
-	printf("insert_child - M\n");
+	//printf("insert_child - M\n");
 
 	insert_sibling(node->first_child, child);
-	printf("insert_child - F2\n");
+	//printf("insert_child - F2\n");
 
 
 	return node;
@@ -151,7 +151,7 @@ ast_node* insert_sibling(ast_node *node, ast_node *sibling)
 /*
 ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
 
-	printf("new_function_declaration_node - I \n");
+	//printf("new_function_declaration_node - I \n");
 
 	ast_node *function_node = new_empty_node();
 
@@ -171,7 +171,7 @@ function_node
 
 	}
 
-	printf("new_function_declaration_node - F \n"); 
+	//printf("new_function_declaration_node - F \n"); 
 	 function_node = NULL;
 	return function_node;
 }
@@ -238,7 +238,7 @@ ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expressio
 
 ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
 
-	printf("new_leaf_node - I\n");
+	//printf("new_leaf_node - I\n");
 
 	ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
 
@@ -258,7 +258,7 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
 
 	}
 
-	printf("new_leaf_node - F\n");
+	//printf("new_leaf_node - F\n");
 	return new_node;
 
 
@@ -267,7 +267,7 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
 
 ast_node* new_empty_leaf_node(int node_type){
 
-	printf("new_empty_leaf_node - I\n");
+	//printf("new_empty_leaf_node - I\n");
 
 	ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
 
@@ -287,7 +287,7 @@ ast_node* new_empty_leaf_node(int node_type){
 
 	}
 
-	printf("new_empty_leaf_node - F\n");
+	//printf("new_empty_leaf_node - F\n");
 	return new_node;
 
 
@@ -302,7 +302,7 @@ ast_node* new_empty_leaf_node(int node_type){
 ast_node* new_loop_for_node(int node_type, ast_node* initialization,ast_node *test_expression,ast_node* loop_command, ast_node* command_block){
 
 
-	printf("new_loop_for_node - I\n");
+	//printf("new_loop_for_node - I\n");
 	ast_node *for_loop_node = new_empty_node();
 
 	if(for_loop_node != NULL){
@@ -312,7 +312,7 @@ ast_node* new_loop_for_node(int node_type, ast_node* initialization,ast_node *te
 		insert_child(for_loop_node,loop_command);
 		insert_child(for_loop_node,command_block);
 	}
-	printf("new_loop_for_node - F\n");
+	//printf("new_loop_for_node - F\n");
 	return for_loop_node;
 
 
@@ -320,7 +320,7 @@ ast_node* new_loop_for_node(int node_type, ast_node* initialization,ast_node *te
 
 ast_node* new_loop_while_node(int node_type, ast_node* expression, ast_node* command_block){
 
-	printf("new_loop_while_node - I\n");
+	//printf("new_loop_while_node - I\n");
 
 	ast_node* while_loop_node = new_empty_node();
 
@@ -331,7 +331,7 @@ ast_node* new_loop_while_node(int node_type, ast_node* expression, ast_node* com
 
 	}
 
-	printf("new_loop_while_node - F\n");
+	//printf("new_loop_while_node - F\n");
 	return while_loop_node;
 
 
@@ -343,7 +343,7 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 	ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
 
 
-	printf("new_unary_expression - I\n");
+	//printf("new_unary_expression - I\n");
 
 
 	new_node->node_type = node_type;
@@ -351,7 +351,7 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 	new_node->next_sibling = NULL;
 
 
-	printf("new_unary_expression - F\n");
+	//printf("new_unary_expression - F\n");
 	return new_node;
 
 
@@ -360,7 +360,7 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 ast_node* new_assignment_node(ast_node *dest, ast_node *source){
 
 
-	printf("new_assignment_node - I\n");
+	//printf("new_assignment_node - I\n");
     printf("%p,%p\n",dest,source);
 
 	if(dest == NULL || source == NULL){
@@ -380,7 +380,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
 
 
 	}
-	printf("new_assignment_node - F\n");
+	//printf("new_assignment_node - F\n");
 	return new_node;
 }
 
@@ -394,7 +394,7 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
 ast_node* new_local_assignment_node(ast_node *dest, ast_node *source){
 
 
-	printf("new_local_assignment_node - I\n");
+	//printf("new_local_assignment_node - I\n");
     printf("%p,%p\n",dest,source);
 
 	if(dest == NULL || source == NULL){
@@ -414,7 +414,7 @@ ast_node* new_local_assignment_node(ast_node *dest, ast_node *source){
 
 
 	}
-	printf("new_local_assignment_node - F\n");
+	//printf("new_local_assignment_node - F\n");
 	return new_node;
 }
 
@@ -435,9 +435,9 @@ ast_node* new_local_assignment_node(ast_node *dest, ast_node *source){
 ast_node* new_assignment_node_array(ast_node *dest,ast_node *index, ast_node *source){
 
 
-	printf("new_assignment_node_array - I\n");
+	//printf("new_assignment_node_array - I\n");
 	if(dest == NULL ||index|| source == NULL){
-		printf("new_assignment_node_array - R1\n");
+		//printf("new_assignment_node_array - R1\n");
 		return NULL;
 	}
 
@@ -457,7 +457,7 @@ ast_node* new_assignment_node_array(ast_node *dest,ast_node *index, ast_node *so
 
 
 	}
-	printf("new_assignment_node_array - F\n");
+	//printf("new_assignment_node_array - F\n");
 	return new_node;
 
 }
@@ -473,9 +473,9 @@ ast_node* new_assignment_node_array(ast_node *dest,ast_node *index, ast_node *so
 
 
 ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
-	printf("new_binary_expression - I\n");
+	//printf("new_binary_expression - I\n");
 	if(left == NULL || right == NULL){
-		printf("new_binary_expression - R1\n");
+		//printf("new_binary_expression - R1\n");
 		return NULL;
 	}
 
@@ -491,7 +491,7 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 
 	}
-	printf("new_binary_expression - F\n");
+	//printf("new_binary_expression - F\n");
 	return new_node;
 }
 
@@ -500,7 +500,7 @@ ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right){
 
 ast_node* new_command_block_node(int node_type,ast_node *command_list){
 
-	printf("new_command_block_node - I | %p\n",command_list);
+	//printf("new_command_block_node - I | %p\n",command_list);
 
 	if(command_list == NULL) return NULL;
 
@@ -512,7 +512,7 @@ ast_node* new_command_block_node(int node_type,ast_node *command_list){
 		insert_child(command_block,command_list);
 	}
 
-	printf("new_command_block_node - F\n");
+	//printf("new_command_block_node - F\n");
 	return command_block;
 }
 
@@ -520,11 +520,11 @@ ast_node* new_command_block_node(int node_type,ast_node *command_list){
 
 
 ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_commands){
-	printf("new_command_list_node - I\n");
+	//printf("new_command_list_node - I\n");
     printf("%p||||%p\n",current_commands,next_commands);
 
 	if(next_commands == NULL){ 
-        printf("new_command_list_node - F. Current %p\n",current_commands);
+        //printf("new_command_list_node - F. Current %p\n",current_commands);
 		return current_commands;
         
     }
@@ -536,7 +536,7 @@ ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_comman
         return next_commands;
     }
 
-	printf("new_command_list_node - F\n");
+	//printf("new_command_list_node - F\n");
 	return current_commands;
 }
 
@@ -545,13 +545,13 @@ ast_node* new_command_list_node(ast_node* current_commands,ast_node *next_comman
 
 
 ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_expressions){
-	printf("new_expression_list_node - I\n");
+	//printf("new_expression_list_node - I\n");
 	if(next_expressions == NULL) return NULL;
 
 	if(current_expressions == NULL){
 		insert_sibling(current_expressions,next_expressions);
 	}
-	printf("new_expression_list_node - F\n");
+	//printf("new_expression_list_node - F\n");
 	return current_expressions;
 
 
@@ -559,22 +559,22 @@ ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_
 ast_node* new_const_parameter_node(int node_type,VALOR_LEXICO const_lexical,ast_node* parameter_type,ast_node *identifier){
 
 
-	printf("new_const_parameter_node - I\n");
+	//printf("new_const_parameter_node - I\n");
 	ast_node* const_node = new_leaf_node(node_type,const_lexical);
-	printf("new_const_parameter_node - F\n");
+	//printf("new_const_parameter_node - F\n");
 	return new_parameter_node(node_type,const_node,parameter_type,identifier);
 }
 
 ast_node* new_nonconst_parameter_node(int node_type,ast_node* parameter_type,ast_node *identifier){
-	printf("new_nonconst_parameter_node - I\n");
-	printf("new_nonconst_parameter_node - F\n");
+	//printf("new_nonconst_parameter_node - I\n");
+	//printf("new_nonconst_parameter_node - F\n");
 	return new_parameter_node(node_type,NULL,parameter_type,identifier);
 
 }
 
 ast_node* new_parameter_node(int node_type,ast_node* const_modifier,ast_node* parameter_type,ast_node *identifier){
 
-	printf("new_parameter_node - I\n");
+	//printf("new_parameter_node - I\n");
 	ast_node* parameter_node = new_empty_node();
 
 	if(parameter_node != NULL){
@@ -583,7 +583,7 @@ ast_node* new_parameter_node(int node_type,ast_node* const_modifier,ast_node* pa
 		insert_child(parameter_node,parameter_type);
 		insert_child(parameter_node,identifier);
 	}
-	printf("new_parameter_node - F\n");
+	//printf("new_parameter_node - F\n");
 	return parameter_node;
 
 }
@@ -591,20 +591,20 @@ ast_node* new_parameter_node(int node_type,ast_node* const_modifier,ast_node* pa
 
 
 ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_parameters){
-	printf("new_parameter_list_node - I\n");
+	//printf("new_parameter_list_node - I\n");
 	if(next_parameters == NULL) return NULL;
 
 	if(current_parameters == NULL){
 		insert_sibling(current_parameters,next_parameters);
 	}
-	printf("new_parameter_list_node - F\n");
+	//printf("new_parameter_list_node - F\n");
 	return current_parameters;
 
 
 }
 
 ast_node* new_nonstatic_function_declaration_node(int node_type, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
-	printf("new_nonstatic_function_declaration_node - I F\n");
+	//printf("new_nonstatic_function_declaration_node - I F\n");
 	return new_function_declaration_node(node_type,NULL,var_type, identifier,parameter_list,command_block);
 
 }
@@ -613,16 +613,16 @@ ast_node* new_nonstatic_function_declaration_node(int node_type, ast_node* var_t
 
 
 ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO static_lexical, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
-	printf("new_static_function_declaration_node - I \n");
+	//printf("new_static_function_declaration_node - I \n");
 	ast_node* static_node = new_leaf_node('S',static_lexical);
-	printf("new_static_function_declaration_node - F \n");
+	//printf("new_static_function_declaration_node - F \n");
 	return new_function_declaration_node(node_type,static_node,var_type,  identifier,parameter_list,command_block);
 }
 
 /*
 ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
 
-	printf("new_function_declaration_node - I \n");
+	//printf("new_function_declaration_node - I \n");
 
 	ast_node *function_node = new_empty_node();
 
@@ -642,7 +642,7 @@ ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static
 
 	}
 
-	printf("new_function_declaration_node - F \n"); 
+	//printf("new_function_declaration_node - F \n"); 
 	 function_node = NULL;
 	return function_node;
 }
@@ -673,7 +673,7 @@ return command_block;
 
 ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* parameter_list){
 
-	printf("new_function_call_node - I \n");  
+	//printf("new_function_call_node - I \n");  
 	ast_node *function_call_node = new_empty_node();
 
 	if(function_call_node != NULL){
@@ -682,25 +682,25 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
 		insert_child(function_call_node,parameter_list);
 
 	}
-	printf("new_function_call_node - F \n");  
+	//printf("new_function_call_node - F \n");  
 	return function_call_node;
 }
 
 ast_node* new_static_global_var_declaration_node(int node_type, VALOR_LEXICO static_lexical,ast_node* var_type, ast_node* identifier){
-	printf("new_static_global_var_declaration_node - I \n");  
+	//printf("new_static_global_var_declaration_node - I \n");  
 	ast_node* static_node = new_leaf_node('S',static_lexical);
-	printf("new_static_global_var_declaration_node - F \n");   
+	//printf("new_static_global_var_declaration_node - F \n");   
 	return new_global_var_declaration_node(node_type,static_node,var_type,identifier);
 
 
 }
 ast_node* new_nonstatic_global_var_declaration_node(int node_type,ast_node* var_type, ast_node* identifier){
-	printf("new_nonstatic_global_var_declaration_node - I F \n");
+	//printf("new_nonstatic_global_var_declaration_node - I F \n");
 	return new_global_var_declaration_node(node_type,NULL,var_type,identifier);
 }
 
 ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_static,ast_node* var_type, ast_node* identifier){
-	printf("new_global_var_declaration_node - I  \n");
+	//printf("new_global_var_declaration_node - I  \n");
 	ast_node* global_var_node = new_empty_node();
 
 	if(global_var_node != NULL){
@@ -711,13 +711,13 @@ ast_node* new_global_var_declaration_node(int node_type, ast_node* modifier_stat
 
 	}
 	global_var_node = NULL;
-	printf("new_global_var_declaration_node - F  \n");    
+	//printf("new_global_var_declaration_node - F  \n");    
 	return global_var_node;
 }
 
 ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *current_global_node, ast_node* next_global_nodes){
 
-	printf("new_global_grammar_node - I  \n");
+	//printf("new_global_grammar_node - I  \n");
 
 	if(ast_root == NULL){
 		ast_node* temp_node = new_empty_node();
@@ -729,14 +729,14 @@ ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *cu
 		insert_child(arvore,current_global_node);
 		if(next_global_nodes != NULL) 
 			insert_child(arvore,next_global_nodes);
-		printf("new_global_grammar_node - F  \n");
+		//printf("new_global_grammar_node - F  \n");
 		return ast_root;
 	}
 
 	else{
 		if(next_global_nodes != NULL) 
 			insert_sibling(current_global_node,next_global_nodes);
-		printf("new_global_grammar_node - F  \n");
+		//printf("new_global_grammar_node - F  \n");
 		return current_global_node;
 
 	}
@@ -748,21 +748,21 @@ ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *cu
 
 ast_node* new_modifier_node(int node_type1, int node_type2, VALOR_LEXICO lexico1, VALOR_LEXICO lexico2){
 
-	printf("new_modifier_node - I  \n");
+	//printf("new_modifier_node - I  \n");
 	ast_node* modifier1 = new_leaf_node(node_type1,lexico1);
 
 	if(node_type2){
 		ast_node* modifier2 = new_leaf_node(node_type2,lexico2);
 		insert_sibling(modifier1 , modifier2);
 	}
-	printf("new_modifier_node - F  \n");
+	//printf("new_modifier_node - F  \n");
 	return modifier1;
 
 
 }
 /*
 ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_node* var_type, ast_node* identifier, ast_node* initialization){
-	printf("new_local_var_declaration_node - I  \n");
+	//printf("new_local_var_declaration_node - I  \n");
 	if(var_type == NULL || identifier == NULL) 
 		return NULL;
 
@@ -787,7 +787,7 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
 
 	}
 
-	printf("new_local_var_declaration_node - F  \n");
+	//printf("new_local_var_declaration_node - F  \n");
 	return new_node;
 
 
@@ -797,7 +797,7 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
 
 
 ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_node* var_type, ast_node* identifier, ast_node* initialization){
-	printf("new_local_var_declaration_node - I  \n");
+	//printf("new_local_var_declaration_node - I  \n");
 
 	erase_tree(modifiers);
 	erase_tree(var_type);
@@ -806,7 +806,7 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
 	
 	
 
-	printf("new_local_var_declaration_node - F  \n");
+	//printf("new_local_var_declaration_node - F  \n");
 	return initialization;
 
 
@@ -815,7 +815,7 @@ ast_node* new_local_var_declaration_node(int node_type, ast_node* modifiers,ast_
 
 
 ast_node* new_shift_command_node(int node_type,ast_node *identifier, ast_node *shift_type, ast_node *expression){
-	printf("new_shift_command_node - I  \n");
+	////printf("new_shift_command_node - I  \n");
 	ast_node* shift_node = new_empty_node();
 
 	if(shift_node != NULL){
@@ -825,7 +825,7 @@ ast_node* new_shift_command_node(int node_type,ast_node *identifier, ast_node *s
 		insert_child(shift_node,expression);
 
 	}
-	printf("new_shift_command_node - F  \n");
+	//printf("new_shift_command_node - F  \n");
 	return shift_node;
 
 
@@ -833,22 +833,22 @@ ast_node* new_shift_command_node(int node_type,ast_node *identifier, ast_node *s
 
 ast_node* new_return_command_node(int node_type, VALOR_LEXICO lexico, ast_node* expression){
 	ast_node* return_node = new_leaf_node(node_type,lexico);
-	printf("new_return_command_node - I  \n");
+	////printf("new_return_command_node - I  \n");
 	if(return_node != NULL){
 		insert_child(return_node,expression);
 
 
 	}
-	printf("new_return_command_node - F  \n");
+	////printf("new_return_command_node - F  \n");
 	return return_node;
 
 }
 
 
 ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_node *true_expression, ast_node *false_expression){
-	printf("new_ternary_expression - I  \n");    
+	////printf("new_ternary_expression - I  \n");    
 	if(test_expression == NULL || false_expression == NULL || true_expression == NULL){
-		printf("new_ternary_expression - F  \n");  
+		////printf("new_ternary_expression - F  \n");  
 		return NULL;
 	}
 
@@ -861,7 +861,7 @@ ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_no
 		insert_sibling(new_node->first_child,true_expression);
 	}
 
-	printf("new_ternary_expression - F  \n");  
+	////printf("new_ternary_expression - F  \n");  
 	return new_node;
 
 }
@@ -874,7 +874,7 @@ void print_node_info(ast_node *node){
 
 void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
 {
-	printf("Percorrer_imprimir_file_DFS - I  \n");  
+	//printf("Percorrer_imprimir_file_DFS - I  \n");  
 	if(Tree == NULL)
 		return;
 	if((Tree->node_type != '|')&&(Tree->node_type != '{')&&(Tree->node_type != '8'))
@@ -883,7 +883,7 @@ void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
 	Percorrer_imprimir_file_DFS(Tree->first_child,arq);
     //printf("%p %d\n",Tree->node_node_father, Tree->node_type);
 	Percorrer_imprimir_file_DFS(Tree->next_sibling,arq);
-	printf("Percorrer_imprimir_file_DFS - F \n");  
+	//printf("Percorrer_imprimir_file_DFS - F \n");  
 }
 
 
@@ -924,7 +924,7 @@ void erase_tree(ast_node *root){
 	erase_tree(root->next_sibling);
 
     
-	printf("erase_tree - I %d [%c]\n",root->ast_valor_lexico.line,root->node_type);  
+	//printf("erase_tree - I %d [%c]\n",root->ast_valor_lexico.line,root->node_type);  
     if(root->ast_valor_lexico.value) printf("%s\n", root->ast_valor_lexico.value);
     
 
@@ -933,7 +933,7 @@ void erase_tree(ast_node *root){
 	root->ast_valor_lexico.value = NULL;
 	free(root);
 	root = NULL;
-	printf("erase_tree - F  \n");  
+	//printf("erase_tree - F  \n");  
 
 }
 

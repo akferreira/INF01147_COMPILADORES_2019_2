@@ -1992,7 +1992,7 @@ yyreduce:
 
   case 72:
 #line 261 "parser.y" /* yacc.c:1646  */
-    {(yyval.ast_node) = new_empty_leaf_node('8');}
+    {(yyval.ast_node) = new_command_block_node('_',get_null());}
 #line 1997 "parser.tab.c" /* yacc.c:1646  */
     break;
 
