@@ -123,7 +123,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR  local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument call_parameter_list function_parameters_list TK_LIT_FALSE TK_LIT_TRUE;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR  local_var_initialization literal local_var_declaration primitive_type modifiers null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument call_parameter_list function_parameters_list TK_LIT_FALSE TK_LIT_TRUE function_command_block oc_le;
 
 
 null_node: {$$ = get_null();};	
@@ -146,30 +146,42 @@ primitive_type: TK_PR_INT {$$ = new_leaf_node('t',$<valor_lexico>1);}|TK_PR_FLOA
 
 identifier: simple_identifier {$$ = $1;};
 
-simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
+simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);};
 
 
 
 //Function declaration
-function_declaration: TK_PR_STATIC primitive_type simple_identifier '('function_parameters_list')' command_block 
-{$$ = new_static_function_declaration_node('M',$<valor_lexico>1,$2,$3,$5,$7);};
-function_declaration: primitive_type simple_identifier '('function_parameters_list')' command_block{$$ = new_nonstatic_function_declaration_node('M',$1,$2,$4,$6);};
-function_declaration: TK_PR_STATIC primitive_type simple_identifier '('')' command_block 
-{$$ = new_static_function_declaration_node('M',$<valor_lexico>1,$2,$3,NULL,$6);};
-function_declaration: primitive_type simple_identifier '('')' command_block{printf("heeey\n"); $$ = new_nonstatic_function_declaration_node('M',$1,$2,NULL,$5);};
+function_declaration: TK_PR_STATIC primitive_type simple_identifier '('function_parameters_list')' function_command_block 
+	{$$ = new_static_function_declaration_node('M',$<valor_lexico>1,$2,$3,$5,$7);};
+function_declaration: primitive_type simple_identifier '('function_parameters_list')' function_command_block
+	{$$ = new_nonstatic_function_declaration_node('M',$1,$2,$4,$6);};
+function_declaration: TK_PR_STATIC primitive_type simple_identifier '('')' function_command_block 
+	{$$ = new_static_function_declaration_node('M',$<valor_lexico>1,$2,$3,NULL,$6);};
+function_declaration: primitive_type simple_identifier '('')' function_command_block
+	{ $$ = new_nonstatic_function_declaration_node('M',$1,$2,NULL,$5);};
 	
 
-function_parameters_list: function_parameters_argument |function_parameters_argument','function_parameters_list {$$ = new_parameter_list_node($1,$3);};
-function_parameters_argument:TK_PR_CONST primitive_type simple_identifier {$$ = new_const_parameter_node('p',$<valor_lexico>1,$2,$3);};
-function_parameters_argument:primitive_type simple_identifier {$$ = new_nonconst_parameter_node('p',$1,$2);};
+function_parameters_list: function_parameters_argument |function_parameters_argument','function_parameters_list 
+	{$$ = new_parameter_list_node($1,$3);};
+function_parameters_argument:TK_PR_CONST primitive_type simple_identifier 
+	{$$ = new_const_parameter_node('p',$<valor_lexico>1,$2,$3);};
+function_parameters_argument:primitive_type simple_identifier 
+	{$$ = new_nonconst_parameter_node('p',$1,$2);};
 
 //Command Block
-command_block: '{'command_list'}' {$$ = new_command_block_node('{',$2);};
-
-command_list: command';' command_list {$$ = new_command_list_node($1,$3);}|loops command_list {$$ = new_command_list_node($1,$2);}|command_block';'{$$ = $1;}|{$$ = get_null();};
+function_command_block: '{'command_list'}' {$$ = new_command_block_node('{',$2);};
 
 
+
+command_block: '{'command_list'}' {$$ = new_command_block_node('}',$2);};/*{ $$ = new_leaf_node('}',$<valor_lexico>1);}*/
 //command
+
+
+
+
+command_list: command';' command_list {$$ = new_command_list_node($1,$3);}|loops command_list {$$ = new_command_list_node($1,$2);}|command_block';'{$$ = $1;}|{$$ = new_empty_leaf_node('8');};
+
+
 
 command:local_var_declaration|assignment_command{$$ = $1;}|input_command{$$ = $1;}|output_command{$$ = $1;}|function_call{$$ = $1;}|shift_command|command_return{$$ = $1;}|TK_PR_BREAK{$$ = new_leaf_node('b',$<valor_lexico>1);}|TK_PR_CONTINUE{$$ = new_leaf_node('.',$<valor_lexico>1);};|if_statement |loops;
 
@@ -192,7 +204,10 @@ local_var_declaration: primitive_type simple_identifier null_node{$$ = new_local
 
 
 //Local Var Initialization
-local_var_initialization: TK_OC_LE literal { $$ = $2;};
+local_var_initialization: oc_le literal /*{ $$ = $2;};*/{$$=new_local_assignment_node($1,$2);};
+oc_le:TK_OC_LE{ $$ = new_leaf_node('z',$<valor_lexico>1);}
+
+
 
 literal:  TK_IDENTIFICADOR{ $$ = new_leaf_node('I',$<valor_lexico>1);}|TK_LIT_INT{ $$ = new_leaf_node('d',$<valor_lexico>1);}|TK_LIT_FLOAT{ $$ = new_leaf_node('f',$<valor_lexico>1);}|TK_LIT_CHAR{ $$ = new_leaf_node('c',$<valor_lexico>1);}|TK_LIT_STRING{ $$ = new_leaf_node('s',$<valor_lexico>1);};
 
@@ -221,7 +236,6 @@ assignment_command: simple_identifier'['expression']' '=' expression { $$ = new_
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression  {$$ = new_io_node('i',$<valor_lexico>1,$2);};
-
 output_command: TK_PR_OUTPUT expression expression_list{$$ = new_io_node('o',$<valor_lexico>1,$2);};
 
 
@@ -238,7 +252,7 @@ shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,
 command_return: TK_PR_RETURN expression {$$ = new_return_command_node('R',$<valor_lexico>1,$2);};
 
 //If Statement
-if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_ifelse_node(':',$3,$5,$6);};
+if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_if_node(':',$3,$5);};
 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = new_ifelse_node(':',$3,$5,$7);};
 
 

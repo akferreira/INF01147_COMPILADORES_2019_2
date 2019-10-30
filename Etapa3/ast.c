@@ -145,7 +145,59 @@ ast_node* insert_sibling(ast_node *node, ast_node *sibling)
 	return node;
 }
 
+
+
+
+/*
+ast_node* new_function_declaration_node(int node_type, ast_node* modifier_static, ast_node* var_type, ast_node* identifier,ast_node* parameter_list, ast_node* command_block){
+
+	printf("new_function_declaration_node - I \n");
+
+	ast_node *function_node = new_empty_node();
+
+	if(function_node != NULL){
+		function_node->node_type = node_type;
+
+		if(modifier_static != NULL){
+			insert_child(function_node,modifier_static);
+		}
+
+
+		insert_child(function_node,var_type);
+		insert_child(function_node,identifier);
+		if(parameter_list != NULL) insert_child(function_node,parameter_list);
+function_node
+		insert_child(function_node,command_block);
+
+	}
+
+	printf("new_function_declaration_node - F \n"); 
+	 function_node = NULL;
+	return function_node;
+}
+*/
+
+
+
 ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *true_command_block , ast_node *false_command_block){
+	printf("insert_sibling - I\n");
+
+	ast_node* ifelse_node = new_empty_node();
+
+	if(ifelse_node != NULL){
+		ifelse_node->node_type = node_type;
+		insert_child(ifelse_node,test_expression);
+		insert_child(ifelse_node,true_command_block);
+		insert_child(ifelse_node,false_command_block);
+	}
+	printf("insert_sibling - F\n");
+	return ifelse_node;
+
+}
+
+
+
+ast_node* new_if_node(int node_type, ast_node* test_expression, ast_node *true_command_block ){
 	printf("insert_sibling - I\n");
 	ast_node* ifelse_node = new_empty_node();
 
@@ -153,12 +205,18 @@ ast_node* new_ifelse_node(int node_type, ast_node* test_expression, ast_node *tr
 		ifelse_node->node_type = node_type;
 		insert_child(ifelse_node,test_expression);
 		insert_child(ifelse_node,true_command_block);
-		if(false_command_block) insert_child(ifelse_node,false_command_block);
+
 	}
 	printf("insert_sibling - F\n");
 	return ifelse_node;
 
 }
+
+
+
+
+
+
 
 ast_node* new_io_node(int node_type, VALOR_LEXICO lexico_io, ast_node *expression){
 
@@ -205,6 +263,41 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
 
 
 }
+
+
+ast_node* new_empty_leaf_node(int node_type){
+
+	printf("new_empty_leaf_node - I\n");
+
+	ast_node *new_node = (ast_node*) malloc(sizeof(ast_node));
+
+
+
+	if(new_node != NULL){
+
+		new_node->node_type = node_type;
+		new_node->first_child = NULL;
+		new_node->next_sibling = NULL;
+		new_node->father = NULL;
+		//new_node->ast_valor_lexico = NULL;
+
+
+
+//     printf("Sucessfully allocated leaf_node : %c || %d  /%s\n",node_type, ast_valor_lexico.intvalue,ast_valor_lexico.value);
+
+	}
+
+	printf("new_empty_leaf_node - F\n");
+	return new_node;
+
+
+}
+
+
+
+
+
+
 
 ast_node* new_loop_for_node(int node_type, ast_node* initialization,ast_node *test_expression,ast_node* loop_command, ast_node* command_block){
 
@@ -290,6 +383,52 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source){
 	printf("new_assignment_node - F\n");
 	return new_node;
 }
+
+
+
+
+
+
+
+
+ast_node* new_local_assignment_node(ast_node *dest, ast_node *source){
+
+
+	printf("new_local_assignment_node - I\n");
+    printf("%p,%p\n",dest,source);
+
+	if(dest == NULL || source == NULL){
+		return NULL;
+	}
+
+	ast_node *new_node = new_empty_node();
+
+	if(new_node != NULL){
+
+
+		new_node->node_type = '<';
+		insert_child(new_node,dest);
+		insert_child(new_node,source);
+
+
+
+
+	}
+	printf("new_local_assignment_node - F\n");
+	return new_node;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -738,8 +877,8 @@ void Percorrer_imprimir_file_DFS(ast_node *Tree,FILE *arq)
 	printf("Percorrer_imprimir_file_DFS - I  \n");  
 	if(Tree == NULL)
 		return;
-
-	fprintf(arq,"%p, %p [%c][%d]\n",Tree->father, Tree,Tree->node_type,Tree->ast_valor_lexico.intvalue);
+	if((Tree->node_type != '|')&&(Tree->node_type != '{')&&(Tree->node_type != '8'))
+		fprintf(arq,"%p, %p [%c][%d]\n",Tree->father, Tree,Tree->node_type,Tree->ast_valor_lexico.intvalue);
 
 	Percorrer_imprimir_file_DFS(Tree->first_child,arq);
     //printf("%p %d\n",Tree->node_node_father, Tree->node_type);
