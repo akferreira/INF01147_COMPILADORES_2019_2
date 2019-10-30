@@ -1974,13 +1974,13 @@ yyreduce:
 
   case 69:
 #line 255 "parser.y" /* yacc.c:1646  */
-    {(yyval.ast_node) = new_if_node(':',(yyvsp[-3].ast_node),(yyvsp[-1].ast_node));}
+    {(yyval.ast_node) = new_if_node(':',(yyvsp[-3].ast_node),(yyvsp[-1].ast_node));free((yyvsp[-5].valor_lexico).value);}
 #line 1979 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
 #line 256 "parser.y" /* yacc.c:1646  */
-    {(yyval.ast_node) = new_ifelse_node(':',(yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
+    {(yyval.ast_node) = new_ifelse_node(':',(yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node));free((yyvsp[-6].valor_lexico).value);free((yyvsp[-5].valor_lexico).value);}
 #line 1985 "parser.tab.c" /* yacc.c:1646  */
     break;
 

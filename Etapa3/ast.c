@@ -15,7 +15,7 @@ void libera (void *arvore){
 void exporta (void *arvore){
 	printf("print csv\n");
 	FILE *arq1;
-	arq1=fopen("output/e3.csv","w+");
+	arq1=fopen("e3.csv","w+");
 	Percorrer_imprimir_file_DFS(arvore,arq1);
 	fclose(arq1);
 

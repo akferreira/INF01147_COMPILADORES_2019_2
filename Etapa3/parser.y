@@ -252,8 +252,8 @@ shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,
 command_return: TK_PR_RETURN expression {$$ = new_return_command_node('R',$<valor_lexico>1,$2);};
 
 //If Statement
-if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_if_node(':',$3,$5);};
-if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = new_ifelse_node(':',$3,$5,$7);};
+if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_if_node(':',$3,$5);free($<valor_lexico>1.value);};
+if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = new_ifelse_node(':',$3,$5,$7);free($<valor_lexico>1.value);free($<valor_lexico>2.value);};
 
 
 //Loops
