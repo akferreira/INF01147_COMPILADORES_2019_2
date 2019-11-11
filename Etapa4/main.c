@@ -20,7 +20,5 @@ int main (int argc, char **argv)
   
   arvore = NULL;
   yylex_destroy();
-  
-  
   return ret;
 }

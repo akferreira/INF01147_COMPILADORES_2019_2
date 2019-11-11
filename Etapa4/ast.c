@@ -32,7 +32,7 @@ extern SYMBOL_STACK *semantic_stack;
 void exporta (void *arvore){
     
      FILE *arq1;
-     arq1=fopen("e3.csv","w+");
+     arq1=fopen("e4.csv","w+");
      Percorrer_imprimir_file_DFS(arvore,arq1);
      fclose(arq1);
     
