@@ -127,7 +127,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization ;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization function_command_block;
 
 %type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR TK_LIT_CHAR TK_LIT_STRING TK_LIT_FLOAT TK_LIT_INT;
  
@@ -135,7 +135,7 @@ int yyparse (void);
 
 
 enter_scope: {
-//printf("\nnew scope\n");
+printf("\nnew scope\n");
 create_new_scope();
 
 
@@ -182,14 +182,14 @@ vector: TK_IDENTIFICADOR'['TK_LIT_INT']' {    $$ = new_leaf_node(VECTOR_NODE,$<v
 
 
 //Function declaration
-function_declaration: TK_PR_STATIC function_id '('function_parameters_list')' command_block 
+function_declaration: TK_PR_STATIC function_id enter_scope  '('function_parameters_list')' function_command_block 
 {
-$$ = new_static_function_declaration_node('M',$2,$4,$6);
+$$ = new_static_function_declaration_node('M',$2,$5,$7);
 
 };
-function_declaration: function_id '('function_parameters_list')' command_block {
+function_declaration: function_id enter_scope '('function_parameters_list')' function_command_block {
 //insert_function_entry($<valor_lexico>2);
-$$ = new_nonstatic_function_declaration_node('M',$1,$3,$5);
+$$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
 };
 
 //regra para definir o tipo do identificador da função
@@ -215,7 +215,7 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 
 
 
-
+function_command_block: '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$2);};
 
 
 //Command Block

@@ -570,8 +570,11 @@ ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_t
     
     identifier.var_type = parameter_type.var_type;
     
+    printf("is segfault?\n");
     insert_parameters_function(identifier);
     
+    insert_new_table_entry( identifier,1);
+    printf("is souch\n");
     free(parameter_type.value.str_value);
     //return NULL;
     ast_node *parameter_node = new_leaf_node('i',identifier);
@@ -628,32 +631,6 @@ ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXI
         
     //identifier.var_type = var_type.var_type;
     identifier.nature = FUNCTION;
-    
-    
-    //char *function_name;
-    //function_name = strdup(identifier.value.str_value);
-    //insert_new_table_entry(identifier,1);
-    //printf("%s | %s\n",function_name,identifier.value.str_value);
-    
-//     if(parameter_list != NULL){
-//         ast_node *next = parameter_list;
-//         
-//         while(next != NULL){
-//             
-//             insert_parameters_function_entry(next->ast_valor_lexico,identifier.value.str_value,1);
-//             next = next->next_sibling;
-//         }
-//         
-//         
-//     } 
-    
-//     if(returning_own_function){
-//         return_type = identifier.var_type;
-//         returning_own_function = 0;
-//     }
-    //return_type = identifier.var_type;
-    
-    //printf("return type %d\n",return_type);
     
     if(return_type >= 0){
         //printf("hey %d, %d\n",identifier.var_type,return_type);
