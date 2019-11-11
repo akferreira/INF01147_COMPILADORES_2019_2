@@ -6,6 +6,15 @@
 #include "tokens.h"
 
 
+enum _node_types{
+    FUNCTION_CALL_NODE,
+    VECTOR_NODE,
+    ID_NODE,
+    INPUT_NODE,
+    OUTPUT_NODE,
+    EXPRESSION_LIST_NODE
+    
+} NODES_TYPES;
 
 
 
@@ -17,6 +26,8 @@ typedef struct  _valor_lexico{
     int nature;
     int token_type;
     int var_type;
+    int is_static;
+    
 //     char charvalue;
 //     char *value;
 //     int intvalue;
@@ -42,7 +53,7 @@ typedef struct _modifiers{
 
 typedef struct _ast_node {
     int node_type;
-    int children_count;
+    int vector_position;
     VALOR_LEXICO ast_valor_lexico;
     
     
@@ -79,7 +90,7 @@ ast_node* get_nth_child_ast_node(int position);
 
 ast_node* get_nth_sibling_ast_node(int position);
 
-ast_node* new_assignment_node(ast_node *dest, ast_node *source);
+ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initialization);
 
 
 ast_node* new_binary_expression(int node_type, ast_node *left,ast_node *right);
@@ -92,10 +103,10 @@ ast_node* new_empty_node();
 
 ast_node* new_expression_list_node(ast_node* current_expressions,ast_node *next_expressions);
 
-ast_node* new_nonstatic_function_declaration_node(int node_type, VALOR_LEXICO var_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block);
+ast_node* new_nonstatic_function_declaration_node(int node_type, VALOR_LEXICO identifier,ast_node* parameter_list, ast_node* command_block);
 
-ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO var_type, VALOR_LEXICO indentifier,ast_node* parameter_list, ast_node* command_block);
-ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXICO var_type, VALOR_LEXICO identifier ,ast_node* parameter_list, ast_node* command_block);
+ast_node* new_static_function_declaration_node(int node_type, VALOR_LEXICO indentifier,ast_node* parameter_list, ast_node* command_block);
+ast_node* new_function_declaration_node(int node_type, int is_static, VALOR_LEXICO identifier ,ast_node* parameter_list, ast_node* command_block);
 
 
 
@@ -143,6 +154,9 @@ ast_node* new_ternary_expression(int node_type, ast_node *test_expression,ast_no
 
 ast_node* new_unary_expression(int node_type, ast_node *expression);
 
+
+
+void free_lexical(VALOR_LEXICO lexical);
 
 
 

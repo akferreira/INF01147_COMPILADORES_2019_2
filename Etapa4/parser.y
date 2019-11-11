@@ -27,6 +27,7 @@ void yyerror (char const *s)
 {
 
 	 fprintf (stderr, "Line %d Column %d : %s\n", get_line_number(),yylloc.last_column,s);
+	 exit(1);
 }
 extern int yylex (void);
 int yyparse (void);
@@ -97,7 +98,8 @@ int yyparse (void);
 
 
 
-
+%left TK_OC_EQ
+%left TK_OC_LE TK_OC_GE
 
 %left   '|'
 %left   '&'
@@ -111,6 +113,11 @@ int yyparse (void);
 %right TK_PR_STATIC
 
 
+%left UNARY_QUESTION_MARK
+%right UNARY_PLUS UNARY_MINUS
+%right UNARY_ET UNARY_POINTER
+
+
 /*Mais Prioritário*/
 
 
@@ -120,10 +127,10 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command TK_IDENTIFICADOR vector local_var_initialization literal local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization function_command_block;
 
-%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR;
-
+%type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR TK_LIT_CHAR TK_LIT_STRING TK_LIT_FLOAT TK_LIT_INT;
+ 
 %type <var_modifier> modifiers no_modifier;
 
 
@@ -134,7 +141,11 @@ create_new_scope();
 
 };
 
-exit_scope: {printf("exiting scope\n");  exit_scope();};
+
+
+exit_scope: {
+//printf("\nexiting scope\n");  
+exit_scope();};
 
 null_node: {$$ = get_null();};
 
@@ -147,8 +158,8 @@ program: grammars program  {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
 grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
-global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR ';'{$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,1);};
-global_var_declaration: primitive_type TK_IDENTIFICADOR';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,1);};
+global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR ';'{$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,-1);};
+global_var_declaration: primitive_type TK_IDENTIFICADOR';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,-1);};
 
 global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';' {$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,$<valor_lexico>5.value.intvalue);};
 global_var_declaration: primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,$<valor_lexico>4.value.intvalue);};
@@ -156,28 +167,41 @@ global_var_declaration: primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';'{$$ = 
 
 //decl: primitive_type identifier;
 
-primitive_type: TK_PR_INT
-|TK_PR_FLOAT
-|TK_PR_CHAR
-|TK_PR_BOOL
-|TK_PR_STRING;
+primitive_type: TK_PR_INT { $1.var_type = TYPE_INT; $$ = $1;}
+|TK_PR_FLOAT { $1.var_type = TYPE_FLOAT; $$ = $1;}
+|TK_PR_CHAR{ $1.var_type = TYPE_CHAR; $$ = $1;}
+|TK_PR_BOOL{ $1.var_type = TYPE_BOOL; $$ = $1;}
+|TK_PR_STRING{ $1.var_type = TYPE_STRING; $$ = $1;};
 
 identifier: simple_identifier {$$ = $1;}
-|vector {$$ = new_leaf_node('V',$<valor_lexico>1);};
+|vector {$$ = $1;};
 
-simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node('I',$<valor_lexico>1);}
-vector: TK_IDENTIFICADOR'['TK_LIT_INT']';
+simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
+vector: TK_IDENTIFICADOR'['TK_LIT_INT']' {    $$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); $$->  vector_position = $<valor_lexico>3.value.intvalue; }  ;
 
 
 
 //Function declaration
-function_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block 
+function_declaration: TK_PR_STATIC function_id enter_scope  '('function_parameters_list')' function_command_block 
 {
-$$ = new_static_function_declaration_node('M',$2,$<valor_lexico>3,$5,$7);
+$$ = new_static_function_declaration_node('M',$2,$5,$7);
 
 };
-function_declaration: primitive_type TK_IDENTIFICADOR '('function_parameters_list')' command_block {
-$$ = new_nonstatic_function_declaration_node('M',$1,$<valor_lexico>2,$4,$6);
+function_declaration: function_id enter_scope '('function_parameters_list')' function_command_block {
+//insert_function_entry($<valor_lexico>2);
+$$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
+};
+
+//regra para definir o tipo do identificador da função
+function_id: primitive_type TK_IDENTIFICADOR {
+
+$<valor_lexico>2.var_type = $1.var_type;
+$<valor_lexico>2.nature = FUNCTION;
+insert_function_entry($<valor_lexico>2);
+$$ = $<valor_lexico>2;
+
+free($1.value.str_value);
+
 };
 
 
@@ -191,22 +215,21 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 
 
 
-
+function_command_block: '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$2);};
 
 
 //Command Block
 command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
 
 command_list: command command_list {$$ = new_command_list_node($1,$2);}
-
+|command_block';' command_list {new_command_list_node($1,$3);}
 | loops command_list {$$ = new_command_list_node($1,$2);}
-|command_block{$$ = $1;}
 |{$$ = get_null();};
 
-
 //command
-command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{printf("function call\n"); $$ = $1;}
+command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{ $$ = $1;}
 |command_return';'{$$ = $1;}
+
 | TK_PR_BREAK';'  {$$ = new_leaf_node('b',$<valor_lexico>1);}
 |TK_PR_CONTINUE';' {$$ = new_leaf_node('.',$<valor_lexico>1);};
 
@@ -232,23 +255,29 @@ $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
 local_var_declaration: primitive_type TK_IDENTIFICADOR null_node no_modifier{
 $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3) ;
 };
+//Local Var Initialization
+local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
+
 
 //Chamada de Função
 
-function_call: simple_identifier '(' call_parameter_list ')'{$$ = new_function_call_node('K',$1,$3);};
+function_call: simple_identifier '(' call_parameter_list ')'{ $$ = new_function_call_node(FUNCTION_CALL_NODE,$1,$3);};
 
-call_parameter_list:expression ',' call_parameter_list { printf("call parameters\n"); $$ = new_expression_list_node($1,$3);};| expression;
+call_parameter_list:expression ',' call_parameter_list {  $$ = new_expression_list_node($1,$3);};
+| expression 
+| {
+$$ = get_null();};
 
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
-$$ = new_assignment_node($1,$3);};
+$$ = new_assignment_node($1,$3,0);};
 
 //Comandos de Entrada e Saída
-input_command: TK_PR_INPUT expression {$$ = new_io_node('i',$<valor_lexico>1,$2);};
+input_command: TK_PR_INPUT expression {$$ = new_io_node(INPUT_NODE,$<valor_lexico>1,$2);};
 
-output_command: TK_PR_OUTPUT expression{$$ = new_io_node('o',$<valor_lexico>1,$2);};
-output_command: TK_PR_OUTPUT expression_list{$$ = new_io_node('o',$<valor_lexico>1,$2);};
+output_command: TK_PR_OUTPUT expression{$$ = new_io_node(OUTPUT_NODE,$<valor_lexico>1,$2);};
+output_command: TK_PR_OUTPUT expression_list{$$ = new_io_node(OUTPUT_NODE,$<valor_lexico>1,$2);};
 
 
 
@@ -263,7 +292,7 @@ shift: TK_OC_SL { $$ = new_leaf_node('L',$<valor_lexico>1);}
 shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,$2,$3);};
 
 //Retorno
-command_return: TK_PR_RETURN expression {$$ = new_return_command_node('R',$<valor_lexico>1,$2);};
+command_return: TK_PR_RETURN expression { $$ = new_return_command_node('R',$<valor_lexico>1,$2);};
 
 //If Statement
 if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_ifelse_node(':',$3,$5,$6);};
@@ -292,19 +321,19 @@ loop_for_command: local_var_declaration| shift_command | assignment_command;
 
 
 expression_list:  expression ',' expression_list { $$ = new_expression_list_node($1,$3);};
-|  ',' expression { $$ = $2;};
+|  expression ',' expression { $$ = new_expression_list_node($1,$3);};
 
 //expression: literal { printf("literal rule\n"); $$ = $1;};
 //expression: expression_unary | expression_binary| expression_ternary;
-literal: {};
 
+//literal: {};
 expression: '(' expression ')'{ $$ = $2;};
 //Unários
-expression:'+'expression{ $$ = $2;};
-expression:'-'expression{ $$ = new_unary_expression('-',$2);};
+expression:'+'expression %prec UNARY_PLUS { $$ = $2;};
+expression:'-'expression  %prec UNARY_MINUS { $$ = new_unary_expression('-',$2);};
 expression:'!'expression{ $$ = new_unary_expression('!',$2); };
-expression:'&'expression { $$ = new_unary_expression('@',$2); };
-expression:'*'expression {$$ = new_unary_expression('$',$2); };
+expression:'&'expression  %prec UNARY_ET { $$ = new_unary_expression('@',$2); };
+expression:'*'expression %prec UNARY_POINTER  {$$ = new_unary_expression('$',$2); };
 expression:'?'expression{$$ = new_unary_expression('~',$2); };
 expression:'#'expression{$$ = new_unary_expression('#',$2); };
 //Binários
@@ -319,24 +348,40 @@ expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
 //Ternários
 expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
       
+expression : literal_id {$$ = $1;};
 
-//Local Var Initialization
-local_var_initialization: TK_OC_LE literal { $$ = $2;};
+//era expression
+literal_id:  TK_IDENTIFICADOR{ 
 
-expression:  TK_IDENTIFICADOR{ 
-
-$$ = new_leaf_node('I',$<valor_lexico>1);
+$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
+SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+if(id_info.nature == FUNCTION){
+    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
+    exit(ERR_FUNCTION);
 }
+
+
+
+}
+| function_call {
+$$ = $1;
+}
+
 |TK_LIT_INT{ 
+$1.var_type = TYPE_INT;
 $$ = new_leaf_node('d',$<valor_lexico>1);
 }
 |TK_LIT_FLOAT{ 
+$1.var_type = TYPE_FLOAT;
 $$ = new_leaf_node('f',$<valor_lexico>1);
 }
 |TK_LIT_CHAR{ 
+
+$1.var_type = TYPE_CHAR;
 $$ = new_leaf_node('c',$<valor_lexico>1);
 }
 |TK_LIT_STRING{ 
+$1.var_type = TYPE_STRING;
 $$ = new_leaf_node('s',$<valor_lexico>1);
 }
 |TK_LIT_TRUE{ 
