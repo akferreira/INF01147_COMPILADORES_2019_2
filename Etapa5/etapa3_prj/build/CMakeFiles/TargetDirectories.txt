@@ -1,7 +1,0 @@
-/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build/CMakeFiles/install/strip.dir
-/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build/CMakeFiles/install/local.dir
-/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build/CMakeFiles/edit_cache.dir
-/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build/CMakeFiles/etapa3_prj.dir
-/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build/CMakeFiles/rebuild_cache.dir
-/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build/CMakeFiles/list_install_components.dir
-/mnt/DISK2_MIKU/Documents/compiladores/trabalho_semestre/Etapa3/etapa3_prj/build/CMakeFiles/install.dir

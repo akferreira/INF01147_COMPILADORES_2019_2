@@ -1,3 +1,0 @@
-﻿  Source.c
-C:\Users\vitor_000\source\repos\Tabela_de_Simbolos\Tabela_de_Simbolos\Source.c(5,1): warning C4133: 'initializing': incompatible types - from 'NODO_PILHA *' to 'NODO_PILHA *'
-  Tabela_de_Simbolos.vcxproj -> C:\Users\vitor_000\source\repos\Tabela_de_Simbolos\Debug\Tabela_de_Simbolos.exe

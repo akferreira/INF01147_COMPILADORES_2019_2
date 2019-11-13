@@ -1,9 +1,0 @@
-//Variáveis somente podem ser usadas sem indexação
-//ERR_VARIABLE
-int f()
-{
-  int a;
-  a();
-  return 0
-;
-}

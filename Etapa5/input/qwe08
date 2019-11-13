@@ -1,9 +1,0 @@
-//Essa verificação de declaração prévia deve considerar o escopo da linguagem.
-//ERR_DECLARED
-int f()
-{
-  int a;
-  int a;
-  return 0
-;
-}

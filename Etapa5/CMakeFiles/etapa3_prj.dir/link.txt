@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/etapa3_prj.dir/main.c.o  -o etapa3_prj 

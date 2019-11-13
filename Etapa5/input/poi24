@@ -1,8 +1,0 @@
-int main()
-{
-  int a;
-  bool b;
-  float c;
-  a = b + a * c;
-  return a;
-}

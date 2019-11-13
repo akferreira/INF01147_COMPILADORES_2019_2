@@ -1,8 +1,0 @@
-# depslib dependency file v1.0
-1570314528 source:c:\users\vitor_000\documents\ufrgs\semestre 5\compiladores\trabalho\inf01147_compiladores_2019_2\etapa3\ast\main.c
-	"ast.h"
-
-1570314603 c:\users\vitor_000\documents\ufrgs\semestre 5\compiladores\trabalho\inf01147_compiladores_2019_2\etapa3\ast\ast.h
-	<stdio.h>
-	<stdlib.h>
-
