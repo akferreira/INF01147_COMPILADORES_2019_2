@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "symbol_table.h"
+#include "ILOC.h"
+
 extern void *arvore;
 extern int get_line_number (void);
 extern void exporta (void *arvore);
@@ -221,10 +223,11 @@ function_command_block: '{'command_list'}' exit_scope { $$ = new_command_block_n
 //Command Block
 command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
 
-command_list: command command_list {$$ = new_command_list_node($1,$2);}
-|command_block';' command_list {new_command_list_node($1,$3);}
-| loops command_list {$$ = new_command_list_node($1,$2);}
-|{$$ = get_null();};
+command_list: 
+	command command_list {$$ = new_command_list_node($1,$2);}
+	|command_block';' command_list {new_command_list_node($1,$3);}
+	| loops command_list {$$ = new_command_list_node($1,$2);}
+	|{$$ = get_null();};
 
 //command
 command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{ $$ = $1;}
@@ -332,8 +335,29 @@ expression:'&'expression  %prec UNARY_ET { $$ = new_unary_expression('@',$2); };
 expression:'*'expression %prec UNARY_POINTER  {$$ = new_unary_expression('$',$2); };
 expression:'?'expression{$$ = new_unary_expression('~',$2); };
 expression:'#'expression{$$ = new_unary_expression('#',$2); };
+
+
+
+
+
+
 //Binários
-expression: expression '+' expression {$$ = new_binary_expression('+',$1,$3);};
+expression: expression '+' expression 
+{
+	$$ = new_binary_expression('+',$1,$3);
+	operacoesBinaria('+', lookup($1),lookup($3));
+	
+};
+
+
+
+
+
+
+
+
+
+
 expression: expression '-' expression{$$ = new_binary_expression('-',$1,$3); };
 expression: expression '*' expression{$$ = new_binary_expression('*',$1,$3);};
 expression: expression '/' expression{$$ = new_binary_expression('/',$1,$3); };
