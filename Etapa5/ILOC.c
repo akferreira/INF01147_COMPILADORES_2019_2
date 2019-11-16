@@ -96,7 +96,22 @@ char* newTemp(){
     
 }
 
-
+int countLines(char *string, int size){
+    int count = 0;
+    int newline = '\n';
+    
+    //printf("counting\n");
+    
+    while(count < size && (*string) != '\0'){
+        if(*string == newline) ++count;
+        
+        string = string + 1;
+        
+    }
+    
+    
+    return count;
+}
 
 char* newLabel(){
     char *buffer = malloc(TEMP_NAME_SIZE);

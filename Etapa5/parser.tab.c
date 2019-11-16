@@ -531,15 +531,15 @@ static const yytype_uint16 yyrline[] =
        0,   142,   142,   151,   155,   158,   159,   163,   163,   166,
      167,   169,   170,   175,   176,   177,   178,   179,   181,   182,
      184,   185,   190,   198,   211,   216,   222,   234,   236,   237,
-     238,   239,   244,   248,   251,   252,   253,   254,   257,   257,
-     257,   257,   257,   257,   257,   258,   260,   261,   266,   267,
-     268,   270,   274,   288,   302,   306,   311,   313,   314,   315,
-     319,   335,   337,   338,   344,   345,   347,   350,   353,   354,
-     357,   358,   359,   361,   361,   362,   363,   366,   367,   369,
-     369,   369,   381,   382,   386,   388,   389,   390,   391,   392,
-     393,   394,   402,   414,   427,   438,   450,   451,   460,   468,
-     470,   472,   476,   479,   482,   500,   504,   567,   576,   580,
-     585,   589,   592
+     238,   239,   244,   257,   266,   282,   286,   290,   293,   293,
+     293,   293,   293,   293,   293,   294,   296,   297,   302,   303,
+     304,   306,   310,   324,   338,   342,   347,   349,   350,   351,
+     355,   373,   375,   376,   382,   383,   385,   388,   391,   392,
+     395,   396,   397,   399,   399,   400,   401,   404,   405,   407,
+     407,   407,   419,   420,   424,   426,   427,   428,   429,   430,
+     431,   432,   440,   452,   465,   476,   488,   489,   498,   506,
+     508,   510,   514,   517,   520,   538,   542,   607,   616,   620,
+     625,   629,   632
 };
 #endif
 
@@ -1807,108 +1807,144 @@ free((yyvsp[-1].valor_lexico).value.str_value);
 
   case 32:
 #line 244 "parser.y"
-    { (yyval.ast_node) = new_command_block_node('{',(yyvsp[-2].ast_node));}
-#line 1812 "parser.tab.c"
+    { 
+(yyval.ast_node) = new_command_block_node('{',(yyvsp[-2].ast_node));
+(yyval.ast_node)->code = concatCode((yyvsp[-2].ast_node)->code, (yyval.ast_node)->code);
+printf("block___%p\n",(yyval.ast_node)->code);
+
+printf("command block code:\n%s",(yyval.ast_node)->code);
+
+printf("%d Instructions\n",countLines((yyval.ast_node)->code,strlen((yyval.ast_node)->code)));
+
+}
+#line 1821 "parser.tab.c"
     break;
 
   case 33:
-#line 248 "parser.y"
-    { (yyval.ast_node) = new_command_block_node('{',(yyvsp[-2].ast_node));}
-#line 1818 "parser.tab.c"
+#line 257 "parser.y"
+    { 
+(yyval.ast_node) = new_command_block_node('{',(yyvsp[-2].ast_node));
+(yyval.ast_node)->code = concatCode((yyvsp[-2].ast_node)->code, (yyval.ast_node)->code);
+printf("block___%p\n",(yyval.ast_node)->code);
+
+printf("command block code:\n%s",(yyval.ast_node)->code);
+}
+#line 1833 "parser.tab.c"
     break;
 
   case 34:
-#line 251 "parser.y"
-    {(yyval.ast_node) = new_command_list_node((yyvsp[-1].ast_node),(yyvsp[0].ast_node));}
-#line 1824 "parser.tab.c"
-    break;
+#line 266 "parser.y"
+    {
+(yyval.ast_node) = new_command_list_node((yyvsp[-1].ast_node),(yyvsp[0].ast_node));
+char *code1,*code2;
 
-  case 35:
-#line 252 "parser.y"
-    {new_command_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 1830 "parser.tab.c"
-    break;
+if((yyvsp[-1].ast_node) == NULL) code1 = NULL;
+else code1 = (yyvsp[-1].ast_node)->code;
 
-  case 36:
-#line 253 "parser.y"
-    {(yyval.ast_node) = new_command_list_node((yyvsp[-1].ast_node),(yyvsp[0].ast_node));}
-#line 1836 "parser.tab.c"
-    break;
 
-  case 37:
-#line 254 "parser.y"
-    {(yyval.ast_node) = get_null();}
-#line 1842 "parser.tab.c"
-    break;
+if((yyvsp[0].ast_node) == NULL) code2 = NULL;
+else code2 = (yyvsp[0].ast_node)->code;
 
-  case 41:
-#line 257 "parser.y"
-    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 1848 "parser.tab.c"
-    break;
 
-  case 42:
-#line 257 "parser.y"
-    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
+(yyval.ast_node)->code = concatCode(code1, code2);
+
+
+}
 #line 1854 "parser.tab.c"
     break;
 
-  case 43:
-#line 257 "parser.y"
-    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 1860 "parser.tab.c"
+  case 35:
+#line 282 "parser.y"
+    {
+new_command_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));
+(yyval.ast_node)->code = concatCode((yyvsp[-2].ast_node)->code, (yyvsp[0].ast_node)->code);
+}
+#line 1863 "parser.tab.c"
     break;
 
-  case 44:
-#line 257 "parser.y"
-    { (yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 1866 "parser.tab.c"
-    break;
-
-  case 45:
-#line 258 "parser.y"
-    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
+  case 36:
+#line 286 "parser.y"
+    {
+(yyval.ast_node) = new_command_list_node((yyvsp[-1].ast_node),(yyvsp[0].ast_node));
+(yyval.ast_node)->code = concatCode((yyvsp[-1].ast_node)->code, (yyvsp[0].ast_node)->code);
+}
 #line 1872 "parser.tab.c"
     break;
 
-  case 46:
-#line 260 "parser.y"
-    {(yyval.ast_node) = new_leaf_node('b',(yyvsp[-1].valor_lexico));}
+  case 37:
+#line 290 "parser.y"
+    {(yyval.ast_node) = get_null();}
 #line 1878 "parser.tab.c"
     break;
 
-  case 47:
-#line 261 "parser.y"
-    {(yyval.ast_node) = new_leaf_node('.',(yyvsp[-1].valor_lexico));}
+  case 41:
+#line 293 "parser.y"
+    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
 #line 1884 "parser.tab.c"
     break;
 
-  case 48:
-#line 266 "parser.y"
-    { (yyval.var_modifier) = modifier(1,1);}
+  case 42:
+#line 293 "parser.y"
+    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
 #line 1890 "parser.tab.c"
     break;
 
-  case 49:
-#line 267 "parser.y"
-    { (yyval.var_modifier) = modifier(1,0);}
+  case 43:
+#line 293 "parser.y"
+    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
 #line 1896 "parser.tab.c"
     break;
 
-  case 50:
-#line 268 "parser.y"
-    { (yyval.var_modifier) = modifier(0,1);}
+  case 44:
+#line 293 "parser.y"
+    { (yyval.ast_node) = (yyvsp[-1].ast_node);}
 #line 1902 "parser.tab.c"
     break;
 
-  case 51:
-#line 270 "parser.y"
-    {(yyval.var_modifier) = modifier(0,0);}
+  case 45:
+#line 294 "parser.y"
+    {(yyval.ast_node) = (yyvsp[-1].ast_node);}
 #line 1908 "parser.tab.c"
     break;
 
+  case 46:
+#line 296 "parser.y"
+    {(yyval.ast_node) = new_leaf_node('b',(yyvsp[-1].valor_lexico));}
+#line 1914 "parser.tab.c"
+    break;
+
+  case 47:
+#line 297 "parser.y"
+    {(yyval.ast_node) = new_leaf_node('.',(yyvsp[-1].valor_lexico));}
+#line 1920 "parser.tab.c"
+    break;
+
+  case 48:
+#line 302 "parser.y"
+    { (yyval.var_modifier) = modifier(1,1);}
+#line 1926 "parser.tab.c"
+    break;
+
+  case 49:
+#line 303 "parser.y"
+    { (yyval.var_modifier) = modifier(1,0);}
+#line 1932 "parser.tab.c"
+    break;
+
+  case 50:
+#line 304 "parser.y"
+    { (yyval.var_modifier) = modifier(0,1);}
+#line 1938 "parser.tab.c"
+    break;
+
+  case 51:
+#line 306 "parser.y"
+    {(yyval.var_modifier) = modifier(0,0);}
+#line 1944 "parser.tab.c"
+    break;
+
   case 52:
-#line 274 "parser.y"
+#line 310 "parser.y"
     {
     (yyval.ast_node) = new_local_var_declaration_node('<',(yyvsp[-3].var_modifier),(yyvsp[-2].valor_lexico),(yyvsp[-1].valor_lexico),(yyvsp[0].ast_node) ) ;
 
@@ -1922,11 +1958,11 @@ free((yyvsp[-1].valor_lexico).value.str_value);
     }
 
 }
-#line 1926 "parser.tab.c"
+#line 1962 "parser.tab.c"
     break;
 
   case 53:
-#line 288 "parser.y"
+#line 324 "parser.y"
     {
     (yyval.ast_node) = new_local_var_declaration_node('<', (yyvsp[0].var_modifier) ,(yyvsp[-3].valor_lexico),(yyvsp[-2].valor_lexico),(yyvsp[-1].ast_node) ) ;
 
@@ -1941,206 +1977,208 @@ free((yyvsp[-1].valor_lexico).value.str_value);
     }
 
 }
-#line 1945 "parser.tab.c"
+#line 1981 "parser.tab.c"
     break;
 
   case 54:
-#line 302 "parser.y"
+#line 338 "parser.y"
     {
 (yyval.ast_node) = new_local_var_declaration_node('<', (yyvsp[0].var_modifier) ,(yyvsp[-3].valor_lexico),(yyvsp[-2].valor_lexico),(yyvsp[-1].ast_node)) ;
 }
-#line 1953 "parser.tab.c"
+#line 1989 "parser.tab.c"
     break;
 
   case 55:
-#line 306 "parser.y"
+#line 342 "parser.y"
     { (yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 1959 "parser.tab.c"
+#line 1995 "parser.tab.c"
     break;
 
   case 56:
-#line 311 "parser.y"
+#line 347 "parser.y"
     { (yyval.ast_node) = new_function_call_node(FUNCTION_CALL_NODE,(yyvsp[-3].ast_node),(yyvsp[-1].ast_node));}
-#line 1965 "parser.tab.c"
+#line 2001 "parser.tab.c"
     break;
 
   case 57:
-#line 313 "parser.y"
+#line 349 "parser.y"
     {(yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 1971 "parser.tab.c"
+#line 2007 "parser.tab.c"
     break;
 
   case 59:
-#line 315 "parser.y"
+#line 351 "parser.y"
     {(yyval.ast_node) = get_null();}
-#line 1977 "parser.tab.c"
+#line 2013 "parser.tab.c"
     break;
 
   case 60:
-#line 319 "parser.y"
+#line 355 "parser.y"
     { 
 
 (yyval.ast_node) = new_assignment_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node),0);
 
 
 SYMBOL_INFO id_info = retrieve_symbol((yyvsp[-2].valor_lexico));
+printf("assignment code : %s\n",(yyvsp[0].ast_node)->code);
+printf("assignment code2 : %s\n",(yyval.ast_node)->code);
 
 (yyval.ast_node)->code = storeTempToVariable((yyvsp[0].ast_node)->temp, id_info.depth, id_info.position);
 (yyval.ast_node)->code = concatCode((yyvsp[0].ast_node)->code,(yyval.ast_node)->code);
 
-printf("assignment code : %s",(yyval.ast_node)->code);
+
 
 
 }
-#line 1996 "parser.tab.c"
+#line 2034 "parser.tab.c"
     break;
 
   case 61:
-#line 335 "parser.y"
+#line 373 "parser.y"
     {(yyval.ast_node) = new_io_node(INPUT_NODE,(yyvsp[-1].valor_lexico),(yyvsp[0].ast_node));}
-#line 2002 "parser.tab.c"
+#line 2040 "parser.tab.c"
     break;
 
   case 62:
-#line 337 "parser.y"
+#line 375 "parser.y"
     {(yyval.ast_node) = new_io_node(OUTPUT_NODE,(yyvsp[-1].valor_lexico),(yyvsp[0].ast_node));}
-#line 2008 "parser.tab.c"
+#line 2046 "parser.tab.c"
     break;
 
   case 63:
-#line 338 "parser.y"
+#line 376 "parser.y"
     {(yyval.ast_node) = new_io_node(OUTPUT_NODE,(yyvsp[-1].valor_lexico),(yyvsp[0].ast_node));}
-#line 2014 "parser.tab.c"
+#line 2052 "parser.tab.c"
     break;
 
   case 64:
-#line 344 "parser.y"
+#line 382 "parser.y"
     { (yyval.ast_node) = new_leaf_node('L',(yyvsp[0].valor_lexico));}
-#line 2020 "parser.tab.c"
+#line 2058 "parser.tab.c"
     break;
 
   case 65:
-#line 345 "parser.y"
+#line 383 "parser.y"
     { (yyval.ast_node) = new_leaf_node('R',(yyvsp[0].valor_lexico));}
-#line 2026 "parser.tab.c"
+#line 2064 "parser.tab.c"
     break;
 
   case 66:
-#line 347 "parser.y"
+#line 385 "parser.y"
     { (yyval.ast_node) = new_shift_command_node('X',(yyvsp[-2].ast_node),(yyvsp[-1].ast_node),(yyvsp[0].ast_node));}
-#line 2032 "parser.tab.c"
+#line 2070 "parser.tab.c"
     break;
 
   case 67:
-#line 350 "parser.y"
+#line 388 "parser.y"
     { (yyval.ast_node) = new_return_command_node('R',(yyvsp[-1].valor_lexico),(yyvsp[0].ast_node));}
-#line 2038 "parser.tab.c"
+#line 2076 "parser.tab.c"
     break;
 
   case 68:
-#line 353 "parser.y"
+#line 391 "parser.y"
     {(yyval.ast_node) = new_ifelse_node(':',(yyvsp[-3].ast_node),(yyvsp[-1].ast_node),(yyvsp[0].ast_node));}
-#line 2044 "parser.tab.c"
+#line 2082 "parser.tab.c"
     break;
 
   case 69:
-#line 354 "parser.y"
+#line 392 "parser.y"
     {(yyval.ast_node) = new_ifelse_node(':',(yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2050 "parser.tab.c"
+#line 2088 "parser.tab.c"
     break;
 
   case 70:
-#line 357 "parser.y"
+#line 395 "parser.y"
     {(yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 2056 "parser.tab.c"
+#line 2094 "parser.tab.c"
     break;
 
   case 71:
-#line 358 "parser.y"
+#line 396 "parser.y"
     {(yyval.ast_node) = get_null();}
-#line 2062 "parser.tab.c"
+#line 2100 "parser.tab.c"
     break;
 
   case 75:
-#line 362 "parser.y"
+#line 400 "parser.y"
     {(yyval.ast_node) = new_loop_while_node('w',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2068 "parser.tab.c"
+#line 2106 "parser.tab.c"
     break;
 
   case 76:
-#line 363 "parser.y"
+#line 401 "parser.y"
     {(yyval.ast_node) = new_loop_for_node('j',(yyvsp[-6].ast_node),(yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2074 "parser.tab.c"
+#line 2112 "parser.tab.c"
     break;
 
   case 77:
-#line 366 "parser.y"
+#line 404 "parser.y"
     {(yyval.ast_node) = new_command_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2080 "parser.tab.c"
+#line 2118 "parser.tab.c"
     break;
 
   case 82:
-#line 381 "parser.y"
+#line 419 "parser.y"
     { (yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2086 "parser.tab.c"
+#line 2124 "parser.tab.c"
     break;
 
   case 83:
-#line 382 "parser.y"
+#line 420 "parser.y"
     { (yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2092 "parser.tab.c"
+#line 2130 "parser.tab.c"
     break;
 
   case 84:
-#line 386 "parser.y"
+#line 424 "parser.y"
     { (yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 2098 "parser.tab.c"
+#line 2136 "parser.tab.c"
     break;
 
   case 85:
-#line 388 "parser.y"
+#line 426 "parser.y"
     { (yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 2104 "parser.tab.c"
+#line 2142 "parser.tab.c"
     break;
 
   case 86:
-#line 389 "parser.y"
+#line 427 "parser.y"
     { (yyval.ast_node) = new_unary_expression('-',(yyvsp[0].ast_node));}
-#line 2110 "parser.tab.c"
+#line 2148 "parser.tab.c"
     break;
 
   case 87:
-#line 390 "parser.y"
+#line 428 "parser.y"
     { (yyval.ast_node) = new_unary_expression('!',(yyvsp[0].ast_node)); }
-#line 2116 "parser.tab.c"
+#line 2154 "parser.tab.c"
     break;
 
   case 88:
-#line 391 "parser.y"
+#line 429 "parser.y"
     { (yyval.ast_node) = new_unary_expression('@',(yyvsp[0].ast_node)); }
-#line 2122 "parser.tab.c"
+#line 2160 "parser.tab.c"
     break;
 
   case 89:
-#line 392 "parser.y"
+#line 430 "parser.y"
     {(yyval.ast_node) = new_unary_expression('$',(yyvsp[0].ast_node)); }
-#line 2128 "parser.tab.c"
+#line 2166 "parser.tab.c"
     break;
 
   case 90:
-#line 393 "parser.y"
+#line 431 "parser.y"
     {(yyval.ast_node) = new_unary_expression('~',(yyvsp[0].ast_node)); }
-#line 2134 "parser.tab.c"
+#line 2172 "parser.tab.c"
     break;
 
   case 91:
-#line 394 "parser.y"
+#line 432 "parser.y"
     {(yyval.ast_node) = new_unary_expression('#',(yyvsp[0].ast_node)); }
-#line 2140 "parser.tab.c"
+#line 2178 "parser.tab.c"
     break;
 
   case 92:
-#line 403 "parser.y"
+#line 441 "parser.y"
     {
 	(yyval.ast_node) = new_binary_expression('+',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node)->temp = newTemp();
@@ -2151,11 +2189,11 @@ printf("assignment code : %s",(yyval.ast_node)->code);
 	printf("Add code:\t: %s\n",(yyval.ast_node)->code);
 	
 }
-#line 2155 "parser.tab.c"
+#line 2193 "parser.tab.c"
     break;
 
   case 93:
-#line 414 "parser.y"
+#line 452 "parser.y"
     {
 (yyval.ast_node) = new_binary_expression('-',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); 
 (yyval.ast_node)->temp = newTemp();
@@ -2169,11 +2207,11 @@ printf("sub code:\t: %s\n",(yyval.ast_node)->code);
 
 
 }
-#line 2173 "parser.tab.c"
+#line 2211 "parser.tab.c"
     break;
 
   case 94:
-#line 427 "parser.y"
+#line 465 "parser.y"
     {
 (yyval.ast_node) = new_binary_expression('*',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 (yyval.ast_node)->temp = newTemp();
@@ -2185,11 +2223,11 @@ printf("mul code:\t: %s\n",(yyval.ast_node)->code);
 	
 
 }
-#line 2189 "parser.tab.c"
+#line 2227 "parser.tab.c"
     break;
 
   case 95:
-#line 438 "parser.y"
+#line 476 "parser.y"
     {
 (yyval.ast_node) = new_binary_expression('/',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); 
 (yyval.ast_node)->temp = newTemp();
@@ -2202,17 +2240,17 @@ printf("div code:\t: %s\n",(yyval.ast_node)->code);
 
 
 }
-#line 2206 "parser.tab.c"
+#line 2244 "parser.tab.c"
     break;
 
   case 96:
-#line 450 "parser.y"
+#line 488 "parser.y"
     {(yyval.ast_node) = new_binary_expression('%',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2212 "parser.tab.c"
+#line 2250 "parser.tab.c"
     break;
 
   case 97:
-#line 451 "parser.y"
+#line 489 "parser.y"
     {(yyval.ast_node) = new_binary_expression('|',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 (yyval.ast_node)->temp = newTemp();
 (yyval.ast_node)->code = binaryOperation("or", (yyvsp[-2].ast_node)->temp, (yyvsp[0].ast_node)->temp,(yyval.ast_node)->temp);
@@ -2222,11 +2260,11 @@ char *subexpression_code  = concatCode((yyvsp[-2].ast_node)->code, (yyvsp[0].ast
 printf("or code:\t: %s\n",(yyval.ast_node)->code);
 	
 }
-#line 2226 "parser.tab.c"
+#line 2264 "parser.tab.c"
     break;
 
   case 98:
-#line 460 "parser.y"
+#line 498 "parser.y"
     {
 (yyval.ast_node) = new_binary_expression('&',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 (yyval.ast_node)->code = binaryOperation("and", (yyvsp[-2].ast_node)->temp, (yyvsp[0].ast_node)->temp,(yyval.ast_node)->temp);
@@ -2235,43 +2273,43 @@ char *subexpression_code  = concatCode((yyvsp[-2].ast_node)->code, (yyvsp[0].ast
 
 printf("and code:\t: %s\n",(yyval.ast_node)->code);
 }
-#line 2239 "parser.tab.c"
+#line 2277 "parser.tab.c"
     break;
 
   case 99:
-#line 468 "parser.y"
+#line 506 "parser.y"
     {(yyval.ast_node) = new_binary_expression('^',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2245 "parser.tab.c"
+#line 2283 "parser.tab.c"
     break;
 
   case 100:
-#line 470 "parser.y"
+#line 508 "parser.y"
     { (yyval.ast_node) =  new_ternary_expression('?', (yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2251 "parser.tab.c"
+#line 2289 "parser.tab.c"
     break;
 
   case 101:
-#line 472 "parser.y"
+#line 510 "parser.y"
     {(yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 2257 "parser.tab.c"
+#line 2295 "parser.tab.c"
     break;
 
   case 102:
-#line 476 "parser.y"
+#line 514 "parser.y"
     {
 (yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 }
-#line 2265 "parser.tab.c"
+#line 2303 "parser.tab.c"
     break;
 
   case 103:
-#line 479 "parser.y"
+#line 517 "parser.y"
     {(yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 2271 "parser.tab.c"
+#line 2309 "parser.tab.c"
     break;
 
   case 104:
-#line 482 "parser.y"
+#line 520 "parser.y"
     { 
 
 (yyval.ast_node) = new_leaf_node(ID_NODE,(yyvsp[0].valor_lexico));
@@ -2290,19 +2328,19 @@ if(id_info.nature == FUNCTION){
 printf("code id: %s\n",(yyval.ast_node)->code);
 
 }
-#line 2294 "parser.tab.c"
+#line 2332 "parser.tab.c"
     break;
 
   case 105:
-#line 500 "parser.y"
+#line 538 "parser.y"
     {
 (yyval.ast_node) = (yyvsp[0].ast_node);
 }
-#line 2302 "parser.tab.c"
+#line 2340 "parser.tab.c"
     break;
 
   case 106:
-#line 504 "parser.y"
+#line 542 "parser.y"
     {
 printf("array %s\n",(yyvsp[-1].valor_lexico).value.str_value);
 
@@ -2311,6 +2349,11 @@ printf("array %s\n",(yyvsp[-1].valor_lexico).value.str_value);
 SYMBOL_INFO id_info = retrieve_symbol((yyvsp[-1].valor_lexico));
 
 (yyval.ast_node)->ast_valor_lexico.nature = id_info.nature;
+
+if(id_info.nature == FUNCTION){
+    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",(yyvsp[-1].valor_lexico).line,(yyvsp[-1].valor_lexico).column);
+    exit(ERR_FUNCTION);
+}
 
 ast_node* node = (yyvsp[0].ast_node);
 ARRAY_DIMENSIONS *d = id_info.vector_dimension;
@@ -2352,22 +2395,19 @@ printf("array calc:\n%s",(yyval.ast_node)->code);
 
 
 
-if(id_info.nature == FUNCTION){
-    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",(yyvsp[-1].valor_lexico).line,(yyvsp[-1].valor_lexico).column);
-    exit(ERR_FUNCTION);
-}
 
 
-(yyval.ast_node)->code = storeVariableRegOffsetToTemp((yyval.ast_node)->temp,(yyval.ast_node)->temp, id_info.depth);
+
+(yyval.ast_node)->code = concatCode((yyval.ast_node)->code,storeVariableRegOffsetToTemp((yyval.ast_node)->temp,(yyval.ast_node)->temp, id_info.depth));
 
 
 
 }
-#line 2367 "parser.tab.c"
+#line 2407 "parser.tab.c"
     break;
 
   case 107:
-#line 567 "parser.y"
+#line 607 "parser.y"
     { 
 (yyvsp[0].valor_lexico).var_type = TYPE_INT;
 (yyval.ast_node) = new_leaf_node('d',(yyvsp[0].valor_lexico));
@@ -2377,55 +2417,55 @@ if(id_info.nature == FUNCTION){
 printf("code %s\n",(yyval.ast_node)->code);
 
 }
-#line 2381 "parser.tab.c"
+#line 2421 "parser.tab.c"
     break;
 
   case 108:
-#line 576 "parser.y"
+#line 616 "parser.y"
     { 
 (yyvsp[0].valor_lexico).var_type = TYPE_FLOAT;
 (yyval.ast_node) = new_leaf_node('f',(yyvsp[0].valor_lexico));
 }
-#line 2390 "parser.tab.c"
+#line 2430 "parser.tab.c"
     break;
 
   case 109:
-#line 580 "parser.y"
+#line 620 "parser.y"
     { 
 
 (yyvsp[0].valor_lexico).var_type = TYPE_CHAR;
 (yyval.ast_node) = new_leaf_node('c',(yyvsp[0].valor_lexico));
 }
-#line 2400 "parser.tab.c"
+#line 2440 "parser.tab.c"
     break;
 
   case 110:
-#line 585 "parser.y"
+#line 625 "parser.y"
     { 
 (yyvsp[0].valor_lexico).var_type = TYPE_STRING;
 (yyval.ast_node) = new_leaf_node('s',(yyvsp[0].valor_lexico));
 }
-#line 2409 "parser.tab.c"
+#line 2449 "parser.tab.c"
     break;
 
   case 111:
-#line 589 "parser.y"
+#line 629 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('T',(yyvsp[0].valor_lexico));
 }
-#line 2417 "parser.tab.c"
+#line 2457 "parser.tab.c"
     break;
 
   case 112:
-#line 592 "parser.y"
+#line 632 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('F',(yyvsp[0].valor_lexico));
 }
-#line 2425 "parser.tab.c"
+#line 2465 "parser.tab.c"
     break;
 
 
-#line 2429 "parser.tab.c"
+#line 2469 "parser.tab.c"
 
       default: break;
     }
@@ -2663,5 +2703,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 600 "parser.y"
+#line 640 "parser.y"
 

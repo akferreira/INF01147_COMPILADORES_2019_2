@@ -241,17 +241,53 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 
 
 
-function_command_block: '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$2);};
+function_command_block: '{'command_list'}' exit_scope { 
+$$ = new_command_block_node('{',$2);
+$$->code = concatCode($2->code, $$->code);
+printf("block___%p\n",$$->code);
+
+printf("command block code:\n%s",$$->code);
+
+printf("%d Instructions\n",countLines($$->code,strlen($$->code)));
+
+};
 
 
 //Command Block
-command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
+command_block: enter_scope '{'command_list'}' exit_scope { 
+$$ = new_command_block_node('{',$3);
+$$->code = concatCode($3->code, $$->code);
+printf("block___%p\n",$$->code);
+
+printf("command block code:\n%s",$$->code);
+};
 
 command_list: 
-	command command_list {$$ = new_command_list_node($1,$2);}
-	|command_block';' command_list {new_command_list_node($1,$3);}
-	| loops command_list {$$ = new_command_list_node($1,$2);}
-	|{$$ = get_null();};
+command command_list {
+$$ = new_command_list_node($1,$2);
+char *code1,*code2;
+
+if($1 == NULL) code1 = NULL;
+else code1 = $1->code;
+
+
+if($2 == NULL) code2 = NULL;
+else code2 = $2->code;
+
+
+$$->code = concatCode(code1, code2);
+
+
+}
+|command_block';' command_list {
+new_command_list_node($1,$3);
+$$->code = concatCode($1->code, $3->code);
+}
+| loops command_list {
+$$ = new_command_list_node($1,$2);
+$$->code = concatCode($1->code, $2->code);
+}
+|{$$ = get_null();};
 
 //command
 command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{ $$ = $1;}
@@ -322,11 +358,13 @@ $$ = new_assignment_node($1,$3,0);
 
 
 SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+printf("assignment code : %s\n",$3->code);
+printf("assignment code2 : %s\n",$$->code);
 
 $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
 $$->code = concatCode($3->code,$$->code);
 
-printf("assignment code : %s",$$->code);
+
 
 
 };
@@ -510,14 +548,19 @@ SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
 
 $$->ast_valor_lexico.nature = id_info.nature;
 
+if(id_info.nature == FUNCTION){
+    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
+    exit(ERR_FUNCTION);
+}
+
 ast_node* node = $2;
 ARRAY_DIMENSIONS *d = id_info.vector_dimension;
 
 $$->temp = newTemp();
 
 
-printf("return\n");
-printf("%p\n",$$->temp);
+// printf("return\n");
+// printf("%p\n",$$->temp);
 
 int first_dimension_flag = 1;
 
@@ -550,13 +593,10 @@ printf("array calc:\n%s",$$->code);
 
 
 
-if(id_info.nature == FUNCTION){
-    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
-    exit(ERR_FUNCTION);
-}
 
 
-$$->code = storeVariableRegOffsetToTemp($$->temp,$$->temp, id_info.depth);
+
+$$->code = concatCode($$->code,storeVariableRegOffsetToTemp($$->temp,$$->temp, id_info.depth));
 
 
 

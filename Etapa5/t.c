@@ -8,4 +8,6 @@ int foo(){
     int c;
     int d;
     d = y[1][2][a + 3];
+    
+    a = 5 + 4 * 9;
 }

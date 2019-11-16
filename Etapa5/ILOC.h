@@ -25,7 +25,7 @@ void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operand
 SYMBOL_INFO lookup(ast_node *entrada);
 
 
-
+int countLines(char *string, int size);
 
 
 char* newTemp();
