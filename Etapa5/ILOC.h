@@ -4,9 +4,9 @@
 #include "symbol_table.h"
 
 #define TEMP_NAME_SIZE 15
-#define LOAD_INST_SIZE 40
-#define STORE_INST_SIZE 40
-
+#define LOAD_INST_SIZE 50
+#define STORE_INST_SIZE 50
+#define OP_INST_SIZE 50
 
 
 struct operacao
@@ -36,4 +36,4 @@ char *storeTempToVariable(char *temp, int depth, int position);
 char *storeVariableToTemp(char *temp, int depth, int position);
 char* loadValueToTemp(int value, char *temp);
 
-char *binaryOperation(char *operation, char *reg1, char *reg2);
+char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest);

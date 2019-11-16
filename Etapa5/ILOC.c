@@ -88,8 +88,8 @@ char* newTemp(){
     if(buffer == NULL) return NULL;
     
     int cx = snprintf(buffer, TEMP_NAME_SIZE-1, "r%d",temp);
-    printf("%d\n",cx);
-    printf("buffer = %s\n",buffer);
+//     printf("%d\n",cx);
+//     printf("buffer = %s\n",buffer);
     
     return buffer;
     
@@ -169,10 +169,20 @@ char* loadValueToTemp(int value, char *temp){
      
      int cx = snprintf(buffer, LOAD_INST_SIZE-1, "loadI %d => %s\n",value,temp);
      
-     printf("size %lu\n",sizeof(buffer));
-     printf("lenght %lu\n",strlen(buffer));
+//      printf("size %lu\n",sizeof(buffer));
+//      printf("lenght %lu\n",strlen(buffer));
      return buffer;
     
+}
+
+char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest){
+    char *buffer = malloc(OP_INST_SIZE);
+    
+    if(buffer == NULL) return NULL;
+     
+     int cx = snprintf(buffer, OP_INST_SIZE-1, "%s %s,  %s => %s\n",operation,reg1,reg2,dest);
+    
+    return buffer;
 }
 
 

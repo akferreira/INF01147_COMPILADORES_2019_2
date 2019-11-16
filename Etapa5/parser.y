@@ -397,12 +397,12 @@ expression:'#'expression{$$ = new_unary_expression('#',$2); };
 expression: expression '+' expression 
 {
 	$$ = new_binary_expression('+',$1,$3);
+	$$->temp = newTemp();
+	$$->code = binaryOperation("add", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
 	
-	printf("natuure %d\n",$1->ast_valor_lexico.nature);
-	
-	if($1->ast_valor_lexico.nature == VARIABLE && $3->ast_valor_lexico.nature == VARIABLE){
-	operacoesBinaria('+', lookup($1),lookup($3));
-	}
+	printf("Add code:\t: %s\n",$$->code);
 	
 };
 
@@ -438,7 +438,7 @@ $$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
 SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
 $$->ast_valor_lexico.nature = id_info.nature;
 
-printf("neat %d\n",id_info.nature);
+
 if(id_info.nature == FUNCTION){
     printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
     exit(ERR_FUNCTION);

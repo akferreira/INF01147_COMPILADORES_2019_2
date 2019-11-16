@@ -2132,12 +2132,12 @@ printf("assignment code : %s",(yyval.ast_node)->code);
 #line 398 "parser.y"
     {
 	(yyval.ast_node) = new_binary_expression('+',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
+	(yyval.ast_node)->temp = newTemp();
+	(yyval.ast_node)->code = binaryOperation("add", (yyvsp[-2].ast_node)->temp, (yyvsp[0].ast_node)->temp,(yyval.ast_node)->temp);
+	char *subexpression_code  = concatCode((yyvsp[-2].ast_node)->code, (yyvsp[0].ast_node)->code);
+	(yyval.ast_node)->code = concatCode(subexpression_code, (yyval.ast_node)->code);
 	
-	printf("natuure %d\n",(yyvsp[-2].ast_node)->ast_valor_lexico.nature);
-	
-	if((yyvsp[-2].ast_node)->ast_valor_lexico.nature == VARIABLE && (yyvsp[0].ast_node)->ast_valor_lexico.nature == VARIABLE){
-	operacoesBinaria('+', lookup((yyvsp[-2].ast_node)),lookup((yyvsp[0].ast_node)));
-	}
+	printf("Add code:\t: %s\n",(yyval.ast_node)->code);
 	
 }
 #line 2144 "parser.tab.c"
@@ -2205,7 +2205,7 @@ printf("assignment code : %s",(yyval.ast_node)->code);
 SYMBOL_INFO id_info = retrieve_symbol((yyvsp[0].valor_lexico));
 (yyval.ast_node)->ast_valor_lexico.nature = id_info.nature;
 
-printf("neat %d\n",id_info.nature);
+
 if(id_info.nature == FUNCTION){
     printf("Semantical error line %d, column %d : ERR_FUNCTION\n",(yyvsp[0].valor_lexico).line,(yyvsp[0].valor_lexico).column);
     exit(ERR_FUNCTION);
