@@ -143,18 +143,18 @@ char *storeTempToVariable(char *temp, int depth, int position){
     
 }
 
-char *storeTempToVariable(char *temp, int depth, int position){
+char *storeVariableToTemp(char *temp, int depth, int position){
      if(temp == NULL) return NULL;
      char *buffer = malloc(STORE_INST_SIZE);
     
      if(buffer == NULL) return NULL;
      
      if(depth == 0){
-         int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rbss, %d \n",temp,position);
+         int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rbss, %d=> %s  \n",position,temp);
     }
     
     else{
-        int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rfp, %d \n",temp,position);
+        int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rfp, %d=> %s  \n",position,temp);
     }
      return buffer;
     
