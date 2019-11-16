@@ -3,6 +3,6 @@ int foo(){
 	int b <= 5;
 	int c;
 	b = b + b;
-	c = a + b;
+	//c = a + b;
 	return c;
 }

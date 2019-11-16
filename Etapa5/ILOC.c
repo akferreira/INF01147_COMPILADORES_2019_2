@@ -23,7 +23,7 @@ int count_temp = 0;
 int countLabel = 0;
 
 char **Instrucoes;
-LISTA_INSTRUCOES *instrucoes;
+LISTA_INSTRUCOES *instrucoes = NULL;
 
 
 
@@ -34,12 +34,19 @@ loadI 1024 => rsp*/
 void Imprimir_codigo()
 {
     int stackForm = 1024;
+    int numero_instrucoes = contar_instrucoes(instrucoes);
 
     printf("loadI %d => rfp\n", stackForm);
     printf("loadI %d => rsp\n", stackForm);
+    printf("loadI %d => rbss\n", numero_instrucoes + 3);
 
     printf("%s\n", gerar_label());
 
+    while(instrucoes != NULL)
+    {
+        printf("%s\n",instrucoes->instrucao);
+        instrucoes = instrucoes->proximo;
+    }
 
 
 
@@ -141,9 +148,10 @@ void operacoesBinaria(char operandor, SYMBOL_INFO operando_esquerdo, SYMBOL_INFO
         op.operando_esquerdo = gerar_registrador();
         op.operando_direito = gerar_registrador();
         op.destino = "r3";
-        inserir_instrucao(&instrucoes, "oi");
-        printf("%s      %s, %s   =>  %s\n",op.operandor,operando_esquerdo.name,operando_direito.name,op.destino);
-        printf("instrucoes  = %d \n" ,contar_instrucoes(instrucoes));
+
+        sprintf(operation,"%s      %s, %s   =>  %s\n",op.operandor,operando_esquerdo.name,operando_direito.name,op.destino);
+        inserir_instrucao(&instrucoes, operation);
+
         break;
         //return operation;
 

@@ -1588,7 +1588,7 @@ yyreduce:
         case 2:
 #line 139 "parser.y" /* yacc.c:1646  */
     {
-printf("\nnew scope\n");
+//printf("\nnew scope\n");
 create_new_scope();
 
 

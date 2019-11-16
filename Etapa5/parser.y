@@ -137,7 +137,7 @@ int yyparse (void);
 
 
 enter_scope: {
-printf("\nnew scope\n");
+//printf("\nnew scope\n");
 create_new_scope();
 
 
