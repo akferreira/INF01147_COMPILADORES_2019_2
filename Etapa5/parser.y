@@ -8,6 +8,7 @@
   ast_node* ast_node;
   VALOR_LEXICO valor_lexico;
   MODIFIER_S var_modifier;
+  ARRAY_DIMENSIONS *dimensions;
   
   
 }
@@ -133,6 +134,8 @@ int yyparse (void);
  
 %type <var_modifier> modifiers no_modifier;
 
+%type <dimensions> vector_dimensions;
+
 
 enter_scope: {
 printf("\nnew scope\n");
@@ -158,11 +161,11 @@ program: grammars program  {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
 grammars:global_var_declaration|function_declaration;
 	
 //Declaração de variaveis globais
-global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR ';'{$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,-1);};
-global_var_declaration: primitive_type TK_IDENTIFICADOR';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,-1);};
+global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR ';'{$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,NULL);};
+global_var_declaration: primitive_type TK_IDENTIFICADOR';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,NULL);};
 
-global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';' {$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,$<valor_lexico>5.value.intvalue);};
-global_var_declaration: primitive_type TK_IDENTIFICADOR'['TK_LIT_INT']'';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,$<valor_lexico>4.value.intvalue);};
+global_var_declaration: TK_PR_STATIC primitive_type TK_IDENTIFICADOR vector_dimensions';' {$$ = new_static_global_var_declaration_node('g',$2,$<valor_lexico>3,$4);};
+global_var_declaration: primitive_type TK_IDENTIFICADOR vector_dimensions';'{$$ = new_nonstatic_global_var_declaration_node('g',$1,$<valor_lexico>2,$3);};
 
 
 //decl: primitive_type identifier;
@@ -177,7 +180,25 @@ identifier: simple_identifier {$$ = $1;}
 |vector {$$ = $1;};
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
-vector: TK_IDENTIFICADOR'['TK_LIT_INT']' {    $$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); $$->  vector_position = $<valor_lexico>3.value.intvalue; }  ;
+vector: TK_IDENTIFICADOR vector_dimensions {   printf("vector\n"); $$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); $$->vector_position = $2; printf("p:%p\n",$2);}  ;
+
+vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
+printf("vector %d\n", $<valor_lexico>2.value.intvalue);
+$$ = malloc(sizeof(ARRAY_DIMENSIONS));
+$$->dsize = $<valor_lexico>2.value.intvalue;
+$$->next = $4;
+printf("p:%p -> %p\n",$$,$$->next);
+
+}
+| '['TK_LIT_INT']'{
+printf("vector %d\n", $<valor_lexico>2.value.intvalue);
+$$ = malloc(sizeof(ARRAY_DIMENSIONS));
+$$->dsize = $<valor_lexico>2.value.intvalue;
+$$->next = NULL;
+
+printf("p:%p\n",$$);
+
+};
 
 
 
@@ -271,6 +292,7 @@ $$ = get_null();};
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
+
 $$ = new_assignment_node($1,$3,0);};
 
 //Comandos de Entrada e Saída
@@ -352,7 +374,6 @@ expression : literal_id {$$ = $1;};
 
 //era expression
 literal_id:  TK_IDENTIFICADOR{ 
-
 $$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
 SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
 if(id_info.nature == FUNCTION){

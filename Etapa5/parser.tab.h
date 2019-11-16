@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.4.  */
+/* A Bison parser, made by GNU Bison 3.4.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -100,7 +100,12 @@ extern int yydebug;
     TK_LIT_CHAR = 299,
     TK_LIT_STRING = 300,
     TK_IDENTIFICADOR = 301,
-    TOKEN_ERRO = 302
+    TOKEN_ERRO = 302,
+    UNARY_QUESTION_MARK = 303,
+    UNARY_PLUS = 304,
+    UNARY_MINUS = 305,
+    UNARY_ET = 306,
+    UNARY_POINTER = 307
   };
 #endif
 
@@ -113,10 +118,11 @@ union YYSTYPE
   ast_node* ast_node;
   VALOR_LEXICO valor_lexico;
   MODIFIER_S var_modifier;
+  ARRAY_DIMENSIONS *dimensions;
   
   
 
-#line 120 "parser.tab.h"
+#line 126 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

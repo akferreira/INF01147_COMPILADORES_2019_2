@@ -28,6 +28,7 @@ typedef struct  _valor_lexico{
     int var_type;
     int is_static;
     
+    
 //     char charvalue;
 //     char *value;
 //     int intvalue;
@@ -49,12 +50,22 @@ typedef struct _modifiers{
 } MODIFIER_S;
 
 
+typedef struct _dimensions{
+    int dsize;
+    struct _dimensions* next;
+    
+} ARRAY_DIMENSIONS;
+
+
 
 
 typedef struct _ast_node {
     int node_type;
-    int vector_position;
+    ARRAY_DIMENSIONS *vector_position;
     VALOR_LEXICO ast_valor_lexico;
+    
+    char *temp;
+    char *code;
     
     
     struct _ast_node *first_child;
@@ -139,10 +150,10 @@ ast_node* new_loop_while_node(int node_type, ast_node* expression, ast_node* com
 
 MODIFIER_S modifier(int modifier_static, int modifier_const);
 
-ast_node* new_static_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type, VALOR_LEXICO identifier, int vector_lenght);
-ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type, VALOR_LEXICO identifier,int vector_lenght);
+ast_node* new_static_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type, VALOR_LEXICO identifier,ARRAY_DIMENSIONS *vector_dimension);
+ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type, VALOR_LEXICO identifier,ARRAY_DIMENSIONS *vector_dimension);
 
-ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEXICO  var_type, VALOR_LEXICO identifier,int vector_lenght);
+ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEXICO  var_type, VALOR_LEXICO identifier,ARRAY_DIMENSIONS *vector_dimension);
 
 ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers ,VALOR_LEXICO var_type,VALOR_LEXICO identifier, ast_node* initialization);
 
@@ -157,6 +168,7 @@ ast_node* new_unary_expression(int node_type, ast_node *expression);
 
 
 void free_lexical(VALOR_LEXICO lexical);
+
 
 
 

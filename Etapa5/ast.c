@@ -231,7 +231,7 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     new_node->next_sibling = NULL;
     new_node->father = NULL;
     new_node->ast_valor_lexico = ast_valor_lexico;
-    new_node->vector_position = -1;
+    new_node->vector_position = NULL;
     
     if(node_type == VECTOR_NODE) new_node->ast_valor_lexico.nature = VECTOR;
     else if(node_type == ID_NODE) new_node->ast_valor_lexico.nature = VARIABLE;
@@ -332,18 +332,21 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
         exit(ERR_VECTOR);
     }
     
-    if(dest_symbol.nature == VECTOR){
-        int max_vector_size = (dest_symbol.size/ get_size(dest->ast_valor_lexico))-1;
-        
-        if(dest->vector_position > max_vector_size || dest->vector_position < 0){
-            printf("Semantical error line %d, column %d : ERR_OUT_OF_BOUNDS\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
-            exit(ERR_OUT_OF_BOUNDS);
-        }
-        
-        
-        
-        //printf("pos %d of %d \n",dest->vector_position,max_vector_size);
-    }
+     if(dest_symbol.nature == VECTOR){
+         printf("%p\n",dest_symbol.vector_dimension);
+        printf("vector dest %d\n",calculate_vector_position(dest_symbol.vector_dimension,dest->vector_position));   
+     }
+//         int max_vector_size = (dest_symbol.size/ get_size(dest->ast_valor_lexico))-1;
+//         
+//         if(dest->vector_position > max_vector_size || dest->vector_position < 0){
+//             printf("Semantical error line %d, column %d : ERR_OUT_OF_BOUNDS\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
+//             exit(ERR_OUT_OF_BOUNDS);
+//         }
+//         
+//         
+//         
+//         //printf("pos %d of %d \n",dest->vector_position,max_vector_size);
+//     }
     
     
     
@@ -571,7 +574,7 @@ ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_t
     identifier.var_type = parameter_type.var_type;
     insert_parameters_function(identifier);
     
-    insert_new_table_entry( identifier,1);
+    insert_new_table_entry( identifier,NULL);
     free(parameter_type.value.str_value);
     //return NULL;
     ast_node *parameter_node = new_leaf_node('i',identifier);
@@ -723,20 +726,20 @@ ast_node* new_function_call_node(int node_type, ast_node* identifier, ast_node* 
     return function_call_node;
 }
 
-ast_node* new_static_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type,  VALOR_LEXICO identifier, int vector_lenght){
+ast_node* new_static_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type,  VALOR_LEXICO identifier, ARRAY_DIMENSIONS *vector_dimension){
     
-    return new_global_var_declaration_node(node_type, 1,var_type,identifier, vector_lenght);
+    return new_global_var_declaration_node(node_type, 1,var_type,identifier, vector_dimension);
     
     
 }
-ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type,  VALOR_LEXICO identifier, int vector_lenght){
-    return new_global_var_declaration_node(node_type,0,var_type,identifier, vector_lenght);
+ast_node* new_nonstatic_global_var_declaration_node(int node_type,VALOR_LEXICO  var_type,  VALOR_LEXICO identifier,ARRAY_DIMENSIONS *vector_dimension){
+    return new_global_var_declaration_node(node_type,0,var_type,identifier, vector_dimension);
 }
 
-ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEXICO  var_type, VALOR_LEXICO identifier, int vector_lenght){
-    if(vector_lenght < 0) vector_lenght = 1;
-    else{
-        identifier.nature = VECTOR;
+ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEXICO  var_type, VALOR_LEXICO identifier, ARRAY_DIMENSIONS *vector_dimension){
+    
+    if(vector_dimension != NULL){
+       identifier.nature = VECTOR;
     }
     
     //ast_node* global_var_node = new_empty_node();
@@ -745,7 +748,7 @@ ast_node* new_global_var_declaration_node(int node_type, int is_static,VALOR_LEX
         
         
     identifier.var_type = var_type.var_type;
-    insert_new_table_entry( identifier,vector_lenght);
+    insert_new_table_entry( identifier,vector_dimension);
     //printf("Declaration returned %d\n",insert_new_table_entry( identifier,vector_lenght));
         
         
@@ -823,7 +826,7 @@ ast_node* new_local_var_declaration_node(int node_type, MODIFIER_S modifiers,VAL
     
     //char *name = strdup(identifier.value.str_value);
     
-    insert_new_table_entry( identifier,1);
+    insert_new_table_entry( identifier,NULL);
     
     //printf("local var 2\n");
 
@@ -992,6 +995,9 @@ void free_lexical(VALOR_LEXICO lexical){
     lexical.value.str_value = NULL;
     
 }
+
+
+
 
 
 
