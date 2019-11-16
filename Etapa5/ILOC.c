@@ -150,11 +150,11 @@ char *storeVariableToTemp(char *temp, int depth, int position){
      if(buffer == NULL) return NULL;
      
      if(depth == 0){
-         int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rbss, %d=> %s  \n",position,temp);
+         int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rbss, %d => %s  \n",position,temp);
     }
     
     else{
-        int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rfp, %d=> %s  \n",position,temp);
+        int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rfp, %d => %s  \n",position,temp);
     }
      return buffer;
     

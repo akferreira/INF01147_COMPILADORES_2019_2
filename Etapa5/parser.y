@@ -315,14 +315,13 @@ assignment_command: identifier '=' expression {
 
 $$ = new_assignment_node($1,$3,0);
 
- if($3->ast_valor_lexico.nature == LITERAL){
-        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
-        
-        $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
-        $$->code = concatCode($3->code,$$->code);
 
-        printf("assignment code : %s",$$->code);
-    }
+SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+
+$$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
+$$->code = concatCode($3->code,$$->code);
+
+printf("assignment code : %s",$$->code);
 
 
 };
@@ -445,12 +444,10 @@ if(id_info.nature == FUNCTION){
     exit(ERR_FUNCTION);
 }
 
-// $$->temp = newTemp();
-// $$->code = loadValueToTemp($<valor_lexico>1.value.intvalue, $$->temp);
-// 
-// printf("code %s\n",$$->code);
+$$->temp = newTemp();
+$$->code = storeVariableToTemp($$->temp, id_info.depth, id_info.position);
 
-
+printf("code id: %s\n",$$->code);
 
 }
 | function_call {

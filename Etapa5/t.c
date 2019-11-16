@@ -6,6 +6,6 @@ int foo(){
 	int c;
     y = 5;
     c = 8;
-	c = a + b;
+	c = a;
 	return c;
 }
