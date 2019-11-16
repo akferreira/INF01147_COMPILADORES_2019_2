@@ -92,9 +92,9 @@ char * gerar_label()
     char *count_label_str = (char*) malloc(sizeof(char));
 
 
-
-    sprintf(count_label_str, "%d:", countLabel);
     strcat(label,"L");
+    sprintf(count_label_str, "%d:", countLabel);
+
     strcat(label,count_label_str);
 
     countRegistor ++;
