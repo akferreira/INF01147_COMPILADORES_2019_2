@@ -115,10 +115,11 @@ union YYSTYPE
   ast_node* ast_node;
   VALOR_LEXICO valor_lexico;
   MODIFIER_S var_modifier;
+  ARRAY_DIMENSIONS *dimensions;
   
   
 
-#line 122 "parser.tab.h" /* yacc.c:1909  */
+#line 123 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

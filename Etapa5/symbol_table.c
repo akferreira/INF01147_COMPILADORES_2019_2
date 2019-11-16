@@ -9,6 +9,32 @@ extern int line,column;
 
 SYMBOL_STACK *semantic_stack = NULL;
 
+int get_size2(SYMBOL_INFO info){
+    int type = info.var_type;
+    int lenght;
+    
+    switch (type){
+        case TYPE_BOOL:
+        case TYPE_CHAR:
+            return 1;
+        case TYPE_FLOAT:
+            return 8;
+            
+        case TYPE_INT:
+            return 4;
+        
+        case TYPE_STRING:
+            return 0;
+            
+        default:
+            return 4;
+            
+            
+        
+    }
+    
+}
+
 int get_size(VALOR_LEXICO lexical){
     int type = lexical.var_type;
     int lenght;
@@ -180,41 +206,50 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
 void insert_function_entry(VALOR_LEXICO lexical){
     
     initialize_stack();
-    insert_new_table_entry(lexical,1);
+    insert_new_table_entry(lexical,NULL);
     lexical.value.str_value = NULL;
     
 }
 
 
-void check_if_declared_as_parameter(VALOR_LEXICO lexical){
-    if(semantic_stack->next == NULL) return;
+int calculate_vector_size(ARRAY_DIMENSIONS *vector_dimension){
+    if(vector_dimension == NULL) return -1;
     
-    SYMBOL_TABLE *current_table = semantic_stack->next->symbol_table;
-    
-    if(current_table != NULL){
-        while(current_table->next != NULL) current_table = current_table->next;
-        
-        if(current_table->symbol_info->nature == FUNCTION){
-            ARG_LIST* arg_list = current_table->argument_list;
-    
-            while(arg_list != NULL){
-                
-            if(strcmp(arg_list->arg_info->name,lexical.value.str_value)  == 0){
-                printf("Semantical error line %d, column %d : ERR_DECLARED\n",lexical.line, lexical.column);
-                exit(ERR_DECLARED);
-            }
-            
-            arg_list = arg_list->next_argument;
-        
-            }
-        }
+    int position = 1;
+    while(vector_dimension){
+        position *= vector_dimension->dsize;
+        vector_dimension = vector_dimension->next;
     }
+    
+    return position;
+    
+    
+}
+
+int calculate_vector_position(ARRAY_DIMENSIONS *vector_dimension,ARRAY_DIMENSIONS *indexes){
+    if(vector_dimension == NULL) return -1;
+    //INCOMPATIBLE_VECTOR_DIMENSIONS
+    
+    int position = 0;
+    int previous_size = 1;
+    while(vector_dimension->next){
+        if(indexes == NULL) return INCOMPATIBLE_VECTOR_DIMENSIONS;
+        
+        
+        position += vector_dimension->dsize * indexes->dsize *previous_size;
+        previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
+        vector_dimension = vector_dimension->next;
+        indexes = indexes->next;
+    }
+    
+    return previous_size;
+    
     
 }
 
 
 
-int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
+int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimension){
     initialize_stack();
     
     SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
@@ -222,7 +257,6 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
      //printf("table %p\n",top_table);f
     
     if(top_table->symbol_info == NULL){
-        //("First symbol %s\n",lexical.value.str_value);
         
         top_table->symbol_info = (SYMBOL_INFO*) malloc(sizeof(SYMBOL_INFO));
         top_table->next = NULL;
@@ -231,14 +265,26 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
-            top_table->symbol_info->size = get_size(lexical)*lenght;
+            top_table->symbol_info->position = 0;
+            top_table->symbol_info->depth = semantic_stack->depth;
             
-            //check_if_declared_as_parameter(lexical);
+            if(vector_dimension == NULL){
+                printf("aaa\n");
+                top_table->symbol_info->size = get_size(lexical);
+                top_table->symbol_info->vector_dimension = NULL;
+            }
             
+            else{
+                int size = 0;
+                int dimension_size= calculate_vector_size(vector_dimension);
+                top_table->symbol_info->vector_dimension = vector_dimension;
+                printf("%p\t",top_table);
+                top_table->symbol_info->size = get_size(lexical)*dimension_size;
+                printf("%s,%d----\n",top_table->symbol_info->name,top_table->symbol_info->size);
+                
+                
+            }
             
-            //printf("%s size %d\n",lexical.value.str_value ,get_size(lexical)*lenght);
-            //free(lexical.value.str_value);
-            //lexical.value.str_value = NULL;
             return 0;
         }
         
@@ -247,7 +293,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
     }
     
     else{
-       // printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+       printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
@@ -260,6 +306,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         //printf("Current: %p \nnext %p \n",current_table,current_table->next);
         
         //printf("not first symbol\n\n");
+        int current_position = 0;
         
         while(current_table->next != NULL){
             //printf("\n%s comp %s\n",lexical.value.str_value,current_table->symbol_info->name);
@@ -270,6 +317,9 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
                 exit(ERR_DECLARED);
             }
             
+            int size = get_size2(*current_table->symbol_info);
+            current_position+= size;
+            
             current_table = current_table->next;
            
             
@@ -279,7 +329,8 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
                 printf("Semantical error line %d, column %d : ERR_DECLARED\n",lexical.line, lexical.column);
                 exit(ERR_DECLARED);
             }
-            
+        int size = get_size2(*current_table->symbol_info);
+        current_position+= size;    
             
         SYMBOL_TABLE *next_table = (SYMBOL_TABLE*) malloc(sizeof(SYMBOL_TABLE));
         next_table->argument_list = NULL;
@@ -291,16 +342,25 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
         current_table = next_table;
         
         if(current_table->symbol_info != NULL){
-            
-            
-            
             copy_lexical_to_symbol(current_table->symbol_info,lexical);
-            current_table->symbol_info->size = get_size(lexical)*lenght;
-            check_if_declared_as_parameter(lexical);
-
-            //printf("%s size %d\n",lexical.value.str_value ,current_table->symbol_info->size );
-            //free(lexical.value.str_value);
-            //lexical.value.str_value = NULL;
+            current_table->symbol_info->position = current_position;
+            current_table->symbol_info->depth = semantic_stack->depth;
+            
+            if(vector_dimension == NULL){
+                current_table->symbol_info->size = get_size(lexical);
+                current_table->symbol_info->vector_dimension = NULL;
+            }
+            
+            else{
+                int size = 0;
+                current_table->symbol_info->vector_dimension = vector_dimension;
+                
+                int dimension_size = calculate_vector_size(vector_dimension);
+                
+                current_table->symbol_info->size = get_size(lexical)*dimension_size;
+                
+                
+            }
             return 0;
         }
         
@@ -311,7 +371,6 @@ int insert_new_table_entry(VALOR_LEXICO lexical, int lenght){
 
 int insert_parameters_function(VALOR_LEXICO argument){
     SYMBOL_TABLE* current_table = semantic_stack->next->symbol_table;
-      printf("abc %p//%p\n",semantic_stack,semantic_stack->next);
     if(current_table != NULL){
         
         while(current_table->next != NULL) current_table = current_table->next;
@@ -377,7 +436,6 @@ SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical){
             //printf("cmp %s\n",current_table->symbol_info->name);
                 
             if(strcmp(current_table->symbol_info->name,lexical.value.str_value) == 0){
-                //printf("%s returned size %d\n",current_table->symbol_info->name,current_table->symbol_info->size);
                 return *(current_table->symbol_info);
             }
             
