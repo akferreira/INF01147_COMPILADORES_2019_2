@@ -180,7 +180,7 @@ char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest){
     
     if(buffer == NULL) return NULL;
      
-     int cx = snprintf(buffer, OP_INST_SIZE-1, "%s %s,  %s => %s\n",operation,reg1,reg2,dest);
+     int cx = snprintf(buffer, OP_INST_SIZE-1, "%s %s, %s => %s\n",operation,reg1,reg2,dest);
     
     return buffer;
 }

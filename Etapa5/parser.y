@@ -275,6 +275,7 @@ local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_init
         SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>3);
 
         $$->code = storeTempToVariable($4->temp, id_info.depth, id_info.position);
+        $$->code = concatCode($4->code, $$->code);
 
         printf("local decl code : %s",$$->code);
     }
@@ -289,7 +290,8 @@ local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization 
         SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>2);
 
         $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
-
+        $$->code = concatCode($3->code, $$->code);
+        
         printf("local decl code : %s",$$->code);
     }
 
@@ -406,25 +408,60 @@ expression: expression '+' expression
 	
 };
 
+expression: expression '-' expression{
+$$ = new_binary_expression('-',$1,$3); 
+$$->temp = newTemp();
+$$->code = binaryOperation("sub", $1->temp, $3->temp,$$->temp);
+char *subexpression_code  = concatCode($1->code, $3->code);
+$$->code = concatCode(subexpression_code, $$->code);
+
+printf("sub code:\t: %s\n",$$->code);
+	
 
 
 
+};
+expression: expression '*' expression{
+$$ = new_binary_expression('*',$1,$3);
+$$->temp = newTemp();
+$$->code = binaryOperation("mul", $1->temp, $3->temp,$$->temp);
+char *subexpression_code  = concatCode($1->code, $3->code);
+$$->code = concatCode(subexpression_code, $$->code);
+
+printf("mul code:\t: %s\n",$$->code);
+	
+
+};
+expression: expression '/' expression{
+$$ = new_binary_expression('/',$1,$3); 
+$$->temp = newTemp();
+$$->code = binaryOperation("div", $1->temp, $3->temp,$$->temp);
+char *subexpression_code  = concatCode($1->code, $3->code);
+$$->code = concatCode(subexpression_code, $$->code);
+
+printf("div code:\t: %s\n",$$->code);
+	
 
 
-
-
-
-
-
-
-
-
-expression: expression '-' expression{$$ = new_binary_expression('-',$1,$3); };
-expression: expression '*' expression{$$ = new_binary_expression('*',$1,$3);};
-expression: expression '/' expression{$$ = new_binary_expression('/',$1,$3); };
+};
 expression: expression '%' expression{$$ = new_binary_expression('%',$1,$3); };
-expression: expression '|' expression{$$ = new_binary_expression('|',$1,$3); };
-expression: expression '&' expression{$$ = new_binary_expression('&',$1,$3);};
+expression: expression '|' expression{$$ = new_binary_expression('|',$1,$3);
+$$->temp = newTemp();
+$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
+char *subexpression_code  = concatCode($1->code, $3->code);
+$$->code = concatCode(subexpression_code, $$->code);
+
+printf("or code:\t: %s\n",$$->code);
+	
+};
+expression: expression '&' expression{
+$$ = new_binary_expression('&',$1,$3);
+$$->code = binaryOperation("and", $1->temp, $3->temp,$$->temp);
+char *subexpression_code  = concatCode($1->code, $3->code);
+$$->code = concatCode(subexpression_code, $$->code);
+
+printf("and code:\t: %s\n",$$->code);
+};
 expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
 //Ternários
 expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
