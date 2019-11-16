@@ -33,4 +33,5 @@ char* newLabel();
 char* concatCode(char *dest, char *source);
 
 char *storeTempToVariable(char *temp, int depth, int position);
+char *storeTempToVariable(char *temp, int depth, int position);
 char* loadValueToTemp(int value, char *temp);

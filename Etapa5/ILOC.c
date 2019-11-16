@@ -143,6 +143,23 @@ char *storeTempToVariable(char *temp, int depth, int position){
     
 }
 
+char *storeTempToVariable(char *temp, int depth, int position){
+     if(temp == NULL) return NULL;
+     char *buffer = malloc(STORE_INST_SIZE);
+    
+     if(buffer == NULL) return NULL;
+     
+     if(depth == 0){
+         int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rbss, %d \n",temp,position);
+    }
+    
+    else{
+        int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rfp, %d \n",temp,position);
+    }
+     return buffer;
+    
+}
+
 char* loadValueToTemp(int value, char *temp){
     if(temp == NULL) return NULL;
     
