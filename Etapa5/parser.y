@@ -347,6 +347,10 @@ expression: expression '+' expression
 	$$ = new_binary_expression('+',$1,$3);
 	operacoesBinaria('+', lookup($1),lookup($3));
 	
+	/*TEMP *temp;
+	temp = gerar_temp(5);
+	printf("oi %s \n ",temp->nome );*/
+	
 };
 
 
