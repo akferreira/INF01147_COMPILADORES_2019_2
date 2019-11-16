@@ -22,8 +22,8 @@ int countRegistor = 0;
 int count_temp = 0;
 int countLabel = 0;
 
-
-
+char **Instrucoes;
+LISTA_INSTRUCOES *instrucoes;
 
 
 
@@ -31,7 +31,8 @@ int countLabel = 0;
 loadI 1024 => rsp*/
 
 
-void Imprimir_codigo(){
+void Imprimir_codigo()
+{
     int stackForm = 1024;
 
     printf("loadI %d => rfp\n", stackForm);
@@ -94,15 +95,17 @@ char * gerar_label()
 
 
 
-void Instrucoes(char *instrucao){
-    char **Instrucoes = (char**) malloc(sizeof(char*)*(sizeof(char)));
+void Instrucoesf(char *instrucao)
+{
+    // = (char**) malloc(sizeof(char*)*(sizeof(char)));
     Instrucoes = &instrucao;
     printf("instrucoes %d\n",strlen(*Instrucoes));
 }
 
 
 
-TEMP *gerar_temp(int valor){
+TEMP *gerar_temp(int valor)
+{
     TEMP *temp;
 
     temp->nome = (char*) malloc(sizeof(char));
@@ -138,10 +141,10 @@ void operacoesBinaria(char operandor, SYMBOL_INFO operando_esquerdo, SYMBOL_INFO
         op.operando_esquerdo = gerar_registrador();
         op.operando_direito = gerar_registrador();
         op.destino = "r3";
-
+        inserir_instrucao(&instrucoes, "oi");
         printf("%s      %s, %s   =>  %s\n",op.operandor,operando_esquerdo.name,operando_direito.name,op.destino);
-        Instrucoes("i");
-break;
+        printf("instrucoes  = %d \n" ,contar_instrucoes(instrucoes));
+        break;
         //return operation;
 
     //return op;
@@ -194,14 +197,50 @@ SYMBOL_INFO lookup(ast_node *entrada)
 }
 
 
-/*
 
-int main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//insere instrucao na lista de instrucoes
+void inserir_instrucao(LISTA_INSTRUCOES** lista_instrucoes, char* nova_instrucao)
 {
+    LISTA_INSTRUCOES* novo_nodo = (LISTA_INSTRUCOES*) malloc(sizeof(LISTA_INSTRUCOES));
 
-    char *a =
-    printf("%s", a);
-    return 0;
+
+    novo_nodo->instrucao  = nova_instrucao;
+    novo_nodo->proximo = (*lista_instrucoes);
+    (*lista_instrucoes) = novo_nodo;
 }
 
-*/
+
+
+//Conta o numero de nodos instrucoes da lista
+int contar_instrucoes(LISTA_INSTRUCOES* lista_instrucoes)
+{
+    int count = 0;
+    LISTA_INSTRUCOES* instrucoes = lista_instrucoes;
+    while (instrucoes != NULL)
+    {
+        count++;
+        instrucoes = instrucoes->proximo;
+    }
+    return count;
+}
