@@ -203,6 +203,29 @@ char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest){
     return buffer;
 }
 
+char *binaryOperationInteger(char *operation, char *reg1, int value, char *dest){
+    char *buffer = malloc(OP_INST_SIZE);
+    
+    if(buffer == NULL) return NULL;
+     
+     int cx = snprintf(buffer, OP_INST_SIZE-1, "%s %s, %d => %s\n",operation,reg1,value,dest);
+    
+    return buffer;
+    
+    
+}
+
+char *copyRegToReg(char *reg1, char *reg2){
+    char *buffer = malloc(OP_INST_SIZE);
+    
+    if(buffer == NULL) return NULL;
+     
+     int cx = snprintf(buffer, OP_INST_SIZE-1, "i2i %s => %s\n",reg1,reg2);
+    
+    return buffer;
+    
+}
+
 
 /*int main()
 {

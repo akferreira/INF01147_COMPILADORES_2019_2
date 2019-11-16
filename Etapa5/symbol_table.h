@@ -89,6 +89,7 @@ ARG_LIST* retrieve_arg_list(char *function_name);
 SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical);
 
 int get_size(VALOR_LEXICO lexical);
+int get_size2(SYMBOL_INFO info);
 int check_symbol(VALOR_LEXICO lexical);
 int check_type_compatibility(int type1, int type2);
 int check_return_type_compatibility(int type1, int type2);

@@ -38,3 +38,6 @@ char *storeVariableRegOffsetToTemp(char *temp,char *regoffset,int depth);
 char* loadValueToTemp(int value, char *temp);
 
 char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest);
+char *binaryOperationInteger(char *operation, char *reg1, int value, char *dest);
+
+char *copyRegToReg(char *reg1, char *reg2);

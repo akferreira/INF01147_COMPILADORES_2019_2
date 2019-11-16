@@ -523,37 +523,29 @@ int first_dimension_flag = 1;
 
 while(node){
 //previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
-    if(node->next_sibling == NULL){
     
-        if(first_dimension_flag) printf("%s =  %s\n",$$->temp,node->temp);
-        
-        else{
-            printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
-            printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
-        }
-        
-        first_dimension_flag = 0;
-    
-        
+    if(first_dimension_flag) {
+        $$->code = concatCode($$->code,copyRegToReg(node->temp,$$->temp));
+        printf("%s =  %s\n",$$->temp,node->temp);
     }
     
     else{
-            if(first_dimension_flag) printf("%s = %s\n",$$->temp,node->temp);
-            
-            else{
-                printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
-                printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
-            }
-    
-            first_dimension_flag = 0;
+        $$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, d->dsize,$$->temp));
+        $$->code = concatCode($$->code,binaryOperation("add",$$->temp, node->temp,$$->temp));
+        printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
+        printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
     }
+    
+    first_dimension_flag = 0;
     
     //printf("exp %s || %d\n", node->temp,d->dsize);
     node = node->next_sibling;
     d = d->next;
 }
+$$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, get_size2(id_info),$$->temp));
+$$->code = concatCode($$->code,binaryOperationInteger("addI",$$->temp, id_info.position,$$->temp));
 
-printf("r6 = r6 * 4\n");
+printf("array calc:\n%s",$$->code);
 
 
 

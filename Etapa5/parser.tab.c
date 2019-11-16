@@ -538,8 +538,8 @@ static const yytype_uint16 yyrline[] =
      357,   358,   359,   361,   361,   362,   363,   366,   367,   369,
      369,   369,   381,   382,   386,   388,   389,   390,   391,   392,
      393,   394,   402,   414,   427,   438,   450,   451,   460,   468,
-     470,   472,   476,   479,   482,   500,   504,   575,   584,   588,
-     593,   597,   600
+     470,   472,   476,   479,   482,   500,   504,   567,   576,   580,
+     585,   589,   592
 };
 #endif
 
@@ -2325,37 +2325,29 @@ int first_dimension_flag = 1;
 
 while(node){
 //previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
-    if(node->next_sibling == NULL){
     
-        if(first_dimension_flag) printf("%s =  %s\n",(yyval.ast_node)->temp,node->temp);
-        
-        else{
-            printf("%s = %s * %d\t",(yyval.ast_node)->temp,(yyval.ast_node)->temp,d->dsize);
-            printf("%s = %s + %s\n",(yyval.ast_node)->temp,(yyval.ast_node)->temp,node->temp);
-        }
-        
-        first_dimension_flag = 0;
-    
-        
+    if(first_dimension_flag) {
+        (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,copyRegToReg(node->temp,(yyval.ast_node)->temp));
+        printf("%s =  %s\n",(yyval.ast_node)->temp,node->temp);
     }
     
     else{
-            if(first_dimension_flag) printf("%s = %s\n",(yyval.ast_node)->temp,node->temp);
-            
-            else{
-                printf("%s = %s * %d\t",(yyval.ast_node)->temp,(yyval.ast_node)->temp,d->dsize);
-                printf("%s = %s + %s\n",(yyval.ast_node)->temp,(yyval.ast_node)->temp,node->temp);
-            }
-    
-            first_dimension_flag = 0;
+        (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,binaryOperationInteger("multI",(yyval.ast_node)->temp, d->dsize,(yyval.ast_node)->temp));
+        (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,binaryOperation("add",(yyval.ast_node)->temp, node->temp,(yyval.ast_node)->temp));
+        printf("%s = %s * %d\t",(yyval.ast_node)->temp,(yyval.ast_node)->temp,d->dsize);
+        printf("%s = %s + %s\n",(yyval.ast_node)->temp,(yyval.ast_node)->temp,node->temp);
     }
+    
+    first_dimension_flag = 0;
     
     //printf("exp %s || %d\n", node->temp,d->dsize);
     node = node->next_sibling;
     d = d->next;
 }
+(yyval.ast_node)->code = concatCode((yyval.ast_node)->code,binaryOperationInteger("multI",(yyval.ast_node)->temp, get_size2(id_info),(yyval.ast_node)->temp));
+(yyval.ast_node)->code = concatCode((yyval.ast_node)->code,binaryOperationInteger("addI",(yyval.ast_node)->temp, id_info.position,(yyval.ast_node)->temp));
 
-printf("r6 = r6 * 4\n");
+printf("array calc:\n%s",(yyval.ast_node)->code);
 
 
 
@@ -2371,11 +2363,11 @@ if(id_info.nature == FUNCTION){
 
 
 }
-#line 2375 "parser.tab.c"
+#line 2367 "parser.tab.c"
     break;
 
   case 107:
-#line 575 "parser.y"
+#line 567 "parser.y"
     { 
 (yyvsp[0].valor_lexico).var_type = TYPE_INT;
 (yyval.ast_node) = new_leaf_node('d',(yyvsp[0].valor_lexico));
@@ -2385,55 +2377,55 @@ if(id_info.nature == FUNCTION){
 printf("code %s\n",(yyval.ast_node)->code);
 
 }
-#line 2389 "parser.tab.c"
+#line 2381 "parser.tab.c"
     break;
 
   case 108:
-#line 584 "parser.y"
+#line 576 "parser.y"
     { 
 (yyvsp[0].valor_lexico).var_type = TYPE_FLOAT;
 (yyval.ast_node) = new_leaf_node('f',(yyvsp[0].valor_lexico));
 }
-#line 2398 "parser.tab.c"
+#line 2390 "parser.tab.c"
     break;
 
   case 109:
-#line 588 "parser.y"
+#line 580 "parser.y"
     { 
 
 (yyvsp[0].valor_lexico).var_type = TYPE_CHAR;
 (yyval.ast_node) = new_leaf_node('c',(yyvsp[0].valor_lexico));
 }
-#line 2408 "parser.tab.c"
+#line 2400 "parser.tab.c"
     break;
 
   case 110:
-#line 593 "parser.y"
+#line 585 "parser.y"
     { 
 (yyvsp[0].valor_lexico).var_type = TYPE_STRING;
 (yyval.ast_node) = new_leaf_node('s',(yyvsp[0].valor_lexico));
 }
-#line 2417 "parser.tab.c"
+#line 2409 "parser.tab.c"
     break;
 
   case 111:
-#line 597 "parser.y"
+#line 589 "parser.y"
     { 
 (yyval.ast_node) = new_leaf_node('T',(yyvsp[0].valor_lexico));
+}
+#line 2417 "parser.tab.c"
+    break;
+
+  case 112:
+#line 592 "parser.y"
+    { 
+(yyval.ast_node) = new_leaf_node('F',(yyvsp[0].valor_lexico));
 }
 #line 2425 "parser.tab.c"
     break;
 
-  case 112:
-#line 600 "parser.y"
-    { 
-(yyval.ast_node) = new_leaf_node('F',(yyvsp[0].valor_lexico));
-}
-#line 2433 "parser.tab.c"
-    break;
 
-
-#line 2437 "parser.tab.c"
+#line 2429 "parser.tab.c"
 
       default: break;
     }
@@ -2671,5 +2663,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 608 "parser.y"
+#line 600 "parser.y"
 
