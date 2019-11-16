@@ -20,6 +20,45 @@ typedef struct  _symbol_info{
 
 int countRegistor = 0;
 int count_temp = 0;
+int countLabel = 0;
+
+
+
+
+
+
+/*loadI 1024 => rfp
+loadI 1024 => rsp*/
+
+
+void Imprimir_codigo(){
+    int stackForm = 1024;
+
+    printf("loadI %d => rfp\n", stackForm);
+    printf("loadI %d => rsp\n", stackForm);
+
+    printf("%s\n", gerar_label());
+
+
+
+
+    printf("halt\n");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 char * gerar_registrador()
 {
@@ -37,6 +76,30 @@ char * gerar_registrador()
     return registrador;
 }
 
+char * gerar_label()
+{
+    char *label = (char*) malloc(sizeof(char));
+    char *count_label_str = (char*) malloc(sizeof(char));
+
+
+
+    sprintf(count_label_str, "%d:", countLabel);
+    strcat(label,"L");
+    strcat(label,count_label_str);
+
+    countRegistor ++;
+
+    return label;
+}
+
+
+
+void Instrucoes(char *instrucao){
+    char **Instrucoes = (char**) malloc(sizeof(char*)*(sizeof(char)));
+    Instrucoes = &instrucao;
+    printf("instrucoes %d\n",strlen(*Instrucoes));
+}
+
 
 
 TEMP *gerar_temp(int valor){
@@ -52,7 +115,7 @@ TEMP *gerar_temp(int valor){
     sprintf(count_temp_str, "%d", count_temp);
     strcat(temp->nome,"temp_");
     strcat(temp->nome,count_temp_str);
-    printf("%s \n ",temp->nome );
+    //printf("%s \n ",temp->nome );
 
 
     temp->valor = valor;
@@ -75,7 +138,9 @@ void operacoesBinaria(char operandor, SYMBOL_INFO operando_esquerdo, SYMBOL_INFO
         op.operando_esquerdo = gerar_registrador();
         op.operando_direito = gerar_registrador();
         op.destino = "r3";
+
         printf("%s      %s, %s   =>  %s\n",op.operandor,operando_esquerdo.name,operando_direito.name,op.destino);
+        Instrucoes("i");
 break;
         //return operation;
 
@@ -112,6 +177,12 @@ break;
         //return op;
     }
 }
+
+
+
+
+
+
 
 
 

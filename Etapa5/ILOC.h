@@ -21,6 +21,11 @@ typedef struct temp TEMP;
 
 
 
+void Instrucoes(char *instrucao);
+
+
+char * gerar_label();
+void Imprimir_codigo();
 void operacoesBinaria(char operandor, SYMBOL_INFO operando_esquerdo, SYMBOL_INFO operando_direito);
 SYMBOL_INFO lookup(ast_node *entrada);
 char * gerar_registrador();

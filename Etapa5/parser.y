@@ -350,6 +350,7 @@ expression: expression '+' expression
 	/*TEMP *temp;
 	temp = gerar_temp(5);
 	printf("oi %s \n ",temp->nome );*/
+Imprimir_codigo();
 	
 };
 
