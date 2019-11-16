@@ -269,11 +269,29 @@ no_modifier: {$$ = modifier(0,0);}
 
 //Local Var declaration
 local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
-$$ = new_local_var_declaration_node('<',$1,$2,$<valor_lexico>3,$4 ) ;
+    $$ = new_local_var_declaration_node('<',$1,$2,$<valor_lexico>3,$4 ) ;
+
+    if($4->ast_valor_lexico.nature == LITERAL){
+        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>3);
+
+        $$->code = storeTempToVariable($4->temp, id_info.depth, id_info.position);
+
+        printf("local decl code : %s",$$->code);
+    }
+
 };
 
 local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization no_modifier{
-$$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
+    $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
+
+
+    if($3->ast_valor_lexico.nature == LITERAL){
+        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>2);
+
+        $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
+
+        printf("local decl code : %s",$$->code);
+    }
 
 };
 local_var_declaration: primitive_type TK_IDENTIFICADOR null_node no_modifier{
@@ -295,7 +313,19 @@ call_parameter_list:expression ',' call_parameter_list {$$ = new_expression_list
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
 
-$$ = new_assignment_node($1,$3,0);};
+$$ = new_assignment_node($1,$3,0);
+
+ if($3->ast_valor_lexico.nature == LITERAL){
+        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+        
+        $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
+        $$->code = concatCode($3->code,$$->code);
+
+        printf("assignment code : %s",$$->code);
+    }
+
+
+};
 
 //Comandos de Entrada e Saída
 input_command: TK_PR_INPUT expression {$$ = new_io_node(INPUT_NODE,$<valor_lexico>1,$2);};
@@ -368,9 +398,18 @@ expression:'#'expression{$$ = new_unary_expression('#',$2); };
 expression: expression '+' expression 
 {
 	$$ = new_binary_expression('+',$1,$3);
+	
+	printf("natuure %d\n",$1->ast_valor_lexico.nature);
+	
+	if($1->ast_valor_lexico.nature == VARIABLE && $3->ast_valor_lexico.nature == VARIABLE){
 	operacoesBinaria('+', lookup($1),lookup($3));
+	}
 	
 };
+
+
+
+
 
 
 
@@ -395,12 +434,21 @@ expression : literal_id {$$ = $1;};
 
 //era expression
 literal_id:  TK_IDENTIFICADOR{ 
+
 $$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
 SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+$$->ast_valor_lexico.nature = id_info.nature;
+
+printf("neat %d\n",id_info.nature);
 if(id_info.nature == FUNCTION){
     printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
     exit(ERR_FUNCTION);
 }
+
+// $$->temp = newTemp();
+// $$->code = loadValueToTemp($<valor_lexico>1.value.intvalue, $$->temp);
+// 
+// printf("code %s\n",$$->code);
 
 
 
@@ -412,6 +460,11 @@ $$ = $1;
 |TK_LIT_INT{ 
 $1.var_type = TYPE_INT;
 $$ = new_leaf_node('d',$<valor_lexico>1);
+$$->temp = newTemp();
+$$->code = loadValueToTemp($<valor_lexico>1.value.intvalue, $$->temp);
+
+printf("code %s\n",$$->code);
+
 }
 |TK_LIT_FLOAT{ 
 $1.var_type = TYPE_FLOAT;

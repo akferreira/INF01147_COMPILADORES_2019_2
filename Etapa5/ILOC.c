@@ -24,6 +24,11 @@ typedef struct  _symbol_info{
 void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operando2)
 {
     OPERACAO op;
+    printf("op1 pos: %d, op2 pos : %d\n",operando1.position,operando2.position);
+//     newTemp();
+//     newTemp();
+//     newTemp();
+    
     switch (operandor)
     {
     case '+':
@@ -74,6 +79,85 @@ SYMBOL_INFO lookup(ast_node *entrada){
 
     return retrieve_symbol(entrada->ast_valor_lexico);
 }
+
+char* newTemp(){
+    static int temp = 0;
+    temp++;
+    char *buffer = malloc(TEMP_NAME_SIZE);
+    
+    if(buffer == NULL) return NULL;
+    
+    int cx = snprintf(buffer, TEMP_NAME_SIZE-1, "r%d",temp);
+    printf("%d\n",cx);
+    printf("buffer = %s\n",buffer);
+    
+    return buffer;
+    
+}
+
+
+
+char* newLabel(){
+    char *buffer = malloc(TEMP_NAME_SIZE);
+    
+    static int temp = 0;
+    //char buffer [temp+1];
+    
+    return buffer;
+    
+}
+char* concatCode(char *dest, char *source){
+    if(dest == NULL ) return source;
+    if(source == NULL) return dest;
+    
+    
+    int lenght = strlen(dest)+strlen(source)+1;
+    
+    dest = realloc(dest, lenght);
+    if(dest == NULL) return NULL;
+    
+    dest =  strncat(dest,source,lenght);
+    
+    
+    
+    return dest;
+}
+
+char *storeTempToVariable(char *temp, int depth, int position){
+     if(temp == NULL) return NULL;
+     char *buffer = malloc(STORE_INST_SIZE);
+    
+     if(buffer == NULL) return NULL;
+     
+     if(depth == 0){
+         int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rbss, %d \n",temp,position);
+    }
+    
+    else{
+        int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rfp, %d \n",temp,position);
+    }
+    
+    
+     
+     return buffer;
+    
+}
+
+char* loadValueToTemp(int value, char *temp){
+    if(temp == NULL) return NULL;
+    
+    char *buffer = malloc(LOAD_INST_SIZE);
+    
+     if(buffer == NULL) return NULL;
+     
+     int cx = snprintf(buffer, LOAD_INST_SIZE-1, "loadI %d => %s\n",value,temp);
+     
+     printf("size %lu\n",sizeof(buffer));
+     printf("lenght %lu\n",strlen(buffer));
+     return buffer;
+    
+}
+
 
 /*int main()
 {

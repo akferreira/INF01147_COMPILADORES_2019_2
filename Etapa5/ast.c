@@ -52,6 +52,10 @@ ast_node* new_empty_node(){
         new_node->first_child = NULL;
         new_node->next_sibling = NULL;
         new_node->father = NULL;
+        new_node->temp = NULL;
+        new_node->code = NULL;
+         new_node->vector_position = NULL;
+        
         
         VALOR_LEXICO new_valor_lexico;
         new_valor_lexico.line =0;
@@ -232,6 +236,8 @@ ast_node* new_leaf_node(int node_type, VALOR_LEXICO ast_valor_lexico){
     new_node->father = NULL;
     new_node->ast_valor_lexico = ast_valor_lexico;
     new_node->vector_position = NULL;
+    new_node->temp = NULL;
+    new_node->code = NULL;
     
     if(node_type == VECTOR_NODE) new_node->ast_valor_lexico.nature = VECTOR;
     else if(node_type == ID_NODE) new_node->ast_valor_lexico.nature = VARIABLE;

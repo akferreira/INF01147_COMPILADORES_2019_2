@@ -25,6 +25,8 @@ typedef struct  _symbol_info{
     ARRAY_DIMENSIONS *vector_dimension;
     int size;
     char *name;
+    int position;
+    int depth;
     
     
 } SYMBOL_INFO;
