@@ -339,7 +339,6 @@ ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initializati
     }
     
      if(dest_symbol.nature == VECTOR){
-         printf("%p\n",dest_symbol.vector_dimension);
         printf("vector dest %d\n",calculate_vector_position(dest_symbol.vector_dimension,dest->vector_position));   
      }
 //         int max_vector_size = (dest_symbol.size/ get_size(dest->ast_valor_lexico))-1;

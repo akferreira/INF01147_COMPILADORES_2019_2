@@ -226,23 +226,59 @@ int calculate_vector_size(ARRAY_DIMENSIONS *vector_dimension){
     
 }
 
+
+
+
+
 int calculate_vector_position(ARRAY_DIMENSIONS *vector_dimension,ARRAY_DIMENSIONS *indexes){
     if(vector_dimension == NULL) return -1;
     //INCOMPATIBLE_VECTOR_DIMENSIONS
     
     int position = 0;
-    int previous_size = 1;
-    while(vector_dimension->next){
+    int previous_size = 0;
+    
+    int d = indexes->dsize;
+    int size = vector_dimension->dsize;
+    
+   // vector_dimension = vector_dimension->next;
+  //  indexes = indexes->next;
+    
+    while(vector_dimension){
         if(indexes == NULL) return INCOMPATIBLE_VECTOR_DIMENSIONS;
+
+        printf("size d %d\t",previous_size);
         
+        //printf("%p\n",vector_dimension->next);
         
         position += vector_dimension->dsize * indexes->dsize *previous_size;
         previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
+        printf("df %d\n",previous_size);
         vector_dimension = vector_dimension->next;
         indexes = indexes->next;
     }
     
     return previous_size;
+    
+    
+//     static int depth = 0;
+//     printf("%p\n",indexes);
+//     
+//     //if(indexes == NULL || vector_dimension == NULL) return 0;
+//     
+//     if(indexes->next == NULL){
+//         depth++;
+//         printf("i%d %d\n",depth,indexes->dsize);
+//         return indexes->dsize;
+//     }
+//     
+//     else{
+//         int d = calculate_vector_position(vector_dimension->next,indexes->next);
+//         
+//         depth++;
+//         printf("i%d : %d * %d + %d\n",depth,d,vector_dimension->dsize,indexes->dsize);
+//         
+//         return (d * vector_dimension->dsize + indexes->dsize );
+//     }
     
     
 }

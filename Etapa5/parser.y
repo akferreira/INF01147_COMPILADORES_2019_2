@@ -130,7 +130,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization function_command_block;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization function_command_block dimension_exp_list;
 
 %type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR TK_LIT_CHAR TK_LIT_STRING TK_LIT_FLOAT TK_LIT_INT;
  
@@ -182,7 +182,10 @@ identifier: simple_identifier {$$ = $1;}
 |vector {$$ = $1;};
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
-vector: TK_IDENTIFICADOR vector_dimensions {   printf("vector\n"); $$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); $$->vector_position = $2; printf("p:%p\n",$2);}  ;
+vector: TK_IDENTIFICADOR vector_dimensions {   
+printf("vector\n"); 
+$$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); 
+$$->vector_position = $2; printf("p:%p\n",$2);}  ;
 
 vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
 printf("vector %d\n", $<valor_lexico>2.value.intvalue);
@@ -468,6 +471,13 @@ expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('
       
 expression : literal_id {$$ = $1;};
 
+
+
+dimension_exp_list: '['expression']' dimension_exp_list{
+$$ = new_expression_list_node($2,$4);
+}
+| '['expression']' {$$ = $2;}
+
 //era expression
 literal_id:  TK_IDENTIFICADOR{ 
 
@@ -490,6 +500,77 @@ printf("code id: %s\n",$$->code);
 | function_call {
 $$ = $1;
 }
+
+|TK_IDENTIFICADOR dimension_exp_list{
+printf("array %s\n",$<valor_lexico>1.value.str_value);
+
+$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
+
+SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+
+$$->ast_valor_lexico.nature = id_info.nature;
+
+ast_node* node = $2;
+ARRAY_DIMENSIONS *d = id_info.vector_dimension;
+
+$$->temp = newTemp();
+
+
+printf("return\n");
+printf("%p\n",$$->temp);
+
+int first_dimension_flag = 1;
+
+while(node){
+//previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
+    if(node->next_sibling == NULL){
+    
+        if(first_dimension_flag) printf("%s =  %s\n",$$->temp,node->temp);
+        
+        else{
+            printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
+            printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
+        }
+        
+        first_dimension_flag = 0;
+    
+        
+    }
+    
+    else{
+            if(first_dimension_flag) printf("%s = %s\n",$$->temp,node->temp);
+            
+            else{
+                printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
+                printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
+            }
+    
+            first_dimension_flag = 0;
+    }
+    
+    //printf("exp %s || %d\n", node->temp,d->dsize);
+    node = node->next_sibling;
+    d = d->next;
+}
+
+printf("r6 = r6 * 4\n");
+
+
+
+
+if(id_info.nature == FUNCTION){
+    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
+    exit(ERR_FUNCTION);
+}
+
+
+$$->code = storeVariableRegOffsetToTemp($$->temp,$$->temp, id_info.depth);
+
+
+
+}
+
+
 
 |TK_LIT_INT{ 
 $1.var_type = TYPE_INT;
@@ -519,7 +600,6 @@ $$ = new_leaf_node('T',$<valor_lexico>1);
 |TK_LIT_FALSE{ 
 $$ = new_leaf_node('F',$<valor_lexico>1);
 };
-
 
 
 

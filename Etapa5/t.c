@@ -1,10 +1,9 @@
-int y;
+int y[10][3][4];
 
 int foo(){
-	int a <= 4;
-	int b <= 5;
+    int a;
+    int b;
     int c;
-	c = a + b;
-    c = a - b;
-	return c;
+    int d;
+    d = y[1][2][a + 3];
 }
