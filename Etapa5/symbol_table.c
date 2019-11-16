@@ -269,7 +269,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimensi
             top_table->symbol_info->depth = semantic_stack->depth;
             
             if(vector_dimension == NULL){
-                printf("aaa\n");
+                //printf("aaa\n");
                 top_table->symbol_info->size = get_size(lexical);
                 top_table->symbol_info->vector_dimension = NULL;
             }
@@ -293,7 +293,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimensi
     }
     
     else{
-       printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+       ///printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){

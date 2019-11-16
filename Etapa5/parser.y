@@ -23,6 +23,10 @@
 #include "symbol_table.h"
 #include "ILOC.h"
 
+
+
+
+
 extern void *arvore;
 extern int get_line_number (void);
 extern void exporta (void *arvore);
@@ -34,6 +38,7 @@ void yyerror (char const *s)
 }
 extern int yylex (void);
 int yyparse (void);
+
 
 
 %}
@@ -182,23 +187,29 @@ identifier: simple_identifier {$$ = $1;}
 |vector {$$ = $1;};
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
-vector: TK_IDENTIFICADOR vector_dimensions {   printf("vector\n"); $$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); $$->vector_position = $2; printf("p:%p\n",$2);}  ;
+vector: TK_IDENTIFICADOR vector_dimensions 
+{   
+	printf("vector\n"); 
+	$$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1);
+	$$->vector_position = $2; printf("p:%p\n",$2);
+};
 
 vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
-printf("vector %d\n", $<valor_lexico>2.value.intvalue);
-$$ = malloc(sizeof(ARRAY_DIMENSIONS));
-$$->dsize = $<valor_lexico>2.value.intvalue;
-$$->next = $4;
-printf("p:%p -> %p\n",$$,$$->next);
+	printf("vector %d\n", $<valor_lexico>2.value.intvalue);
+	$$ = malloc(sizeof(ARRAY_DIMENSIONS));
+	$$->dsize = $<valor_lexico>2.value.intvalue;
+	$$->next = $4;
+	printf("p:%p -> %p\n",$$,$$->next);
 
 }
-| '['TK_LIT_INT']'{
-printf("vector %d\n", $<valor_lexico>2.value.intvalue);
-$$ = malloc(sizeof(ARRAY_DIMENSIONS));
-$$->dsize = $<valor_lexico>2.value.intvalue;
-$$->next = NULL;
+| '['TK_LIT_INT']'
+{
+	printf("vector %d\n", $<valor_lexico>2.value.intvalue);
+	$$ = malloc(sizeof(ARRAY_DIMENSIONS));
+	$$->dsize = $<valor_lexico>2.value.intvalue;
+	$$->next = NULL;
 
-printf("p:%p\n",$$);
+	printf("p:%p\n",$$);
 
 };
 
@@ -269,31 +280,34 @@ no_modifier: {$$ = modifier(0,0);}
 
 //Local Var declaration
 local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
-    $$ = new_local_var_declaration_node('<',$1,$2,$<valor_lexico>3,$4 ) ;
+	$$ = new_local_var_declaration_node('<',$1,$2,$<valor_lexico>3,$4 ) ;
 
-    if($4->ast_valor_lexico.nature == LITERAL){
-        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>3);
+	if($4->ast_valor_lexico.nature == LITERAL)
+	{
+		SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>3);
 
-        $$->code = storeTempToVariable($4->temp, id_info.depth, id_info.position);
-        $$->code = concatCode($4->code, $$->code);
+		$$->code = storeTempToVariable($4->temp, id_info.depth, id_info.position);
+		$$->code = concatCode($4->code, $$->code);
 
-        printf("local decl code : %s",$$->code);
-    }
+		printf("local decl code : %s",$$->code);
+	}
 
 };
 
-local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization no_modifier{
-    $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
+local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization no_modifier
+{
+	$$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
 
 
-    if($3->ast_valor_lexico.nature == LITERAL){
-        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>2);
+	if($3->ast_valor_lexico.nature == LITERAL)
+	{
+		SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>2);
 
-        $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
-        $$->code = concatCode($3->code, $$->code);
-        
-        printf("local decl code : %s",$$->code);
-    }
+		$$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
+		$$->code = concatCode($3->code, $$->code);
+
+		printf("local decl code : %s",$$->code);
+	}
 
 };
 local_var_declaration: primitive_type TK_IDENTIFICADOR null_node no_modifier{
@@ -315,15 +329,20 @@ call_parameter_list:expression ',' call_parameter_list {$$ = new_expression_list
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
 
-$$ = new_assignment_node($1,$3,0);
+	$$ = new_assignment_node($1,$3,0);
+
+	LISTA_INSTRUCOES *instrucoes = NULL;
+	SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+
+	$$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
+	$$->code = concatCode($3->code,$$->code);
+
+	//printf("assignment code : %s",$$->code);
 
 
-SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
-
-$$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
-$$->code = concatCode($3->code,$$->code);
-
-printf("assignment code : %s",$$->code);
+	printf("\n\n\n\n");
+	inserir_instrucao(&instrucoes, $$->code);
+	Imprimir_codigo();
 
 
 };
@@ -399,70 +418,81 @@ expression:'#'expression{$$ = new_unary_expression('#',$2); };
 expression: expression '+' expression 
 {
 	$$ = new_binary_expression('+',$1,$3);
+	
+	LISTA_INSTRUCOES *instrucoes = NULL;
 	$$->temp = newTemp();
 	$$->code = binaryOperation("add", $1->temp, $3->temp,$$->temp);
-	printf("oi\n\n");
 	char *subexpression_code  = concatCode($1->code, $3->code);
 	$$->code = concatCode(subexpression_code, $$->code);
 	
-	printf("Add code:\t: %s\n",$$->code);
+
+	inserir_instrucao(&instrucoes, $$->code);
+	//printf("Add code:\t: %s\n",$$->code);
+	printf("\n\n\n\n");
+	Imprimir_codigo();
 	
 };
 
-expression: expression '-' expression{
-$$ = new_binary_expression('-',$1,$3); 
-$$->temp = newTemp();
-$$->code = binaryOperation("sub", $1->temp, $3->temp,$$->temp);
-char *subexpression_code  = concatCode($1->code, $3->code);
-$$->code = concatCode(subexpression_code, $$->code);
+expression: expression '-' expression
+{
+	$$ = new_binary_expression('-',$1,$3); 
+	$$->temp = newTemp();
+	$$->code = binaryOperation("sub", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
 
-printf("sub code:\t: %s\n",$$->code);
-	
-
-
-
-};
-expression: expression '*' expression{
-$$ = new_binary_expression('*',$1,$3);
-$$->temp = newTemp();
-$$->code = binaryOperation("mul", $1->temp, $3->temp,$$->temp);
-char *subexpression_code  = concatCode($1->code, $3->code);
-$$->code = concatCode(subexpression_code, $$->code);
-
-printf("mul code:\t: %s\n",$$->code);
+	printf("sub code:\t: %s\n",$$->code);
 	
 
 };
-expression: expression '/' expression{
-$$ = new_binary_expression('/',$1,$3); 
-$$->temp = newTemp();
-$$->code = binaryOperation("div", $1->temp, $3->temp,$$->temp);
-char *subexpression_code  = concatCode($1->code, $3->code);
-$$->code = concatCode(subexpression_code, $$->code);
 
-printf("div code:\t: %s\n",$$->code);
+
+expression: expression '*' expression
+{
+	$$ = new_binary_expression('*',$1,$3);
+	$$->temp = newTemp();
+	$$->code = binaryOperation("mul", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
+
+	printf("mul code:\t: %s\n",$$->code);
 	
 
-
 };
+expression: expression '/' expression
+{
+	$$ = new_binary_expression('/',$1,$3); 
+	$$->temp = newTemp();
+	$$->code = binaryOperation("div", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
+
+	printf("div code:\t: %s\n",$$->code);
+};
+
+
 expression: expression '%' expression{$$ = new_binary_expression('%',$1,$3); };
-expression: expression '|' expression{$$ = new_binary_expression('|',$1,$3);
-$$->temp = newTemp();
-$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
-char *subexpression_code  = concatCode($1->code, $3->code);
-$$->code = concatCode(subexpression_code, $$->code);
+expression: expression '|' expression
+{
+	$$ = new_binary_expression('|',$1,$3);
+	$$->temp = newTemp();
+	$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
 
-printf("or code:\t: %s\n",$$->code);
-	
+	printf("or code:\t: %s\n",$$->code);	
 };
-expression: expression '&' expression{
-$$ = new_binary_expression('&',$1,$3);
-$$->code = binaryOperation("and", $1->temp, $3->temp,$$->temp);
-char *subexpression_code  = concatCode($1->code, $3->code);
-$$->code = concatCode(subexpression_code, $$->code);
 
-printf("and code:\t: %s\n",$$->code);
+expression: expression '&' expression
+{
+	$$ = new_binary_expression('&',$1,$3);
+	$$->code = binaryOperation("and", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
+
+	printf("and code:\t: %s\n",$$->code);
 };
+
 expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
 //Ternários
 expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
@@ -470,56 +500,52 @@ expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('
 expression : literal_id {$$ = $1;};
 
 //era expression
-literal_id:  TK_IDENTIFICADOR{ 
+literal_id:  TK_IDENTIFICADOR
+{ 
+	$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
+	SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+	$$->ast_valor_lexico.nature = id_info.nature;
 
-$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
-SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
-$$->ast_valor_lexico.nature = id_info.nature;
 
+	if(id_info.nature == FUNCTION){
+	    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
+	    exit(ERR_FUNCTION);
+	}
 
-if(id_info.nature == FUNCTION){
-    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
-    exit(ERR_FUNCTION);
+	$$->temp = newTemp();
+	$$->code = storeVariableToTemp($$->temp, id_info.depth, id_info.position);
+
+	printf("code id: %s\n",$$->code);
 }
+| function_call {$$ = $1;}
 
-$$->temp = newTemp();
-$$->code = storeVariableToTemp($$->temp, id_info.depth, id_info.position);
+|TK_LIT_INT
+{ 
+	$1.var_type = TYPE_INT;
+	$$ = new_leaf_node('d',$<valor_lexico>1);
+	$$->temp = newTemp();
+	$$->code = loadValueToTemp($<valor_lexico>1.value.intvalue, $$->temp);
 
-printf("code id: %s\n",$$->code);
-
-}
-| function_call {
-$$ = $1;
-}
-
-|TK_LIT_INT{ 
-$1.var_type = TYPE_INT;
-$$ = new_leaf_node('d',$<valor_lexico>1);
-$$->temp = newTemp();
-$$->code = loadValueToTemp($<valor_lexico>1.value.intvalue, $$->temp);
-
-printf("code %s\n",$$->code);
+	printf("code %s\n",$$->code);
 
 }
-|TK_LIT_FLOAT{ 
-$1.var_type = TYPE_FLOAT;
-$$ = new_leaf_node('f',$<valor_lexico>1);
+|TK_LIT_FLOAT
+{ 
+	$1.var_type = TYPE_FLOAT;
+	$$ = new_leaf_node('f',$<valor_lexico>1);
 }
-|TK_LIT_CHAR{ 
-
-$1.var_type = TYPE_CHAR;
-$$ = new_leaf_node('c',$<valor_lexico>1);
+|TK_LIT_CHAR
+{ 
+	$1.var_type = TYPE_CHAR;
+	$$ = new_leaf_node('c',$<valor_lexico>1);
 }
-|TK_LIT_STRING{ 
-$1.var_type = TYPE_STRING;
-$$ = new_leaf_node('s',$<valor_lexico>1);
+|TK_LIT_STRING
+{ 
+	$1.var_type = TYPE_STRING;
+	$$ = new_leaf_node('s',$<valor_lexico>1);
 }
-|TK_LIT_TRUE{ 
-$$ = new_leaf_node('T',$<valor_lexico>1);
-}
-|TK_LIT_FALSE{ 
-$$ = new_leaf_node('F',$<valor_lexico>1);
-};
+|TK_LIT_TRUE{$$ = new_leaf_node('T',$<valor_lexico>1);}
+|TK_LIT_FALSE{$$ = new_leaf_node('F',$<valor_lexico>1);};
 
 
 

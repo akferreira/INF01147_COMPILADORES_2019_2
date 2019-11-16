@@ -78,31 +78,36 @@ void Imprimir_codigo()
 
 
 
-
+/*
 
 void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operando2)
 {
+
+
+    sprintf("op1 pos: %d, op2 pos : %d\n",operando1.position,operando2.position);
+
     printf("op1 pos: %d, op2 pos : %d\n",operando1.position,operando2.position);
 
 }
 
+*/
 
 
 
-
-char* newTemp(){
+char* newTemp()
+{
     static int temp = 0;
     temp++;
     char *buffer = malloc(TEMP_NAME_SIZE);
-    
+
     if(buffer == NULL) return NULL;
-    
+
     int cx = snprintf(buffer, TEMP_NAME_SIZE-1, "r%d",temp);
 //     printf("%d\n",cx);
 //     printf("buffer = %s\n",buffer);
-    
+
     return buffer;
-    
+
 }
 
 
@@ -128,82 +133,96 @@ char * gerar_label()
 
 
 
-char* concatCode(char *dest, char *source){
+char* concatCode(char *dest, char *source)
+{
     if(dest == NULL ) return source;
     if(source == NULL) return dest;
-    
-    
+
+
     int lenght = strlen(dest)+strlen(source)+1;
-    
+
     dest = realloc(dest, lenght);
     if(dest == NULL) return NULL;
-    
+
     dest =  strncat(dest,source,lenght);
-    
-    
-    
+
+
+
     return dest;
 }
 
-char *storeTempToVariable(char *temp, int depth, int position){
-     if(temp == NULL) return NULL;
-     char *buffer = malloc(STORE_INST_SIZE);
-    
-     if(buffer == NULL) return NULL;
-     
-     if(depth == 0){
-         int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rbss, %d \n",temp,position);
+char *storeTempToVariable(char *temp, int depth, int position)
+{
+    if(temp == NULL) return NULL;
+    char *buffer = malloc(STORE_INST_SIZE);
+
+    if(buffer == NULL) return NULL;
+
+    if(depth == 0)
+    {
+        int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rbss, %d \n",temp,position);
     }
-    
-    else{
+
+    else
+    {
         int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI %s => rfp, %d \n",temp,position);
     }
-    
-    
-     
-     return buffer;
-    
+
+
+
+    return buffer;
+
 }
 
-char *storeVariableToTemp(char *temp, int depth, int position){
-     if(temp == NULL) return NULL;
-     char *buffer = malloc(STORE_INST_SIZE);
-    
-     if(buffer == NULL) return NULL;
-     
-     if(depth == 0){
-         int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rbss, %d => %s  \n",position,temp);
+char *storeVariableToTemp(char *temp, int depth, int position)
+{
+    if(temp == NULL) return NULL;
+    char *buffer = malloc(STORE_INST_SIZE);
+
+    if(buffer == NULL) return NULL;
+
+    if(depth == 0)
+    {
+        int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rbss, %d => %s  \n",position,temp);
     }
-    
-    else{
+
+    else
+    {
         int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadAI rfp, %d => %s  \n",position,temp);
     }
-     return buffer;
-    
+    return buffer;
+
 }
 
-char* loadValueToTemp(int value, char *temp){
+char* loadValueToTemp(int value, char *temp)
+{
     if(temp == NULL) return NULL;
-    
+
     char *buffer = malloc(LOAD_INST_SIZE);
-    
-     if(buffer == NULL) return NULL;
-     
-     int cx = snprintf(buffer, LOAD_INST_SIZE-1, "loadI %d => %s\n",value,temp);
-     
+
+    if(buffer == NULL) return NULL;
+
+    int cx = snprintf(buffer, LOAD_INST_SIZE-1, "loadI %d => %s\n",value,temp);
+
 //      printf("size %lu\n",sizeof(buffer));
 //      printf("lenght %lu\n",strlen(buffer));
-     return buffer;
-    
+    return buffer;
+
 }
 
-char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest){
+char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest)
+{
     char *buffer = malloc(OP_INST_SIZE);
-    
-    if(buffer == NULL) return NULL;
-     
-     int cx = snprintf(buffer, OP_INST_SIZE-1, "%s %s, %s => %s\n",operation,reg1,reg2,dest);
-    
+
+    if(buffer == NULL)
+        return NULL;
+
+    int cx = snprintf(buffer, OP_INST_SIZE-1, "%s %s, %s => %s\n",operation,reg1,reg2,dest);
+
+
+
+
+    //inserir_instrucao(&instrucoes, buffer);
     return buffer;
 }
 
