@@ -1,7 +1,0 @@
-/home/nelarus-pc/Documents/compiladores/trabalho_semestre/Etapa3/CMakeFiles/install/strip.dir
-/home/nelarus-pc/Documents/compiladores/trabalho_semestre/Etapa3/CMakeFiles/install/local.dir
-/home/nelarus-pc/Documents/compiladores/trabalho_semestre/Etapa3/CMakeFiles/edit_cache.dir
-/home/nelarus-pc/Documents/compiladores/trabalho_semestre/Etapa3/CMakeFiles/etapa3_prj.dir
-/home/nelarus-pc/Documents/compiladores/trabalho_semestre/Etapa3/CMakeFiles/rebuild_cache.dir
-/home/nelarus-pc/Documents/compiladores/trabalho_semestre/Etapa3/CMakeFiles/list_install_components.dir
-/home/nelarus-pc/Documents/compiladores/trabalho_semestre/Etapa3/CMakeFiles/install.dir

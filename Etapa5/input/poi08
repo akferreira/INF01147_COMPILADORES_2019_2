@@ -1,9 +1,0 @@
-//verificando-se se não houve dupla declaração
-//ERR_DECLARED
-int f()
-{
-  int a;
-  int a;	
-  a = 2;
-  return a;
-}

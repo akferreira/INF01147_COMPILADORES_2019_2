@@ -1,6 +1,0 @@
-// ERR_MISSING_ARGS
-int g(int x){}
-int f()
-{
-  g();
-}

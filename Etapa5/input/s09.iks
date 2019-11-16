@@ -1,7 +1,0 @@
-// ERR_CHAR_TO_X
-x int;
-c char;
-int f()
-{
-  x = c;
-}

@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "symbol_table.h"
+#include "ILOC.h"
+
 extern void *arvore;
 extern int get_line_number (void);
 extern void exporta (void *arvore);
@@ -242,10 +244,11 @@ function_command_block: '{'command_list'}' exit_scope { $$ = new_command_block_n
 //Command Block
 command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
 
-command_list: command command_list {$$ = new_command_list_node($1,$2);}
-|command_block';' command_list {new_command_list_node($1,$3);}
-| loops command_list {$$ = new_command_list_node($1,$2);}
-|{$$ = get_null();};
+command_list: 
+	command command_list {$$ = new_command_list_node($1,$2);}
+	|command_block';' command_list {new_command_list_node($1,$3);}
+	| loops command_list {$$ = new_command_list_node($1,$2);}
+	|{$$ = get_null();};
 
 //command
 command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{ $$ = $1;}
@@ -284,10 +287,9 @@ local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
 
 function_call: simple_identifier '(' call_parameter_list ')'{ $$ = new_function_call_node(FUNCTION_CALL_NODE,$1,$3);};
 
-call_parameter_list:expression ',' call_parameter_list {  $$ = new_expression_list_node($1,$3);};
+call_parameter_list:expression ',' call_parameter_list {$$ = new_expression_list_node($1,$3);};
 | expression 
-| {
-$$ = get_null();};
+| {$$ = get_null();};
 
 
 //Comando de Atribuição
@@ -303,13 +305,10 @@ output_command: TK_PR_OUTPUT expression_list{$$ = new_io_node(OUTPUT_NODE,$<valo
 
 
 
-//function_call: TK_IDENTIFICADOR '(' call_parameter_list ')';
-//call_parameter_list:expression ',' call_parameter_list | expression;
-
-
 //shift
-shift: TK_OC_SL { $$ = new_leaf_node('L',$<valor_lexico>1);}
-| TK_OC_SR { $$ = new_leaf_node('R',$<valor_lexico>1);};
+shift: 
+	TK_OC_SL { $$ = new_leaf_node('L',$<valor_lexico>1);}
+	|TK_OC_SR { $$ = new_leaf_node('R',$<valor_lexico>1);};
 
 shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,$2,$3);};
 
@@ -329,9 +328,11 @@ loops: loop_for | loop_while;
 loop_while:TK_PR_WHILE'('expression')' command_block_loop {$$ = new_loop_while_node('w',$3,$5);};
 loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop {$$ = new_loop_for_node('j',$3,$5,$7,$9);};
 
-loop_for_command_list:loop_for_command','loop_for_command_list {$$ = new_command_list_node($1,$3);}
-|loop_for_command;
-loop_for_command: local_var_declaration| shift_command | assignment_command;
+loop_for_command_list:
+	loop_for_command','loop_for_command_list {$$ = new_command_list_node($1,$3);}
+	|loop_for_command;
+loop_for_command:
+	local_var_declaration| shift_command | assignment_command;
 
 
 
@@ -342,11 +343,10 @@ loop_for_command: local_var_declaration| shift_command | assignment_command;
 
 
 
-expression_list:  expression ',' expression_list { $$ = new_expression_list_node($1,$3);};
-|  expression ',' expression { $$ = new_expression_list_node($1,$3);};
+expression_list:  
+	expression ',' expression_list { $$ = new_expression_list_node($1,$3);};
+	|expression ',' expression { $$ = new_expression_list_node($1,$3);};
 
-//expression: literal { printf("literal rule\n"); $$ = $1;};
-//expression: expression_unary | expression_binary| expression_ternary;
 
 //literal: {};
 expression: '(' expression ')'{ $$ = $2;};
@@ -358,8 +358,29 @@ expression:'&'expression  %prec UNARY_ET { $$ = new_unary_expression('@',$2); };
 expression:'*'expression %prec UNARY_POINTER  {$$ = new_unary_expression('$',$2); };
 expression:'?'expression{$$ = new_unary_expression('~',$2); };
 expression:'#'expression{$$ = new_unary_expression('#',$2); };
+
+
+
+
+
+
 //Binários
-expression: expression '+' expression {$$ = new_binary_expression('+',$1,$3);};
+expression: expression '+' expression 
+{
+	$$ = new_binary_expression('+',$1,$3);
+	operacoesBinaria('+', lookup($1),lookup($3));
+	
+};
+
+
+
+
+
+
+
+
+
+
 expression: expression '-' expression{$$ = new_binary_expression('-',$1,$3); };
 expression: expression '*' expression{$$ = new_binary_expression('*',$1,$3);};
 expression: expression '/' expression{$$ = new_binary_expression('/',$1,$3); };
