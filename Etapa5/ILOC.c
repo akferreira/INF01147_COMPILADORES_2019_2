@@ -38,7 +38,9 @@ void Imprimir_codigo()
 
     printf("loadI %d => rfp\n", stackForm);
     printf("loadI %d => rsp\n", stackForm);
-    printf("loadI %d => rbss\n", numero_instrucoes + 3);
+
+    //instrucoes do codigo + inicializacao rfs, rsp, rbss e halt
+    printf("loadI %d => rbss\n", numero_instrucoes + 4);
 
     printf("%s\n", gerar_label());
 
@@ -134,6 +136,12 @@ TEMP *gerar_temp(int valor)
 }
 
 
+
+
+void operacoesBinaria(char operandor, SYMBOL_INFO operando_esquerdo, SYMBOL_INFO operando_direito)
+{
+    printf("op1 pos: %d, op2 pos : %d\n",operando_esquerdo.position,operando_direito.position);
+    }
 
 
 void operacoesBinaria(char operandor, SYMBOL_INFO operando_esquerdo, SYMBOL_INFO operando_direito)
