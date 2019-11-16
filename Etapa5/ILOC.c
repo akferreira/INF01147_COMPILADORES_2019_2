@@ -100,7 +100,7 @@ int countLines(char *string, int size){
     int count = 0;
     int newline = '\n';
     
-    //printf("counting\n");
+    printf("counting\n");
     
     while(count < size && (*string) != '\0'){
         if(*string == newline) ++count;
@@ -159,6 +159,19 @@ char *storeTempToVariable(char *temp, int depth, int position){
     
 }
 
+char *loadMemRegToReg(char *reg1, char *reg2){
+    char *buffer = malloc(OP_INST_SIZE);
+    
+    if(buffer == NULL) return NULL;
+     
+     int cx = snprintf(buffer, OP_INST_SIZE-1, "load %s => %s\n",reg1,reg2);
+    
+    return buffer;
+    
+    
+}
+
+
 char *storeVariableRegOffsetToTemp(char *temp,char *regoffset,int depth){
     if(temp == NULL) return NULL;
      char *buffer = malloc(STORE_INST_SIZE);
@@ -175,6 +188,25 @@ char *storeVariableRegOffsetToTemp(char *temp,char *regoffset,int depth){
      return buffer;
     
 }
+
+char *storeTempToVariableRegOffset(char *temp,char *regoffset,int depth){
+    if(temp == NULL) return NULL;
+     char *buffer = malloc(STORE_INST_SIZE);
+    
+     if(buffer == NULL) return NULL;
+     
+     if(depth == 0){
+         int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeA0   %s => rbss, %s \n",temp,regoffset);
+    }
+    
+    else{
+        int cx = snprintf(buffer, STORE_INST_SIZE-1, "loadA0 rfp, %s => %s  \n",temp,regoffset);
+    }
+     return buffer;
+    
+}
+
+
 
 char *storeVariableToTemp(char *temp, int depth, int position){
      if(temp == NULL) return NULL;

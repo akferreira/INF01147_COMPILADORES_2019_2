@@ -316,31 +316,31 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 }
 
 ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initialization){
-    //printf("assignment node \n");
-  //  printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
+//         printf("assignment node \n");
+//     printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
     
     if(dest == NULL || source == NULL){
         return NULL;
     }
     ast_node *new_node = new_empty_node();
     
-    //printf("used nat %d\t\n",dest->ast_valor_lexico.nature);
+//     printf("used nat %d\t\n",dest->ast_valor_lexico.nature);
     
     
     
     SYMBOL_INFO dest_symbol = retrieve_symbol(dest->ast_valor_lexico);
     
-    //printf("nat %d\n",dest_symbol.nature);
-   // printf("size %d\n",dest_symbol.size);
+//     printf("nat %d\n",dest_symbol.nature);
+//     printf("size %d\n",dest_symbol.size);
     
     if(dest_symbol.nature == VECTOR && dest->ast_valor_lexico.nature != VECTOR){
         printf("Semantical error line %d, column %d : ERR_VECTOR\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
         exit(ERR_VECTOR);
     }
     
-     if(dest_symbol.nature == VECTOR){
-        printf("vector dest %d\n",calculate_vector_position(dest_symbol.vector_dimension,dest->vector_position));   
-     }
+//      if(dest_symbol.nature == VECTOR){
+//         printf("vector dest %d\n",calculate_vector_position(dest_symbol.vector_dimension,dest->vector_position));   
+//      }
 //         int max_vector_size = (dest_symbol.size/ get_size(dest->ast_valor_lexico))-1;
 //         
 //         if(dest->vector_position > max_vector_size || dest->vector_position < 0){

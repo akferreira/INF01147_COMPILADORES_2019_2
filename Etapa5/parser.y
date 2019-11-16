@@ -182,10 +182,64 @@ identifier: simple_identifier {$$ = $1;}
 |vector {$$ = $1;};
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
-vector: TK_IDENTIFICADOR vector_dimensions {   
-printf("vector\n"); 
-$$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1); 
-$$->vector_position = $2; printf("p:%p\n",$2);}  ;
+vector: TK_IDENTIFICADOR dimension_exp_list{
+printf("array %s\n",$<valor_lexico>1.value.str_value);
+
+$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
+
+SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+
+$$->ast_valor_lexico.nature = id_info.nature;
+
+if(id_info.nature == FUNCTION){
+    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
+    exit(ERR_FUNCTION);
+}
+
+ast_node* node = $2;
+ARRAY_DIMENSIONS *d = id_info.vector_dimension;
+
+$$->temp = newTemp();
+
+int first_dimension_flag = 1;
+
+while(node){
+//previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
+    
+    if(first_dimension_flag) {
+        $$->code = concatCode($$->code,copyRegToReg(node->temp,$$->temp));
+        printf("%s =  %s\n",$$->temp,node->temp);
+    }
+    
+    else{
+        $$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, d->dsize,$$->temp));
+        $$->code = concatCode($$->code,binaryOperation("add",$$->temp, node->temp,$$->temp));
+        printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
+        printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
+    }
+    
+    first_dimension_flag = 0;
+    
+    //printf("exp %s || %d\n", node->temp,d->dsize);
+    node = node->next_sibling;
+    d = d->next;
+}
+$$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, get_size2(id_info),$$->temp));
+$$->code = concatCode($2->code,$$->code);
+
+printf("array calc:\n%s",$$->code);
+
+
+
+
+
+
+
+$$->code = concatCode($$->code,storeVariableRegOffsetToTemp($$->temp,$$->temp, id_info.depth));
+
+
+
+}
 
 vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
 printf("vector %d\n", $<valor_lexico>2.value.intvalue);
@@ -266,7 +320,6 @@ command_list:
 command command_list {
 $$ = new_command_list_node($1,$2);
 char *code1,*code2;
-
 if($1 == NULL) code1 = NULL;
 else code1 = $1->code;
 
@@ -281,6 +334,7 @@ $$->code = concatCode(code1, code2);
 }
 |command_block';' command_list {
 new_command_list_node($1,$3);
+printf("block concat\n");
 $$->code = concatCode($1->code, $3->code);
 }
 | loops command_list {
@@ -353,15 +407,25 @@ call_parameter_list:expression ',' call_parameter_list {$$ = new_expression_list
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
-
+printf("assign %p , %p\n",$1,$3);
 $$ = new_assignment_node($1,$3,0);
 
-
+printf("assign %p , %p\n",$1,$3);
 SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
 printf("assignment code : %s\n",$3->code);
 printf("assignment code2 : %s\n",$$->code);
 
-$$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
+if(id_info.nature == VECTOR){
+    $$->code = concatCode($1->code, storeTempToVariableRegOffset($3->temp,$1->temp,id_info.depth));
+}
+
+else {
+$$->code = concatCode(loadMemRegToReg($3->temp,$3->temp),storeTempToVariable($3->temp, id_info.depth, id_info.position));
+
+// $$->code = concatCode( storeTempToVariable($3->temp, id_info.depth, id_info.position);
+}
+
+
 $$->code = concatCode($3->code,$$->code);
 
 
@@ -513,6 +577,11 @@ expression : literal_id {$$ = $1;};
 
 dimension_exp_list: '['expression']' dimension_exp_list{
 $$ = new_expression_list_node($2,$4);
+
+
+$$->code = concatCode($2->code, $4->code);
+printf("list %s\n",$$->code);
+
 }
 | '['expression']' {$$ = $2;}
 
@@ -539,67 +608,8 @@ printf("code id: %s\n",$$->code);
 $$ = $1;
 }
 
-|TK_IDENTIFICADOR dimension_exp_list{
-printf("array %s\n",$<valor_lexico>1.value.str_value);
-
-$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
-
-SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
-
-$$->ast_valor_lexico.nature = id_info.nature;
-
-if(id_info.nature == FUNCTION){
-    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
-    exit(ERR_FUNCTION);
-}
-
-ast_node* node = $2;
-ARRAY_DIMENSIONS *d = id_info.vector_dimension;
-
-$$->temp = newTemp();
-
-
-// printf("return\n");
-// printf("%p\n",$$->temp);
-
-int first_dimension_flag = 1;
-
-while(node){
-//previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
-    
-    if(first_dimension_flag) {
-        $$->code = concatCode($$->code,copyRegToReg(node->temp,$$->temp));
-        printf("%s =  %s\n",$$->temp,node->temp);
-    }
-    
-    else{
-        $$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, d->dsize,$$->temp));
-        $$->code = concatCode($$->code,binaryOperation("add",$$->temp, node->temp,$$->temp));
-        printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
-        printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
-    }
-    
-    first_dimension_flag = 0;
-    
-    //printf("exp %s || %d\n", node->temp,d->dsize);
-    node = node->next_sibling;
-    d = d->next;
-}
-$$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, get_size2(id_info),$$->temp));
-$$->code = concatCode($$->code,binaryOperationInteger("addI",$$->temp, id_info.position,$$->temp));
-
-printf("array calc:\n%s",$$->code);
-
-
-
-
-
-
-
-$$->code = concatCode($$->code,storeVariableRegOffsetToTemp($$->temp,$$->temp, id_info.depth));
-
-
-
+| vector {
+$$ = $1;
 }
 
 

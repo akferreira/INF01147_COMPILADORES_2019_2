@@ -32,9 +32,13 @@ char* newTemp();
 char* newLabel();
 char* concatCode(char *dest, char *source);
 
+char *loadMemRegToReg(char *reg1, char *reg2);
 char *storeTempToVariable(char *temp, int depth, int position);
 char *storeVariableToTemp(char *temp, int depth, int position);
+
 char *storeVariableRegOffsetToTemp(char *temp,char *regoffset,int depth);
+char *storeTempToVariableRegOffset(char *temp,char *regoffset,int depth);
+
 char* loadValueToTemp(int value, char *temp);
 
 char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest);
