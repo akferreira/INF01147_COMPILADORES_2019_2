@@ -436,6 +436,7 @@ expression: expression '+' expression
 expression: expression '-' expression
 {
 	$$ = new_binary_expression('-',$1,$3); 
+
 	$$->temp = newTemp();
 	$$->code = binaryOperation("sub", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
@@ -450,6 +451,7 @@ expression: expression '-' expression
 expression: expression '*' expression
 {
 	$$ = new_binary_expression('*',$1,$3);
+
 	$$->temp = newTemp();
 	$$->code = binaryOperation("mul", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
@@ -494,6 +496,80 @@ expression: expression '&' expression
 };
 
 expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
+
+
+
+
+
+
+
+expression: expression TK_OC_EQ expression
+{
+	/*$$ = new_binary_expression("==",$1,$3);
+
+	$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
+
+	printf("and code:\t: %s\n",$$->code);*/
+
+	
+
+};
+expression: expression TK_OC_LE expression
+{
+	printf("________________________________\n");
+
+	$$ = new_binary_expression(TK_OC_LE,$1,$3);
+
+	$$->temp = newTemp();
+	$$->code = binaryOperation("cmp_LE", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+
+	$$->code = concatCode(subexpression_code, $$->code);
+	printf("LE code:\n: %s\n",$$->code);
+
+	printf("________________________________\n");
+
+
+};
+expression: expression TK_OC_GE expression
+{
+	//$$ = new_binary_expression(">=",$1,$3);
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Ternários
 expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
       

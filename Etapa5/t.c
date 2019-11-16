@@ -1,1 +1,1 @@
-int main () { int x; x = 34; }
+int main () { int x; x = x<=x;}
