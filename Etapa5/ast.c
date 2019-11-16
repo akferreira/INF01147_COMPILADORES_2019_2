@@ -5,17 +5,23 @@
 #include "ast.h"
 #include "parser.tab.h"
 #include "symbol_table.h"
+#include "ILOC.h"
 #include <string.h>
 
 extern void *arvore;
 extern SYMBOL_STACK *semantic_stack; 
+extern int countLabel;
 
 int returning_own_function = 0;
 int return_type = -1;
 int line,column;
 
 void libera (void *arvore){
-    //printf("erase\n");
+    
+    ast_node *raiz = arvore;
+    printf("Código final!\n%s\n",raiz->code);
+    printf("total instruções %d\n",countLines(raiz->code,strlen(raiz->code)));
+    printf("Ultima label L%d",countLabel);
     erase_tree(arvore);
     clean_stack(semantic_stack);
     
@@ -54,6 +60,7 @@ ast_node* new_empty_node(){
         new_node->father = NULL;
         new_node->temp = NULL;
         new_node->code = NULL;
+        new_node->label = NULL;
          new_node->vector_position = NULL;
         
         
@@ -772,16 +779,18 @@ ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *cu
    
     
     if(arvore == NULL){
-        
         ast_node* temp_node = new_empty_node();
         temp_node->node_type = node_type;
         arvore = temp_node;
+        ast_root = arvore;
         
         
         
        if(current_global_node != NULL)  insert_child(arvore,current_global_node);
         if(next_global_nodes != NULL) insert_child(arvore,next_global_nodes);
         return ast_root;
+       
+       
         
         
         
@@ -792,7 +801,7 @@ ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *cu
         
         //if(next_global_nodes != NULL) insert_child(ast_root,next_global_nodes);
         
-        
+        ast_root = arvore;
         return ast_root;
         
         

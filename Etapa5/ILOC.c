@@ -17,6 +17,8 @@ typedef struct  _symbol_info{
 
 */
 
+int countLabel = 0;
+
 
 
 
@@ -115,17 +117,19 @@ int countLines(char *string, int size){
 
 char* newLabel(){
     char *buffer = malloc(TEMP_NAME_SIZE);
-    
-    static int temp = 0;
-    //char buffer [temp+1];
-    
+    snprintf(buffer,TEMP_NAME_SIZE-1, "L%d:  ", countLabel);
+    countLabel++;
     return buffer;
     
 }
 char* concatCode(char *dest, char *source){
-    if(dest == NULL ) return source;
-    if(source == NULL) return dest;
+    printf("%p <= %p\n",dest,source);
     
+    if(dest == NULL ) return source;
+    if(source == NULL) {
+        printf("source null\n");
+        return dest;
+    }
     
     int lenght = strlen(dest)+strlen(source)+1;
     

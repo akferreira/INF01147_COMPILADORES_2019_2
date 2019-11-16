@@ -156,7 +156,23 @@ null_node: {$$ = get_null();};
 
 //programa:
 program: /* empty */{$$ = get_null();};
-program: grammars program  {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
+program: grammars program  {
+$$ =  new_global_grammar_node('|',arvore,$1,$2);
+
+
+
+
+char *code1,*code2;
+if($1 == NULL) code1 = NULL;
+else code1 = $1->code;
+
+
+if($2 == NULL) code2 = NULL;
+else code2 = $2->code;
+
+$$->code = concatCode(code1,code2);
+
+};
 
 
 
@@ -265,11 +281,27 @@ printf("p:%p\n",$$);
 function_declaration: TK_PR_STATIC function_id enter_scope  '('function_parameters_list')' function_command_block 
 {
 $$ = new_static_function_declaration_node('M',$2,$5,$7);
+$$->label = newLabel();
+char *first_inst = malloc(50);
+strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
+$$->label = concatCode($$->label, first_inst );
+$$->code = concatCode($$->label,$7->code);
+
+
 
 };
 function_declaration: function_id enter_scope '('function_parameters_list')' function_command_block {
 //insert_function_entry($<valor_lexico>2);
 $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
+$$->label = newLabel();
+
+char *first_inst = malloc(50);
+strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
+$$->label = concatCode($$->label, first_inst );
+
+$$->code = concatCode($$->label,$6->code);
+
+//printf("function\n%s",$$->code);
 };
 
 //regra para definir o tipo do identificador da função
@@ -298,7 +330,7 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 function_command_block: '{'command_list'}' exit_scope { 
 $$ = new_command_block_node('{',$2);
 $$->code = concatCode($2->code, $$->code);
-printf("block___%p\n",$$->code);
+printf("block___%d\n",get_last_position_toptable());
 
 printf("command block code:\n%s",$$->code);
 

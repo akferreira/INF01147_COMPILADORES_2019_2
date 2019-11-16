@@ -203,6 +203,26 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
     
 }
 
+int get_last_position_toptable(){
+    SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
+    printf("top %p\n",top_table);
+    if(top_table == NULL) return 0;
+    
+    else{
+        SYMBOL_TABLE* current_table = top_table;
+        while(current_table->next != NULL) current_table = current_table->next;
+         printf("cur %p\n",current_table);
+        
+        if(current_table->symbol_info){
+            printf("cur %d\n",current_table->symbol_info->position);
+            return current_table->symbol_info->position;
+        }
+        else return -1;
+        
+    }
+}
+
+
 void insert_function_entry(VALOR_LEXICO lexical){
     
     initialize_stack();
