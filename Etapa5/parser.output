@@ -164,17 +164,19 @@ Grammar
    99           | expression TK_OC_EQ expression
   100           | expression TK_OC_LE expression
   101           | expression TK_OC_GE expression
-  102           | expression '?' expression ':' expression
-  103           | literal_id
+  102           | expression '>' expression
+  103           | expression '<' expression
+  104           | expression '?' expression ':' expression
+  105           | literal_id
 
-  104 literal_id: TK_IDENTIFICADOR
-  105           | function_call
-  106           | TK_LIT_INT
-  107           | TK_LIT_FLOAT
-  108           | TK_LIT_CHAR
-  109           | TK_LIT_STRING
-  110           | TK_LIT_TRUE
-  111           | TK_LIT_FALSE
+  106 literal_id: TK_IDENTIFICADOR
+  107           | function_call
+  108           | TK_LIT_INT
+  109           | TK_LIT_FLOAT
+  110           | TK_LIT_CHAR
+  111           | TK_LIT_STRING
+  112           | TK_LIT_TRUE
+  113           | TK_LIT_FALSE
 
 
 Terminals, with rules where they appear
@@ -191,10 +193,12 @@ $end (0) 0
 ',' (44) 28 56 76 81 82
 '-' (45) 85 92
 '/' (47) 94
-':' (58) 75 102
+':' (58) 75 104
 ';' (59) 8 9 10 11 34 38 39 40 41 42 43 44 45 46
+'<' (60) 103
 '=' (61) 59
-'?' (63) 89 102
+'>' (62) 102
+'?' (63) 89 104
 '[' (91) 21 22
 ']' (93) 21 22
 '^' (94) 98
@@ -239,13 +243,13 @@ TK_OC_SL (291) 63
 TK_OC_SR (292) 64
 TK_OC_FORWARD_PIPE (293)
 TK_OC_BASH_PIPE (294)
-TK_LIT_INT (295) 21 22 106
-TK_LIT_FLOAT (296) 107
-TK_LIT_FALSE (297) 111
-TK_LIT_TRUE (298) 110
-TK_LIT_CHAR (299) 108
-TK_LIT_STRING (300) 109
-TK_IDENTIFICADOR (301) 8 9 10 11 19 20 25 29 30 51 52 53 104
+TK_LIT_INT (295) 21 22 108
+TK_LIT_FLOAT (296) 109
+TK_LIT_FALSE (297) 113
+TK_LIT_TRUE (298) 112
+TK_LIT_CHAR (299) 110
+TK_LIT_STRING (300) 111
+TK_IDENTIFICADOR (301) 8 9 10 11 19 20 25 29 30 51 52 53 106
 TOKEN_ERRO (302)
 UNARY_QUESTION_MARK (303)
 UNARY_PLUS (304)
@@ -256,92 +260,93 @@ UNARY_POINTER (307)
 
 Nonterminals, with rules where they appear
 
-$accept (74)
+$accept (76)
     on left: 0
-enter_scope (75)
+enter_scope (77)
     on left: 1, on right: 23 24 32
-exit_scope (76)
+exit_scope (78)
     on left: 2, on right: 31 32
-null_node (77)
+null_node (79)
     on left: 3, on right: 53 67
-program (78)
+program (80)
     on left: 4 5, on right: 0 5
-grammars (79)
+grammars (81)
     on left: 6 7, on right: 5
-global_var_declaration (80)
+global_var_declaration (82)
     on left: 8 9 10 11, on right: 6
-primitive_type (81)
+primitive_type (83)
     on left: 12 13 14 15 16, on right: 8 9 10 11 25 29 30 51 52 53
-identifier (82)
+identifier (84)
     on left: 17 18, on right: 59 65
-simple_identifier (83)
+simple_identifier (85)
     on left: 19, on right: 17 55
-vector (84)
+vector (86)
     on left: 20, on right: 18
-vector_dimensions (85)
+vector_dimensions (87)
     on left: 21 22, on right: 10 11 20 21
-function_declaration (86)
+function_declaration (88)
     on left: 23 24, on right: 7
-function_id (87)
+function_id (89)
     on left: 25, on right: 23 24
-function_parameters_list (88)
+function_parameters_list (90)
     on left: 26 27 28, on right: 23 24 28
-function_parameters_argument (89)
+function_parameters_argument (91)
     on left: 29 30, on right: 27 28
-function_command_block (90)
+function_command_block (92)
     on left: 31, on right: 23 24
-command_block (91)
+command_block (93)
     on left: 32, on right: 34 67 68
-command_list (92)
+command_list (94)
     on left: 33 34 35 36, on right: 31 32 33 34 35
-command (93)
+command (95)
     on left: 37 38 39 40 41 42 43 44 45 46, on right: 33 71
-modifiers (94)
+modifiers (96)
     on left: 47 48 49, on right: 51
-no_modifier (95)
+no_modifier (97)
     on left: 50, on right: 52 53
-local_var_declaration (96)
+local_var_declaration (98)
     on left: 51 52 53, on right: 38 78
-local_var_initialization (97)
+local_var_initialization (99)
     on left: 54, on right: 51 52
-function_call (98)
-    on left: 55, on right: 43 105
-call_parameter_list (99)
+function_call (100)
+    on left: 55, on right: 43 107
+call_parameter_list (101)
     on left: 56 57 58, on right: 55 56
-assignment_command (100)
+assignment_command (102)
     on left: 59, on right: 40 80
-input_command (101)
+input_command (103)
     on left: 60, on right: 41
-output_command (102)
+output_command (104)
     on left: 61 62, on right: 42
-shift (103)
+shift (105)
     on left: 63 64, on right: 65
-shift_command (104)
+shift_command (106)
     on left: 65, on right: 39 79
-command_return (105)
+command_return (107)
     on left: 66, on right: 44
-if_statement (106)
+if_statement (108)
     on left: 67 68, on right: 37
-command_block_loop (107)
+command_block_loop (109)
     on left: 69 70 71, on right: 69 74 75
-loops (108)
+loops (110)
     on left: 72 73, on right: 35
-loop_while (109)
+loop_while (111)
     on left: 74, on right: 73
-loop_for (110)
+loop_for (112)
     on left: 75, on right: 72
-loop_for_command_list (111)
+loop_for_command_list (113)
     on left: 76 77, on right: 75 76
-loop_for_command (112)
+loop_for_command (114)
     on left: 78 79 80, on right: 76 77
-expression_list (113)
+expression_list (115)
     on left: 81 82, on right: 62 81
-expression (114)
+expression (116)
     on left: 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100
-    101 102 103, on right: 56 57 59 60 61 65 66 67 68 74 75 81 82 83
-    84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102
-literal_id (115)
-    on left: 104 105 106 107 108 109 110 111, on right: 54 103
+    101 102 103 104 105, on right: 56 57 59 60 61 65 66 67 68 74 75
+    81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101
+    102 103 104
+literal_id (117)
+    on left: 106 107 108 109 110 111 112 113, on right: 54 105
 
 
 State 0
@@ -1264,53 +1269,53 @@ State 80
 
 State 81
 
-  106 literal_id: TK_LIT_INT .
-
-    $default  reduce using rule 106 (literal_id)
-
-
-State 82
-
-  107 literal_id: TK_LIT_FLOAT .
-
-    $default  reduce using rule 107 (literal_id)
-
-
-State 83
-
-  111 literal_id: TK_LIT_FALSE .
-
-    $default  reduce using rule 111 (literal_id)
-
-
-State 84
-
-  110 literal_id: TK_LIT_TRUE .
-
-    $default  reduce using rule 110 (literal_id)
-
-
-State 85
-
-  108 literal_id: TK_LIT_CHAR .
+  108 literal_id: TK_LIT_INT .
 
     $default  reduce using rule 108 (literal_id)
 
 
-State 86
+State 82
 
-  109 literal_id: TK_LIT_STRING .
+  109 literal_id: TK_LIT_FLOAT .
 
     $default  reduce using rule 109 (literal_id)
+
+
+State 83
+
+  113 literal_id: TK_LIT_FALSE .
+
+    $default  reduce using rule 113 (literal_id)
+
+
+State 84
+
+  112 literal_id: TK_LIT_TRUE .
+
+    $default  reduce using rule 112 (literal_id)
+
+
+State 85
+
+  110 literal_id: TK_LIT_CHAR .
+
+    $default  reduce using rule 110 (literal_id)
+
+
+State 86
+
+  111 literal_id: TK_LIT_STRING .
+
+    $default  reduce using rule 111 (literal_id)
 
 
 State 87
 
    19 simple_identifier: TK_IDENTIFICADOR .
-  104 literal_id: TK_IDENTIFICADOR .
+  106 literal_id: TK_IDENTIFICADOR .
 
     '('       reduce using rule 19 (simple_identifier)
-    $default  reduce using rule 104 (literal_id)
+    $default  reduce using rule 106 (literal_id)
 
 
 State 88
@@ -1530,9 +1535,9 @@ State 96
 
 State 97
 
-  105 literal_id: function_call .
+  107 literal_id: function_call .
 
-    $default  reduce using rule 105 (literal_id)
+    $default  reduce using rule 107 (literal_id)
 
 
 State 98
@@ -1549,29 +1554,33 @@ State 98
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
 
     $default  reduce using rule 60 (input_command)
 
 
 State 99
 
-  103 expression: literal_id .
+  105 expression: literal_id .
 
-    $default  reduce using rule 103 (expression)
+    $default  reduce using rule 105 (expression)
 
 
 State 100
@@ -1597,21 +1606,25 @@ State 101
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ','       shift, and go to state 149
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ','       shift, and go to state 151
 
     $default  reduce using rule 61 (output_command)
 
@@ -1630,20 +1643,24 @@ State 102
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
 
     $default  reduce using rule 66 (command_return)
 
@@ -1670,14 +1687,14 @@ State 104
 
     primitive_type         go to state 60
     identifier             go to state 61
-    simple_identifier      go to state 150
+    simple_identifier      go to state 152
     vector                 go to state 63
     modifiers              go to state 67
-    local_var_declaration  go to state 151
-    assignment_command     go to state 152
-    shift_command          go to state 153
-    loop_for_command_list  go to state 154
-    loop_for_command       go to state 155
+    local_var_declaration  go to state 153
+    assignment_command     go to state 154
+    shift_command          go to state 155
+    loop_for_command_list  go to state 156
+    loop_for_command       go to state 157
 
 
 State 105
@@ -1731,7 +1748,7 @@ State 108
     simple_identifier      go to state 62
     vector                 go to state 63
     command_block          go to state 64
-    command_list           go to state 156
+    command_list           go to state 158
     command                go to state 66
     modifiers              go to state 67
     local_var_declaration  go to state 68
@@ -1752,12 +1769,12 @@ State 109
    52 local_var_declaration: primitive_type TK_IDENTIFICADOR . local_var_initialization no_modifier
    53                      | primitive_type TK_IDENTIFICADOR . null_node no_modifier
 
-    TK_OC_LE  shift, and go to state 157
+    TK_OC_LE  shift, and go to state 159
 
     $default  reduce using rule 3 (null_node)
 
-    null_node                 go to state 158
-    local_var_initialization  go to state 159
+    null_node                 go to state 160
+    local_var_initialization  go to state 161
 
 
 State 110
@@ -1796,7 +1813,7 @@ State 112
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 160
+    expression         go to state 162
     literal_id         go to state 99
 
 
@@ -1822,7 +1839,7 @@ State 113
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 161
+    expression         go to state 163
     literal_id         go to state 99
 
 
@@ -1850,8 +1867,8 @@ State 114
 
     simple_identifier    go to state 96
     function_call        go to state 97
-    call_parameter_list  go to state 162
-    expression           go to state 163
+    call_parameter_list  go to state 164
+    expression           go to state 165
     literal_id           go to state 99
 
 
@@ -1885,7 +1902,7 @@ State 115
     simple_identifier      go to state 62
     vector                 go to state 63
     command_block          go to state 64
-    command_list           go to state 164
+    command_list           go to state 166
     command                go to state 66
     modifiers              go to state 67
     local_var_declaration  go to state 68
@@ -1907,7 +1924,7 @@ State 116
 
     $default  reduce using rule 2 (exit_scope)
 
-    exit_scope  go to state 165
+    exit_scope  go to state 167
 
 
 State 117
@@ -1921,7 +1938,7 @@ State 118
 
    51 local_var_declaration: modifiers primitive_type . TK_IDENTIFICADOR local_var_initialization
 
-    TK_IDENTIFICADOR  shift, and go to state 166
+    TK_IDENTIFICADOR  shift, and go to state 168
 
 
 State 119
@@ -1995,21 +2012,25 @@ State 127
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ')'       shift, and go to state 167
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ')'       shift, and go to state 169
 
 
 State 128
@@ -2026,21 +2047,25 @@ State 128
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ')'       shift, and go to state 168
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ')'       shift, and go to state 170
 
 
 State 129
@@ -2057,20 +2082,24 @@ State 129
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
 
     $default  reduce using rule 86 (expression)
 
@@ -2089,20 +2118,24 @@ State 130
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
 
     $default  reduce using rule 90 (expression)
 
@@ -2121,7 +2154,9 @@ State 131
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     $default  reduce using rule 87 (expression)
 
@@ -2140,7 +2175,9 @@ State 132
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     $default  reduce using rule 84 (expression)
 
@@ -2159,7 +2196,9 @@ State 133
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     $default  reduce using rule 85 (expression)
 
@@ -2178,7 +2217,9 @@ State 134
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     $default  reduce using rule 88 (expression)
 
@@ -2197,10 +2238,12 @@ State 135
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 89 (expression)
 
@@ -2219,21 +2262,25 @@ State 136
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ')'       shift, and go to state 169
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ')'       shift, and go to state 171
 
 
 State 137
@@ -2258,7 +2305,7 @@ State 137
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 170
+    expression         go to state 172
     literal_id         go to state 99
 
 
@@ -2284,7 +2331,7 @@ State 138
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 171
+    expression         go to state 173
     literal_id         go to state 99
 
 
@@ -2310,7 +2357,7 @@ State 139
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 172
+    expression         go to state 174
     literal_id         go to state 99
 
 
@@ -2336,7 +2383,7 @@ State 140
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 173
+    expression         go to state 175
     literal_id         go to state 99
 
 
@@ -2362,65 +2409,13 @@ State 141
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 174
+    expression         go to state 176
     literal_id         go to state 99
 
 
 State 142
 
-   91 expression: expression '+' . expression
-
-    TK_LIT_INT        shift, and go to state 81
-    TK_LIT_FLOAT      shift, and go to state 82
-    TK_LIT_FALSE      shift, and go to state 83
-    TK_LIT_TRUE       shift, and go to state 84
-    TK_LIT_CHAR       shift, and go to state 85
-    TK_LIT_STRING     shift, and go to state 86
-    TK_IDENTIFICADOR  shift, and go to state 87
-    '!'               shift, and go to state 88
-    '#'               shift, and go to state 89
-    '&'               shift, and go to state 90
-    '+'               shift, and go to state 91
-    '-'               shift, and go to state 92
-    '*'               shift, and go to state 93
-    '?'               shift, and go to state 94
-    '('               shift, and go to state 95
-
-    simple_identifier  go to state 96
-    function_call      go to state 97
-    expression         go to state 175
-    literal_id         go to state 99
-
-
-State 143
-
-   92 expression: expression '-' . expression
-
-    TK_LIT_INT        shift, and go to state 81
-    TK_LIT_FLOAT      shift, and go to state 82
-    TK_LIT_FALSE      shift, and go to state 83
-    TK_LIT_TRUE       shift, and go to state 84
-    TK_LIT_CHAR       shift, and go to state 85
-    TK_LIT_STRING     shift, and go to state 86
-    TK_IDENTIFICADOR  shift, and go to state 87
-    '!'               shift, and go to state 88
-    '#'               shift, and go to state 89
-    '&'               shift, and go to state 90
-    '+'               shift, and go to state 91
-    '-'               shift, and go to state 92
-    '*'               shift, and go to state 93
-    '?'               shift, and go to state 94
-    '('               shift, and go to state 95
-
-    simple_identifier  go to state 96
-    function_call      go to state 97
-    expression         go to state 176
-    literal_id         go to state 99
-
-
-State 144
-
-   93 expression: expression '*' . expression
+  103 expression: expression '<' . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -2444,9 +2439,9 @@ State 144
     literal_id         go to state 99
 
 
-State 145
+State 143
 
-   94 expression: expression '/' . expression
+  102 expression: expression '>' . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -2470,9 +2465,9 @@ State 145
     literal_id         go to state 99
 
 
-State 146
+State 144
 
-   95 expression: expression '%' . expression
+   91 expression: expression '+' . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -2496,9 +2491,9 @@ State 146
     literal_id         go to state 99
 
 
-State 147
+State 145
 
-   98 expression: expression '^' . expression
+   92 expression: expression '-' . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -2522,9 +2517,9 @@ State 147
     literal_id         go to state 99
 
 
-State 148
+State 146
 
-  102 expression: expression '?' . expression ':' expression
+   93 expression: expression '*' . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -2548,7 +2543,111 @@ State 148
     literal_id         go to state 99
 
 
+State 147
+
+   94 expression: expression '/' . expression
+
+    TK_LIT_INT        shift, and go to state 81
+    TK_LIT_FLOAT      shift, and go to state 82
+    TK_LIT_FALSE      shift, and go to state 83
+    TK_LIT_TRUE       shift, and go to state 84
+    TK_LIT_CHAR       shift, and go to state 85
+    TK_LIT_STRING     shift, and go to state 86
+    TK_IDENTIFICADOR  shift, and go to state 87
+    '!'               shift, and go to state 88
+    '#'               shift, and go to state 89
+    '&'               shift, and go to state 90
+    '+'               shift, and go to state 91
+    '-'               shift, and go to state 92
+    '*'               shift, and go to state 93
+    '?'               shift, and go to state 94
+    '('               shift, and go to state 95
+
+    simple_identifier  go to state 96
+    function_call      go to state 97
+    expression         go to state 182
+    literal_id         go to state 99
+
+
+State 148
+
+   95 expression: expression '%' . expression
+
+    TK_LIT_INT        shift, and go to state 81
+    TK_LIT_FLOAT      shift, and go to state 82
+    TK_LIT_FALSE      shift, and go to state 83
+    TK_LIT_TRUE       shift, and go to state 84
+    TK_LIT_CHAR       shift, and go to state 85
+    TK_LIT_STRING     shift, and go to state 86
+    TK_IDENTIFICADOR  shift, and go to state 87
+    '!'               shift, and go to state 88
+    '#'               shift, and go to state 89
+    '&'               shift, and go to state 90
+    '+'               shift, and go to state 91
+    '-'               shift, and go to state 92
+    '*'               shift, and go to state 93
+    '?'               shift, and go to state 94
+    '('               shift, and go to state 95
+
+    simple_identifier  go to state 96
+    function_call      go to state 97
+    expression         go to state 183
+    literal_id         go to state 99
+
+
 State 149
+
+   98 expression: expression '^' . expression
+
+    TK_LIT_INT        shift, and go to state 81
+    TK_LIT_FLOAT      shift, and go to state 82
+    TK_LIT_FALSE      shift, and go to state 83
+    TK_LIT_TRUE       shift, and go to state 84
+    TK_LIT_CHAR       shift, and go to state 85
+    TK_LIT_STRING     shift, and go to state 86
+    TK_IDENTIFICADOR  shift, and go to state 87
+    '!'               shift, and go to state 88
+    '#'               shift, and go to state 89
+    '&'               shift, and go to state 90
+    '+'               shift, and go to state 91
+    '-'               shift, and go to state 92
+    '*'               shift, and go to state 93
+    '?'               shift, and go to state 94
+    '('               shift, and go to state 95
+
+    simple_identifier  go to state 96
+    function_call      go to state 97
+    expression         go to state 184
+    literal_id         go to state 99
+
+
+State 150
+
+  104 expression: expression '?' . expression ':' expression
+
+    TK_LIT_INT        shift, and go to state 81
+    TK_LIT_FLOAT      shift, and go to state 82
+    TK_LIT_FALSE      shift, and go to state 83
+    TK_LIT_TRUE       shift, and go to state 84
+    TK_LIT_CHAR       shift, and go to state 85
+    TK_LIT_STRING     shift, and go to state 86
+    TK_IDENTIFICADOR  shift, and go to state 87
+    '!'               shift, and go to state 88
+    '#'               shift, and go to state 89
+    '&'               shift, and go to state 90
+    '+'               shift, and go to state 91
+    '-'               shift, and go to state 92
+    '*'               shift, and go to state 93
+    '?'               shift, and go to state 94
+    '('               shift, and go to state 95
+
+    simple_identifier  go to state 96
+    function_call      go to state 97
+    expression         go to state 185
+    literal_id         go to state 99
+
+
+State 151
 
    81 expression_list: expression ',' . expression_list
    82                | expression ',' . expression
@@ -2571,64 +2670,64 @@ State 149
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression_list    go to state 182
-    expression         go to state 183
+    expression_list    go to state 186
+    expression         go to state 187
     literal_id         go to state 99
 
 
-State 150
+State 152
 
    17 identifier: simple_identifier .
 
     $default  reduce using rule 17 (identifier)
 
 
-State 151
+State 153
 
    78 loop_for_command: local_var_declaration .
 
     $default  reduce using rule 78 (loop_for_command)
 
 
-State 152
+State 154
 
    80 loop_for_command: assignment_command .
 
     $default  reduce using rule 80 (loop_for_command)
 
 
-State 153
+State 155
 
    79 loop_for_command: shift_command .
 
     $default  reduce using rule 79 (loop_for_command)
 
 
-State 154
+State 156
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list . ':' expression ':' loop_for_command_list ')' command_block_loop
 
-    ':'  shift, and go to state 184
+    ':'  shift, and go to state 188
 
 
-State 155
+State 157
 
    76 loop_for_command_list: loop_for_command . ',' loop_for_command_list
    77                      | loop_for_command .
 
-    ','  shift, and go to state 185
+    ','  shift, and go to state 189
 
     $default  reduce using rule 77 (loop_for_command_list)
 
 
-State 156
+State 158
 
    32 command_block: enter_scope '{' command_list . '}' exit_scope
 
-    '}'  shift, and go to state 186
+    '}'  shift, and go to state 190
 
 
-State 157
+State 159
 
    54 local_var_initialization: TK_OC_LE . literal_id
 
@@ -2642,28 +2741,28 @@ State 157
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    literal_id         go to state 187
+    literal_id         go to state 191
 
 
-State 158
+State 160
 
    53 local_var_declaration: primitive_type TK_IDENTIFICADOR null_node . no_modifier
 
     $default  reduce using rule 50 (no_modifier)
 
-    no_modifier  go to state 188
+    no_modifier  go to state 192
 
 
-State 159
+State 161
 
    52 local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization . no_modifier
 
     $default  reduce using rule 50 (no_modifier)
 
-    no_modifier  go to state 189
+    no_modifier  go to state 193
 
 
-State 160
+State 162
 
    59 assignment_command: identifier '=' expression .
    91 expression: expression . '+' expression
@@ -2677,25 +2776,29 @@ State 160
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
 
     $default  reduce using rule 59 (assignment_command)
 
 
-State 161
+State 163
 
    65 shift_command: identifier shift expression .
    91 expression: expression . '+' expression
@@ -2709,32 +2812,36 @@ State 161
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
 
     $default  reduce using rule 65 (shift_command)
 
 
-State 162
+State 164
 
    55 function_call: simple_identifier '(' call_parameter_list . ')'
 
-    ')'  shift, and go to state 190
+    ')'  shift, and go to state 194
 
 
-State 163
+State 165
 
    56 call_parameter_list: expression . ',' call_parameter_list
    57                    | expression .
@@ -2749,49 +2856,53 @@ State 163
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ','       shift, and go to state 191
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ','       shift, and go to state 195
 
     $default  reduce using rule 57 (call_parameter_list)
 
 
-State 164
+State 166
 
    34 command_list: command_block ';' command_list .
 
     $default  reduce using rule 34 (command_list)
 
 
-State 165
+State 167
 
    31 function_command_block: '{' command_list '}' exit_scope .
 
     $default  reduce using rule 31 (function_command_block)
 
 
-State 166
+State 168
 
    51 local_var_declaration: modifiers primitive_type TK_IDENTIFICADOR . local_var_initialization
 
-    TK_OC_LE  shift, and go to state 157
+    TK_OC_LE  shift, and go to state 159
 
-    local_var_initialization  go to state 192
+    local_var_initialization  go to state 196
 
 
-State 167
+State 169
 
    67 if_statement: TK_PR_IF '(' expression ')' . command_block null_node
    68             | TK_PR_IF '(' expression ')' . command_block TK_PR_ELSE command_block
@@ -2799,10 +2910,10 @@ State 167
     $default  reduce using rule 1 (enter_scope)
 
     enter_scope    go to state 59
-    command_block  go to state 193
+    command_block  go to state 197
 
 
-State 168
+State 170
 
    74 loop_while: TK_PR_WHILE '(' expression ')' . command_block_loop
 
@@ -2820,13 +2931,13 @@ State 168
     TK_PR_BREAK       shift, and go to state 56
     TK_PR_CONTINUE    shift, and go to state 57
     TK_IDENTIFICADOR  shift, and go to state 58
-    '{'               shift, and go to state 194
+    '{'               shift, and go to state 198
 
     primitive_type         go to state 60
     identifier             go to state 61
     simple_identifier      go to state 62
     vector                 go to state 63
-    command                go to state 195
+    command                go to state 199
     modifiers              go to state 67
     local_var_declaration  go to state 68
     function_call          go to state 69
@@ -2836,72 +2947,14 @@ State 168
     shift_command          go to state 73
     command_return         go to state 74
     if_statement           go to state 75
-    command_block_loop     go to state 196
-
-
-State 169
-
-   83 expression: '(' expression ')' .
-
-    $default  reduce using rule 83 (expression)
-
-
-State 170
-
-   91 expression: expression . '+' expression
-   92           | expression . '-' expression
-   93           | expression . '*' expression
-   94           | expression . '/' expression
-   95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
-   98           | expression . '^' expression
-   99           | expression . TK_OC_EQ expression
-  100           | expression . TK_OC_LE expression
-  100           | expression TK_OC_LE expression .
-  101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
-
-    '|'  shift, and go to state 140
-    '&'  shift, and go to state 141
-    '+'  shift, and go to state 142
-    '-'  shift, and go to state 143
-    '*'  shift, and go to state 144
-    '/'  shift, and go to state 145
-    '%'  shift, and go to state 146
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
-
-    $default  reduce using rule 100 (expression)
+    command_block_loop     go to state 200
 
 
 State 171
 
-   91 expression: expression . '+' expression
-   92           | expression . '-' expression
-   93           | expression . '*' expression
-   94           | expression . '/' expression
-   95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
-   98           | expression . '^' expression
-   99           | expression . TK_OC_EQ expression
-  100           | expression . TK_OC_LE expression
-  101           | expression . TK_OC_GE expression
-  101           | expression TK_OC_GE expression .
-  102           | expression . '?' expression ':' expression
+   83 expression: '(' expression ')' .
 
-    '|'  shift, and go to state 140
-    '&'  shift, and go to state 141
-    '+'  shift, and go to state 142
-    '-'  shift, and go to state 143
-    '*'  shift, and go to state 144
-    '/'  shift, and go to state 145
-    '%'  shift, and go to state 146
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
-
-    $default  reduce using rule 101 (expression)
+    $default  reduce using rule 83 (expression)
 
 
 State 172
@@ -2915,27 +2968,97 @@ State 172
    97           | expression . '&' expression
    98           | expression . '^' expression
    99           | expression . TK_OC_EQ expression
+  100           | expression . TK_OC_LE expression
+  100           | expression TK_OC_LE expression .
+  101           | expression . TK_OC_GE expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
+
+    '|'  shift, and go to state 140
+    '&'  shift, and go to state 141
+    '<'  shift, and go to state 142
+    '>'  shift, and go to state 143
+    '+'  shift, and go to state 144
+    '-'  shift, and go to state 145
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
+
+    $default  reduce using rule 100 (expression)
+
+
+State 173
+
+   91 expression: expression . '+' expression
+   92           | expression . '-' expression
+   93           | expression . '*' expression
+   94           | expression . '/' expression
+   95           | expression . '%' expression
+   96           | expression . '|' expression
+   97           | expression . '&' expression
+   98           | expression . '^' expression
+   99           | expression . TK_OC_EQ expression
+  100           | expression . TK_OC_LE expression
+  101           | expression . TK_OC_GE expression
+  101           | expression TK_OC_GE expression .
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
+
+    '|'  shift, and go to state 140
+    '&'  shift, and go to state 141
+    '<'  shift, and go to state 142
+    '>'  shift, and go to state 143
+    '+'  shift, and go to state 144
+    '-'  shift, and go to state 145
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
+
+    $default  reduce using rule 101 (expression)
+
+
+State 174
+
+   91 expression: expression . '+' expression
+   92           | expression . '-' expression
+   93           | expression . '*' expression
+   94           | expression . '/' expression
+   95           | expression . '%' expression
+   96           | expression . '|' expression
+   97           | expression . '&' expression
+   98           | expression . '^' expression
+   99           | expression . TK_OC_EQ expression
    99           | expression TK_OC_EQ expression .
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
 
     $default  reduce using rule 99 (expression)
 
 
-State 173
+State 175
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -2949,21 +3072,25 @@ State 173
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     '&'  shift, and go to state 141
-    '+'  shift, and go to state 142
-    '-'  shift, and go to state 143
-    '*'  shift, and go to state 144
-    '/'  shift, and go to state 145
-    '%'  shift, and go to state 146
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '<'  shift, and go to state 142
+    '>'  shift, and go to state 143
+    '+'  shift, and go to state 144
+    '-'  shift, and go to state 145
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 96 (expression)
 
 
-State 174
+State 176
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -2977,20 +3104,82 @@ State 174
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '+'  shift, and go to state 142
-    '-'  shift, and go to state 143
-    '*'  shift, and go to state 144
-    '/'  shift, and go to state 145
-    '%'  shift, and go to state 146
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '<'  shift, and go to state 142
+    '>'  shift, and go to state 143
+    '+'  shift, and go to state 144
+    '-'  shift, and go to state 145
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 97 (expression)
 
 
-State 175
+State 177
+
+   91 expression: expression . '+' expression
+   92           | expression . '-' expression
+   93           | expression . '*' expression
+   94           | expression . '/' expression
+   95           | expression . '%' expression
+   96           | expression . '|' expression
+   97           | expression . '&' expression
+   98           | expression . '^' expression
+   99           | expression . TK_OC_EQ expression
+  100           | expression . TK_OC_LE expression
+  101           | expression . TK_OC_GE expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  103           | expression '<' expression .
+  104           | expression . '?' expression ':' expression
+
+    '+'  shift, and go to state 144
+    '-'  shift, and go to state 145
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
+
+    $default  reduce using rule 103 (expression)
+
+
+State 178
+
+   91 expression: expression . '+' expression
+   92           | expression . '-' expression
+   93           | expression . '*' expression
+   94           | expression . '/' expression
+   95           | expression . '%' expression
+   96           | expression . '|' expression
+   97           | expression . '&' expression
+   98           | expression . '^' expression
+   99           | expression . TK_OC_EQ expression
+  100           | expression . TK_OC_LE expression
+  101           | expression . TK_OC_GE expression
+  102           | expression . '>' expression
+  102           | expression '>' expression .
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
+
+    '+'  shift, and go to state 144
+    '-'  shift, and go to state 145
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
+
+    $default  reduce using rule 102 (expression)
+
+
+State 179
 
    91 expression: expression . '+' expression
    91           | expression '+' expression .
@@ -3004,18 +3193,20 @@ State 175
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 144
-    '/'  shift, and go to state 145
-    '%'  shift, and go to state 146
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 91 (expression)
 
 
-State 176
+State 180
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3029,18 +3220,20 @@ State 176
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 144
-    '/'  shift, and go to state 145
-    '%'  shift, and go to state 146
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '*'  shift, and go to state 146
+    '/'  shift, and go to state 147
+    '%'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 92 (expression)
 
 
-State 177
+State 181
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3054,15 +3247,17 @@ State 177
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 93 (expression)
 
 
-State 178
+State 182
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3076,15 +3271,17 @@ State 178
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 94 (expression)
 
 
-State 179
+State 183
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3098,15 +3295,17 @@ State 179
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 95 (expression)
 
 
-State 180
+State 184
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3120,15 +3319,17 @@ State 180
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
     $default  reduce using rule 98 (expression)
 
 
-State 181
+State 185
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3141,32 +3342,36 @@ State 181
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
-  102           | expression '?' expression . ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
+  104           | expression '?' expression . ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ':'       shift, and go to state 197
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ':'       shift, and go to state 201
 
 
-State 182
+State 186
 
    81 expression_list: expression ',' expression_list .
 
     $default  reduce using rule 81 (expression_list)
 
 
-State 183
+State 187
 
    81 expression_list: expression . ',' expression_list
    82                | expression . ',' expression
@@ -3182,26 +3387,30 @@ State 183
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ','       shift, and go to state 149
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ','       shift, and go to state 151
 
     $default  reduce using rule 82 (expression_list)
 
 
-State 184
+State 188
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' . expression ':' loop_for_command_list ')' command_block_loop
 
@@ -3223,11 +3432,11 @@ State 184
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 198
+    expression         go to state 202
     literal_id         go to state 99
 
 
-State 185
+State 189
 
    76 loop_for_command_list: loop_for_command ',' . loop_for_command_list
 
@@ -3242,54 +3451,54 @@ State 185
 
     primitive_type         go to state 60
     identifier             go to state 61
-    simple_identifier      go to state 150
+    simple_identifier      go to state 152
     vector                 go to state 63
     modifiers              go to state 67
-    local_var_declaration  go to state 151
-    assignment_command     go to state 152
-    shift_command          go to state 153
-    loop_for_command_list  go to state 199
-    loop_for_command       go to state 155
+    local_var_declaration  go to state 153
+    assignment_command     go to state 154
+    shift_command          go to state 155
+    loop_for_command_list  go to state 203
+    loop_for_command       go to state 157
 
 
-State 186
+State 190
 
    32 command_block: enter_scope '{' command_list '}' . exit_scope
 
     $default  reduce using rule 2 (exit_scope)
 
-    exit_scope  go to state 200
+    exit_scope  go to state 204
 
 
-State 187
+State 191
 
    54 local_var_initialization: TK_OC_LE literal_id .
 
     $default  reduce using rule 54 (local_var_initialization)
 
 
-State 188
+State 192
 
    53 local_var_declaration: primitive_type TK_IDENTIFICADOR null_node no_modifier .
 
     $default  reduce using rule 53 (local_var_declaration)
 
 
-State 189
+State 193
 
    52 local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization no_modifier .
 
     $default  reduce using rule 52 (local_var_declaration)
 
 
-State 190
+State 194
 
    55 function_call: simple_identifier '(' call_parameter_list ')' .
 
     $default  reduce using rule 55 (function_call)
 
 
-State 191
+State 195
 
    56 call_parameter_list: expression ',' . call_parameter_list
 
@@ -3313,31 +3522,31 @@ State 191
 
     simple_identifier    go to state 96
     function_call        go to state 97
-    call_parameter_list  go to state 201
-    expression           go to state 163
+    call_parameter_list  go to state 205
+    expression           go to state 165
     literal_id           go to state 99
 
 
-State 192
+State 196
 
    51 local_var_declaration: modifiers primitive_type TK_IDENTIFICADOR local_var_initialization .
 
     $default  reduce using rule 51 (local_var_declaration)
 
 
-State 193
+State 197
 
    67 if_statement: TK_PR_IF '(' expression ')' command_block . null_node
    68             | TK_PR_IF '(' expression ')' command_block . TK_PR_ELSE command_block
 
-    TK_PR_ELSE  shift, and go to state 202
+    TK_PR_ELSE  shift, and go to state 206
 
     $default  reduce using rule 3 (null_node)
 
-    null_node  go to state 203
+    null_node  go to state 207
 
 
-State 194
+State 198
 
    69 command_block_loop: '{' . command_block_loop '}'
    70                   | '{' . '}'
@@ -3356,14 +3565,14 @@ State 194
     TK_PR_BREAK       shift, and go to state 56
     TK_PR_CONTINUE    shift, and go to state 57
     TK_IDENTIFICADOR  shift, and go to state 58
-    '{'               shift, and go to state 194
-    '}'               shift, and go to state 204
+    '{'               shift, and go to state 198
+    '}'               shift, and go to state 208
 
     primitive_type         go to state 60
     identifier             go to state 61
     simple_identifier      go to state 62
     vector                 go to state 63
-    command                go to state 195
+    command                go to state 199
     modifiers              go to state 67
     local_var_declaration  go to state 68
     function_call          go to state 69
@@ -3373,26 +3582,26 @@ State 194
     shift_command          go to state 73
     command_return         go to state 74
     if_statement           go to state 75
-    command_block_loop     go to state 205
+    command_block_loop     go to state 209
 
 
-State 195
+State 199
 
    71 command_block_loop: command .
 
     $default  reduce using rule 71 (command_block_loop)
 
 
-State 196
+State 200
 
    74 loop_while: TK_PR_WHILE '(' expression ')' command_block_loop .
 
     $default  reduce using rule 74 (loop_while)
 
 
-State 197
+State 201
 
-  102 expression: expression '?' expression ':' . expression
+  104 expression: expression '?' expression ':' . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -3412,11 +3621,11 @@ State 197
 
     simple_identifier  go to state 96
     function_call      go to state 97
-    expression         go to state 206
+    expression         go to state 210
     literal_id         go to state 99
 
 
-State 198
+State 202
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression . ':' loop_for_command_list ')' command_block_loop
    91 expression: expression . '+' expression
@@ -3430,76 +3639,80 @@ State 198
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
 
     TK_OC_LE  shift, and go to state 137
     TK_OC_GE  shift, and go to state 138
     TK_OC_EQ  shift, and go to state 139
     '|'       shift, and go to state 140
     '&'       shift, and go to state 141
-    '+'       shift, and go to state 142
-    '-'       shift, and go to state 143
-    '*'       shift, and go to state 144
-    '/'       shift, and go to state 145
-    '%'       shift, and go to state 146
-    '^'       shift, and go to state 147
-    '?'       shift, and go to state 148
-    ':'       shift, and go to state 207
+    '<'       shift, and go to state 142
+    '>'       shift, and go to state 143
+    '+'       shift, and go to state 144
+    '-'       shift, and go to state 145
+    '*'       shift, and go to state 146
+    '/'       shift, and go to state 147
+    '%'       shift, and go to state 148
+    '^'       shift, and go to state 149
+    '?'       shift, and go to state 150
+    ':'       shift, and go to state 211
 
 
-State 199
+State 203
 
    76 loop_for_command_list: loop_for_command ',' loop_for_command_list .
 
     $default  reduce using rule 76 (loop_for_command_list)
 
 
-State 200
+State 204
 
    32 command_block: enter_scope '{' command_list '}' exit_scope .
 
     $default  reduce using rule 32 (command_block)
 
 
-State 201
+State 205
 
    56 call_parameter_list: expression ',' call_parameter_list .
 
     $default  reduce using rule 56 (call_parameter_list)
 
 
-State 202
+State 206
 
    68 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE . command_block
 
     $default  reduce using rule 1 (enter_scope)
 
     enter_scope    go to state 59
-    command_block  go to state 208
+    command_block  go to state 212
 
 
-State 203
+State 207
 
    67 if_statement: TK_PR_IF '(' expression ')' command_block null_node .
 
     $default  reduce using rule 67 (if_statement)
 
 
-State 204
+State 208
 
    70 command_block_loop: '{' '}' .
 
     $default  reduce using rule 70 (command_block_loop)
 
 
-State 205
+State 209
 
    69 command_block_loop: '{' command_block_loop . '}'
 
-    '}'  shift, and go to state 209
+    '}'  shift, and go to state 213
 
 
-State 206
+State 210
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3512,16 +3725,18 @@ State 206
    99           | expression . TK_OC_EQ expression
   100           | expression . TK_OC_LE expression
   101           | expression . TK_OC_GE expression
-  102           | expression . '?' expression ':' expression
-  102           | expression '?' expression ':' expression .
+  102           | expression . '>' expression
+  103           | expression . '<' expression
+  104           | expression . '?' expression ':' expression
+  104           | expression '?' expression ':' expression .
 
-    '^'  shift, and go to state 147
-    '?'  shift, and go to state 148
+    '^'  shift, and go to state 149
+    '?'  shift, and go to state 150
 
-    $default  reduce using rule 102 (expression)
+    $default  reduce using rule 104 (expression)
 
 
-State 207
+State 211
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' . loop_for_command_list ')' command_block_loop
 
@@ -3536,38 +3751,38 @@ State 207
 
     primitive_type         go to state 60
     identifier             go to state 61
-    simple_identifier      go to state 150
+    simple_identifier      go to state 152
     vector                 go to state 63
     modifiers              go to state 67
-    local_var_declaration  go to state 151
-    assignment_command     go to state 152
-    shift_command          go to state 153
-    loop_for_command_list  go to state 210
-    loop_for_command       go to state 155
+    local_var_declaration  go to state 153
+    assignment_command     go to state 154
+    shift_command          go to state 155
+    loop_for_command_list  go to state 214
+    loop_for_command       go to state 157
 
 
-State 208
+State 212
 
    68 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block .
 
     $default  reduce using rule 68 (if_statement)
 
 
-State 209
+State 213
 
    69 command_block_loop: '{' command_block_loop '}' .
 
     $default  reduce using rule 69 (command_block_loop)
 
 
-State 210
+State 214
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' loop_for_command_list . ')' command_block_loop
 
-    ')'  shift, and go to state 211
+    ')'  shift, and go to state 215
 
 
-State 211
+State 215
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' loop_for_command_list ')' . command_block_loop
 
@@ -3585,13 +3800,13 @@ State 211
     TK_PR_BREAK       shift, and go to state 56
     TK_PR_CONTINUE    shift, and go to state 57
     TK_IDENTIFICADOR  shift, and go to state 58
-    '{'               shift, and go to state 194
+    '{'               shift, and go to state 198
 
     primitive_type         go to state 60
     identifier             go to state 61
     simple_identifier      go to state 62
     vector                 go to state 63
-    command                go to state 195
+    command                go to state 199
     modifiers              go to state 67
     local_var_declaration  go to state 68
     function_call          go to state 69
@@ -3601,10 +3816,10 @@ State 211
     shift_command          go to state 73
     command_return         go to state 74
     if_statement           go to state 75
-    command_block_loop     go to state 212
+    command_block_loop     go to state 216
 
 
-State 212
+State 216
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' loop_for_command_list ')' command_block_loop .
 

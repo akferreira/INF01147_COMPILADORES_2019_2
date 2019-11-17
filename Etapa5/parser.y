@@ -111,7 +111,7 @@ int yyparse (void);
 
 %left   '|'
 %left   '&'
-%left  TK_OC_SR TK_OC_SL
+%left  TK_OC_SR TK_OC_SL '<' '>'
 %left   '+' '-'
 %left  '*' '/' '%'
 
@@ -487,17 +487,19 @@ expression: expression '|' expression
 
 
 
-$$->code =Or_CC_Operation($1->temp, $3->temp, $$->temp);	
+//$$->code =Or_CC_Operation($1->temp, $3->temp, $$->temp);	
 };
 
 expression: expression '&' expression
 {
 	$$ = new_binary_expression('&',$1,$3);
-	$$->code = binaryOperation("and", $1->temp, $3->temp,$$->temp);
+	/*$$->code = binaryOperation("and", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
-	$$->code = concatCode(subexpression_code, $$->code);
+	$$->code = concatCode(subexpression_code, $$->code);*/
 
-	printf("and code:\t: %s\n",$$->code);
+$$->code =AND_CC_Operation($1->temp, $3->temp, $$->temp);
+
+	//printf("and code:\t: %s\n",$$->code);
 };
 
 expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
@@ -510,20 +512,19 @@ expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
 
 expression: expression TK_OC_EQ expression
 {
-	/*$$ = new_binary_expression("==",$1,$3);
+	$$ = new_binary_expression(TK_OC_EQ,$1,$3);
 
-	$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
+	$$->temp = newTemp();
+	$$->code = binaryOperation("cmp_NE", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
+
 	$$->code = concatCode(subexpression_code, $$->code);
 
-	printf("and code:\t: %s\n",$$->code);*/
-
-	
 
 };
 expression: expression TK_OC_LE expression
 {
-	printf("________________________________\n");
+
 
 	$$ = new_binary_expression(TK_OC_LE,$1,$3);
 
@@ -534,22 +535,46 @@ expression: expression TK_OC_LE expression
 	$$->code = concatCode(subexpression_code, $$->code);
 	printf("LE code:\n: %s\n",$$->code);
 
-	printf("________________________________\n");
+
 
 
 };
 expression: expression TK_OC_GE expression
 {
-	//$$ = new_binary_expression(">=",$1,$3);
+	
+	$$ = new_binary_expression(TK_OC_GE,$1,$3);
+
+	$$->temp = newTemp();
+	$$->code = binaryOperation("cmp_GE", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+
+	$$->code = concatCode(subexpression_code, $$->code);
+
 
 };
 
 
 
 
+expression: expression '>' expression
+{
+	$$ = new_binary_expression('>',$1,$3);
+	$$->temp = newTemp();
+	$$->code = binaryOperation("cmp_GT", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
 
+	$$->code = concatCode(subexpression_code, $$->code);
+};
 
+expression: expression '<' expression
+{
+	$$ = new_binary_expression('<',$1,$3);
+	$$->temp = newTemp();
+	$$->code = binaryOperation("cmp_LT", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
 
+	$$->code = concatCode(subexpression_code, $$->code);
+};
 
 
 
