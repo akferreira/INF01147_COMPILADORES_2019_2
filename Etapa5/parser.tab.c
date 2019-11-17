@@ -544,9 +544,9 @@ static const yytype_uint16 yyrline[] =
      330,   351,   353,   354,   360,   361,   363,   366,   369,   370,
      373,   374,   375,   377,   377,   378,   379,   382,   383,   385,
      385,   385,   397,   398,   402,   404,   405,   406,   407,   408,
-     409,   410,   418,   436,   451,   464,   476,   477,   488,   498,
-     506,   519,   536,   574,   576,   579,   596,   598,   608,   613,
-     618,   623,   624
+     409,   410,   418,   436,   451,   464,   476,   477,   493,   503,
+     511,   524,   541,   579,   581,   584,   601,   603,   613,   618,
+     623,   628,   629
 };
 #endif
 
@@ -2230,19 +2230,24 @@ free((yyvsp[-1].valor_lexico).value.str_value);
   case 97:
 #line 478 "parser.y" /* yacc.c:1646  */
     {
-	(yyval.ast_node) = new_binary_expression('|',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
-	(yyval.ast_node)->temp = newTemp();
-	(yyval.ast_node)->code = binaryOperation("or", (yyvsp[-2].ast_node)->temp, (yyvsp[0].ast_node)->temp,(yyval.ast_node)->temp);
-	char *subexpression_code  = concatCode((yyvsp[-2].ast_node)->code, (yyvsp[0].ast_node)->code);
-	(yyval.ast_node)->code = concatCode(subexpression_code, (yyval.ast_node)->code);
+	/*$$ = new_binary_expression('|',$1,$3);
+	$$->temp = newTemp();
+	$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
+	char *subexpression_code  = concatCode($1->code, $3->code);
+	$$->code = concatCode(subexpression_code, $$->code);
 
-	printf("or code:\t: %s\n",(yyval.ast_node)->code);	
+	printf("or code:\t: %s\n",$$->code);*/
+
+
+
+
+(yyval.ast_node)->code =Or_CC_Operation((yyvsp[-2].ast_node)->temp, (yyvsp[0].ast_node)->temp, (yyval.ast_node)->temp);	
 }
-#line 2242 "parser.tab.c" /* yacc.c:1646  */
+#line 2247 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 489 "parser.y" /* yacc.c:1646  */
+#line 494 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('&',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node)->code = binaryOperation("and", (yyvsp[-2].ast_node)->temp, (yyvsp[0].ast_node)->temp,(yyval.ast_node)->temp);
@@ -2251,17 +2256,17 @@ free((yyvsp[-1].valor_lexico).value.str_value);
 
 	printf("and code:\t: %s\n",(yyval.ast_node)->code);
 }
-#line 2255 "parser.tab.c" /* yacc.c:1646  */
+#line 2260 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 498 "parser.y" /* yacc.c:1646  */
+#line 503 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_binary_expression('^',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2261 "parser.tab.c" /* yacc.c:1646  */
+#line 2266 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 507 "parser.y" /* yacc.c:1646  */
+#line 512 "parser.y" /* yacc.c:1646  */
     {
 	/*$$ = new_binary_expression("==",$1,$3);
 
@@ -2274,11 +2279,11 @@ free((yyvsp[-1].valor_lexico).value.str_value);
 	
 
 }
-#line 2278 "parser.tab.c" /* yacc.c:1646  */
+#line 2283 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 520 "parser.y" /* yacc.c:1646  */
+#line 525 "parser.y" /* yacc.c:1646  */
     {
 	printf("________________________________\n");
 
@@ -2295,32 +2300,32 @@ free((yyvsp[-1].valor_lexico).value.str_value);
 
 
 }
-#line 2299 "parser.tab.c" /* yacc.c:1646  */
+#line 2304 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 537 "parser.y" /* yacc.c:1646  */
+#line 542 "parser.y" /* yacc.c:1646  */
     {
 	//$$ = new_binary_expression(">=",$1,$3);
 
 }
-#line 2308 "parser.tab.c" /* yacc.c:1646  */
+#line 2313 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 574 "parser.y" /* yacc.c:1646  */
+#line 579 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) =  new_ternary_expression('?', (yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2314 "parser.tab.c" /* yacc.c:1646  */
+#line 2319 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 576 "parser.y" /* yacc.c:1646  */
+#line 581 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 2320 "parser.tab.c" /* yacc.c:1646  */
+#line 2325 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 580 "parser.y" /* yacc.c:1646  */
+#line 585 "parser.y" /* yacc.c:1646  */
     { 
 	(yyval.ast_node) = new_leaf_node(ID_NODE,(yyvsp[0].valor_lexico));
 	SYMBOL_INFO id_info = retrieve_symbol((yyvsp[0].valor_lexico));
@@ -2337,17 +2342,17 @@ free((yyvsp[-1].valor_lexico).value.str_value);
 
 	printf("code id: %s\n",(yyval.ast_node)->code);
 }
-#line 2341 "parser.tab.c" /* yacc.c:1646  */
+#line 2346 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 596 "parser.y" /* yacc.c:1646  */
+#line 601 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 2347 "parser.tab.c" /* yacc.c:1646  */
+#line 2352 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 599 "parser.y" /* yacc.c:1646  */
+#line 604 "parser.y" /* yacc.c:1646  */
     { 
 	(yyvsp[0].valor_lexico).var_type = TYPE_INT;
 	(yyval.ast_node) = new_leaf_node('d',(yyvsp[0].valor_lexico));
@@ -2357,50 +2362,50 @@ free((yyvsp[-1].valor_lexico).value.str_value);
 	printf("code %s\n",(yyval.ast_node)->code);
 
 }
-#line 2361 "parser.tab.c" /* yacc.c:1646  */
+#line 2366 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 609 "parser.y" /* yacc.c:1646  */
+#line 614 "parser.y" /* yacc.c:1646  */
     { 
 	(yyvsp[0].valor_lexico).var_type = TYPE_FLOAT;
 	(yyval.ast_node) = new_leaf_node('f',(yyvsp[0].valor_lexico));
 }
-#line 2370 "parser.tab.c" /* yacc.c:1646  */
+#line 2375 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 614 "parser.y" /* yacc.c:1646  */
+#line 619 "parser.y" /* yacc.c:1646  */
     { 
 	(yyvsp[0].valor_lexico).var_type = TYPE_CHAR;
 	(yyval.ast_node) = new_leaf_node('c',(yyvsp[0].valor_lexico));
 }
-#line 2379 "parser.tab.c" /* yacc.c:1646  */
+#line 2384 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 619 "parser.y" /* yacc.c:1646  */
+#line 624 "parser.y" /* yacc.c:1646  */
     { 
 	(yyvsp[0].valor_lexico).var_type = TYPE_STRING;
 	(yyval.ast_node) = new_leaf_node('s',(yyvsp[0].valor_lexico));
 }
-#line 2388 "parser.tab.c" /* yacc.c:1646  */
+#line 2393 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 623 "parser.y" /* yacc.c:1646  */
+#line 628 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_leaf_node('T',(yyvsp[0].valor_lexico));}
-#line 2394 "parser.tab.c" /* yacc.c:1646  */
+#line 2399 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 112:
-#line 624 "parser.y" /* yacc.c:1646  */
+#line 629 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_leaf_node('F',(yyvsp[0].valor_lexico));}
-#line 2400 "parser.tab.c" /* yacc.c:1646  */
+#line 2405 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2404 "parser.tab.c" /* yacc.c:1646  */
+#line 2409 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2635,5 +2640,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 631 "parser.y" /* yacc.c:1906  */
+#line 636 "parser.y" /* yacc.c:1906  */
 

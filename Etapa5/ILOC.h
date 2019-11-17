@@ -34,7 +34,7 @@ void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operand
 SYMBOL_INFO lookup(ast_node *entrada);
 
 
-
+char *Or_CC_Operation(char *reg1, char *reg2, char *dest);
 
 
 char* newTemp();

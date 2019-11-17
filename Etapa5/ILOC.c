@@ -119,11 +119,11 @@ char * gerar_label()
 
 
     strncat(label,"L",2);
-    snprintf(count_label_str,4, "%d:", countLabel);
+    snprintf(count_label_str,4, "%d", countLabel);
 
     strncat(label,count_label_str,5);
 
-    countRegistor ++;
+    countLabel ++;
 
     return label;
 }
@@ -225,6 +225,58 @@ char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest)
     //inserir_instrucao(&instrucoes, buffer);
     return buffer;
 }
+
+
+
+
+char *Or_CC_Operation(char *reg1, char *reg2, char *dest)
+{
+    char *buffer = malloc(OP_INST_SIZE);
+    char *buffer2= malloc(OP_INST_SIZE);
+    char *lbl_true = malloc(OP_INST_SIZE);
+    char *lbl_false = malloc(OP_INST_SIZE);
+    char *lbl_aux1 = malloc(OP_INST_SIZE);
+    char *lbl_aux2 = malloc(OP_INST_SIZE);
+
+    if(buffer == NULL)
+        return NULL;
+
+
+
+    lbl_true = gerar_label();
+    lbl_false = gerar_label();
+    lbl_aux1 = gerar_label();
+    lbl_aux2 = gerar_label();
+
+    int c1 = snprintf(buffer, OP_INST_SIZE-1, "crb %s -> %s, %s\n%s crb %s -> %s, %s\n",reg1,lbl_true,lbl_aux1,lbl_aux1,reg2,lbl_true,lbl_false);
+    //c1 = snprintf(buffer1, OP_INST_SIZE-1, "%s crb %s -> %s, %s\n",lbl_aux1,reg2,lbl_true,lbl_false);
+    c1 = snprintf(buffer2, OP_INST_SIZE-1, "%s: loadI %s => 1\njumpI %s\n%s: loadI %s => 0\n%s:\n",lbl_true,dest,lbl_aux2,lbl_false,dest,lbl_aux2);
+    //c1 = snprintf(buffer3, OP_INST_SIZE-1, "jumpI %s \n %s loadI %s => 0\n  ",lbl_aux2,lbl_false,dest);
+    //c1 = snprintf(buffer4, OP_INST_SIZE-1, "%s loadI %s => 0\n",lbl_false,dest);
+
+    //int cx = snprintf(buffer, OP_INST_SIZE-1, "%s %s, %s => %s\n",operation,reg1,reg2,dest);
+
+    buffer= concatCode(buffer,buffer2);
+    printf("%s", buffer);
+
+
+    //inserir_instrucao(&instrucoes, buffer);
+    return buffer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

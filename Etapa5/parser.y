@@ -476,13 +476,18 @@ expression: expression '/' expression
 expression: expression '%' expression{$$ = new_binary_expression('%',$1,$3); };
 expression: expression '|' expression
 {
-	$$ = new_binary_expression('|',$1,$3);
+	/*$$ = new_binary_expression('|',$1,$3);
 	$$->temp = newTemp();
 	$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
 	$$->code = concatCode(subexpression_code, $$->code);
 
-	printf("or code:\t: %s\n",$$->code);	
+	printf("or code:\t: %s\n",$$->code);*/
+
+
+
+
+$$->code =Or_CC_Operation($1->temp, $3->temp, $$->temp);	
 };
 
 expression: expression '&' expression
