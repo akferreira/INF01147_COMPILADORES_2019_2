@@ -23,10 +23,6 @@
 #include "symbol_table.h"
 #include "ILOC.h"
 
-
-
-
-
 extern void *arvore;
 extern int get_line_number (void);
 extern void exporta (void *arvore);
@@ -38,7 +34,6 @@ void yyerror (char const *s)
 }
 extern int yylex (void);
 int yyparse (void);
-
 
 
 %}
@@ -135,7 +130,7 @@ int yyparse (void);
 %locations
 
 %%
-%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization function_command_block;
+%type <ast_node> program grammars global_var_declaration function_call expression expression_list identifier  if_statement simple_identifier command_return shift_command shift output_command input_command assignment_command  vector  literal_id local_var_declaration   null_node command_block_loop command_block command command_list loops loop_for loop_while loop_for_command loop_for_command_list function_declaration function_parameters_argument function_parameters_list call_parameter_list local_var_initialization function_command_block dimension_exp_list;
 
 %type <valor_lexico> primitive_type TK_PR_INT TK_PR_FLOAT TK_PR_BOOL TK_PR_STRING TK_PR_CHAR function_id TK_IDENTIFICADOR TK_LIT_CHAR TK_LIT_STRING TK_LIT_FLOAT TK_LIT_INT;
  
@@ -161,7 +156,23 @@ null_node: {$$ = get_null();};
 
 //programa:
 program: /* empty */{$$ = get_null();};
-program: grammars program  {$$ =  new_global_grammar_node('|',arvore,$1,$2);};
+program: grammars program  {
+$$ =  new_global_grammar_node('|',arvore,$1,$2);
+
+
+
+
+char *code1,*code2;
+if($1 == NULL) code1 = NULL;
+else code1 = $1->code;
+
+
+if($2 == NULL) code2 = NULL;
+else code2 = $2->code;
+
+$$->code = concatCode(code1,code2);
+
+};
 
 
 
@@ -187,29 +198,80 @@ identifier: simple_identifier {$$ = $1;}
 |vector {$$ = $1;};
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
-vector: TK_IDENTIFICADOR vector_dimensions 
-{   
-	printf("vector\n"); 
-	$$ = new_leaf_node(VECTOR_NODE,$<valor_lexico>1);
-	$$->vector_position = $2; printf("p:%p\n",$2);
-};
+vector: TK_IDENTIFICADOR dimension_exp_list{
+printf("array %s\n",$<valor_lexico>1.value.str_value);
 
-vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
-	printf("vector %d\n", $<valor_lexico>2.value.intvalue);
-	$$ = malloc(sizeof(ARRAY_DIMENSIONS));
-	$$->dsize = $<valor_lexico>2.value.intvalue;
-	$$->next = $4;
-	printf("p:%p -> %p\n",$$,$$->next);
+$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
+
+SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+
+$$->ast_valor_lexico.nature = id_info.nature;
+
+if(id_info.nature == FUNCTION){
+    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
+    exit(ERR_FUNCTION);
+}
+
+ast_node* node = $2;
+ARRAY_DIMENSIONS *d = id_info.vector_dimension;
+
+$$->temp = newTemp();
+
+int first_dimension_flag = 1;
+
+while(node){
+//previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
+    
+    if(first_dimension_flag) {
+        $$->code = concatCode($$->code,copyRegToReg(node->temp,$$->temp));
+        printf("%s =  %s\n",$$->temp,node->temp);
+    }
+    
+    else{
+        $$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, d->dsize,$$->temp));
+        $$->code = concatCode($$->code,binaryOperation("add",$$->temp, node->temp,$$->temp));
+        printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
+        printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
+    }
+    
+    first_dimension_flag = 0;
+    
+    //printf("exp %s || %d\n", node->temp,d->dsize);
+    node = node->next_sibling;
+    d = d->next;
+}
+$$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, get_size2(id_info),$$->temp));
+$$->code = concatCode($2->code,$$->code);
+
+//printf("array calc:\n%s",$$->code);
+
+
+
+
+
+
+
+$$->code = concatCode($$->code,storeVariableRegOffsetToTemp($$->temp,$$->temp, id_info.depth));
+
+
 
 }
-| '['TK_LIT_INT']'
-{
-	printf("vector %d\n", $<valor_lexico>2.value.intvalue);
-	$$ = malloc(sizeof(ARRAY_DIMENSIONS));
-	$$->dsize = $<valor_lexico>2.value.intvalue;
-	$$->next = NULL;
 
-	printf("p:%p\n",$$);
+vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
+printf("vector %d\n", $<valor_lexico>2.value.intvalue);
+$$ = malloc(sizeof(ARRAY_DIMENSIONS));
+$$->dsize = $<valor_lexico>2.value.intvalue;
+$$->next = $4;
+printf("p:%p -> %p\n",$$,$$->next);
+
+}
+| '['TK_LIT_INT']'{
+printf("vector %d\n", $<valor_lexico>2.value.intvalue);
+$$ = malloc(sizeof(ARRAY_DIMENSIONS));
+$$->dsize = $<valor_lexico>2.value.intvalue;
+$$->next = NULL;
+
+printf("p:%p\n",$$);
 
 };
 
@@ -219,11 +281,27 @@ vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
 function_declaration: TK_PR_STATIC function_id enter_scope  '('function_parameters_list')' function_command_block 
 {
 $$ = new_static_function_declaration_node('M',$2,$5,$7);
+$$->label = newLabel();
+char *first_inst = malloc(50);
+strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
+$$->label = concatCode($$->label, first_inst );
+$$->code = concatCode($$->label,$7->code);
+
+
 
 };
 function_declaration: function_id enter_scope '('function_parameters_list')' function_command_block {
 //insert_function_entry($<valor_lexico>2);
 $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
+$$->label = newLabel();
+
+char *first_inst = malloc(50);
+strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
+$$->label = concatCode($$->label, first_inst );
+
+$$->code = concatCode($$->label,$6->code);
+
+//printf("function\n%s",$$->code);
 };
 
 //regra para definir o tipo do identificador da função
@@ -249,17 +327,53 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 
 
 
-function_command_block: '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$2);};
+function_command_block: '{'command_list'}' exit_scope { 
+$$ = new_command_block_node('{',$2);
+$$->code = concatCode($2->code, $$->code);
+printf("block___%d\n",get_last_position_toptable());
+
+printf("command block code:\n%s",$$->code);
+
+printf("%d Instructions\n",countLines($$->code,strlen($$->code)));
+
+};
 
 
 //Command Block
-command_block: enter_scope '{'command_list'}' exit_scope { $$ = new_command_block_node('{',$3);};
+command_block: enter_scope '{'command_list'}' exit_scope { 
+$$ = new_command_block_node('{',$3);
+$$->code = concatCode($3->code, $$->code);
+printf("block___%p\n",$$->code);
+
+printf("command block code:\n%s",$$->code);
+};
 
 command_list: 
-	command command_list {$$ = new_command_list_node($1,$2);}
-	|command_block';' command_list {new_command_list_node($1,$3);}
-	| loops command_list {$$ = new_command_list_node($1,$2);}
-	|{$$ = get_null();};
+command command_list {
+$$ = new_command_list_node($1,$2);
+char *code1,*code2;
+if($1 == NULL) code1 = NULL;
+else code1 = $1->code;
+
+
+if($2 == NULL) code2 = NULL;
+else code2 = $2->code;
+
+
+$$->code = concatCode(code1, code2);
+
+
+}
+|command_block';' command_list {
+new_command_list_node($1,$3);
+printf("block concat\n");
+$$->code = concatCode($1->code, $3->code);
+}
+| loops command_list {
+$$ = new_command_list_node($1,$2);
+$$->code = concatCode($1->code, $2->code);
+}
+|{$$ = get_null();};
 
 //command
 command: if_statement | local_var_declaration';' | shift_command';' | assignment_command';' {$$ = $1;}  | input_command';'{$$ = $1;}| output_command';'{$$ = $1;}| function_call';'{ $$ = $1;}
@@ -280,34 +394,31 @@ no_modifier: {$$ = modifier(0,0);}
 
 //Local Var declaration
 local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_initialization {
-	$$ = new_local_var_declaration_node('<',$1,$2,$<valor_lexico>3,$4 ) ;
+    $$ = new_local_var_declaration_node('<',$1,$2,$<valor_lexico>3,$4 ) ;
 
-	if($4->ast_valor_lexico.nature == LITERAL)
-	{
-		SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>3);
+    if($4->ast_valor_lexico.nature == LITERAL){
+        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>3);
 
-		$$->code = storeTempToVariable($4->temp, id_info.depth, id_info.position);
-		$$->code = concatCode($4->code, $$->code);
+        $$->code = storeTempToVariable($4->temp, id_info.depth, id_info.position);
+        $$->code = concatCode($4->code, $$->code);
 
-		printf("local decl code : %s",$$->code);
-	}
+        printf("local decl code : %s",$$->code);
+    }
 
 };
 
-local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization no_modifier
-{
-	$$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
+local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization no_modifier{
+    $$ = new_local_var_declaration_node('<', $4 ,$1,$<valor_lexico>2,$3 ) ;
 
 
-	if($3->ast_valor_lexico.nature == LITERAL)
-	{
-		SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>2);
+    if($3->ast_valor_lexico.nature == LITERAL){
+        SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>2);
 
-		$$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
-		$$->code = concatCode($3->code, $$->code);
-
-		printf("local decl code : %s",$$->code);
-	}
+        $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
+        $$->code = concatCode($3->code, $$->code);
+        
+        printf("local decl code : %s",$$->code);
+    }
 
 };
 local_var_declaration: primitive_type TK_IDENTIFICADOR null_node no_modifier{
@@ -328,21 +439,28 @@ call_parameter_list:expression ',' call_parameter_list {$$ = new_expression_list
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
+printf("assign %p , %p\n",$1,$3);
+$$ = new_assignment_node($1,$3,0);
 
-	$$ = new_assignment_node($1,$3,0);
+printf("assign %p , %p\n",$1,$3);
+SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+printf("assignment code : %s\n",$3->code);
+printf("assignment code2 : %s\n",$$->code);
 
-	LISTA_INSTRUCOES *instrucoes = NULL;
-	SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
+if(id_info.nature == VECTOR){
+    $$->code = concatCode($1->code, storeTempToVariableRegOffset($3->temp,$1->temp,id_info.depth));
+}
 
-	$$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
-	$$->code = concatCode($3->code,$$->code);
+else {
+$$->code = concatCode(loadMemRegToReg($3->temp,$3->temp),storeTempToVariable($3->temp, id_info.depth, id_info.position));
 
-	//printf("assignment code : %s",$$->code);
+// $$->code = concatCode( storeTempToVariable($3->temp, id_info.depth, id_info.position);
+}
 
 
-	printf("\n\n\n\n");
-	inserir_instrucao(&instrucoes, $$->code);
-	Imprimir_codigo();
+$$->code = concatCode($3->code,$$->code);
+
+
 
 
 };
@@ -418,48 +536,34 @@ expression:'#'expression{$$ = new_unary_expression('#',$2); };
 expression: expression '+' expression 
 {
 	$$ = new_binary_expression('+',$1,$3);
-	
-	LISTA_INSTRUCOES *instrucoes = NULL;
 	$$->temp = newTemp();
 	$$->code = binaryOperation("add", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
 	$$->code = concatCode(subexpression_code, $$->code);
 	
-
-	inserir_instrucao(&instrucoes, $$->code);
 	//printf("Add code:\t: %s\n",$$->code);
-	printf("\n\n\n\n");
-	Imprimir_codigo();
 	
 };
 
 expression: expression '-' expression
 {
 	$$ = new_binary_expression('-',$1,$3); 
-
 	$$->temp = newTemp();
 	$$->code = binaryOperation("sub", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
 	$$->code = concatCode(subexpression_code, $$->code);
 
-	printf("sub code:\t: %s\n",$$->code);
-	
-
+	//printf("sub code:\t: %s\n",$$->code);
 };
-
-
 expression: expression '*' expression
 {
 	$$ = new_binary_expression('*',$1,$3);
-
 	$$->temp = newTemp();
 	$$->code = binaryOperation("mul", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
 	$$->code = concatCode(subexpression_code, $$->code);
 
-	printf("mul code:\t: %s\n",$$->code);
-	
-
+	//printf("mul code:\t: %s\n",$$->code);
 };
 expression: expression '/' expression
 {
@@ -469,40 +573,40 @@ expression: expression '/' expression
 	char *subexpression_code  = concatCode($1->code, $3->code);
 	$$->code = concatCode(subexpression_code, $$->code);
 
-	printf("div code:\t: %s\n",$$->code);
+	//printf("div code:\t: %s\n",$$->code);
 };
-
-
 expression: expression '%' expression{$$ = new_binary_expression('%',$1,$3); };
+
+
+
+
+
+
+
+
+
+
+
+
 expression: expression '|' expression
 {
-	/*$$ = new_binary_expression('|',$1,$3);
+	$$ = new_binary_expression('|',$1,$3);
+	
+
 	$$->temp = newTemp();
-	$$->code = binaryOperation("or", $1->temp, $3->temp,$$->temp);
-	char *subexpression_code  = concatCode($1->code, $3->code);
-	$$->code = concatCode(subexpression_code, $$->code);
-
-	printf("or code:\t: %s\n",$$->code);*/
-
-
-
-
-//$$->code =Or_CC_Operation($1->temp, $3->temp, $$->temp);	
+	$$->code =Or_CC_Operation($1->temp, $3->temp, $$->temp);	
 };
 
 expression: expression '&' expression
 {
 	$$ = new_binary_expression('&',$1,$3);
-	/*$$->code = binaryOperation("and", $1->temp, $3->temp,$$->temp);
-	char *subexpression_code  = concatCode($1->code, $3->code);
-	$$->code = concatCode(subexpression_code, $$->code);*/
+	
+	$$->temp = newTemp();
+	$$->code =AND_CC_Operation($1->temp, $3->temp, $$->temp);
 
-$$->code =AND_CC_Operation($1->temp, $3->temp, $$->temp);
-
-	//printf("and code:\t: %s\n",$$->code);
 };
 
-expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
+
 
 
 
@@ -534,11 +638,8 @@ expression: expression TK_OC_LE expression
 
 	$$->code = concatCode(subexpression_code, $$->code);
 	printf("LE code:\n: %s\n",$$->code);
-
-
-
-
 };
+
 expression: expression TK_OC_GE expression
 {
 	
@@ -547,10 +648,7 @@ expression: expression TK_OC_GE expression
 	$$->temp = newTemp();
 	$$->code = binaryOperation("cmp_GE", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
-
 	$$->code = concatCode(subexpression_code, $$->code);
-
-
 };
 
 
@@ -559,20 +657,20 @@ expression: expression TK_OC_GE expression
 expression: expression '>' expression
 {
 	$$ = new_binary_expression('>',$1,$3);
+
 	$$->temp = newTemp();
 	$$->code = binaryOperation("cmp_GT", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
-
 	$$->code = concatCode(subexpression_code, $$->code);
 };
 
 expression: expression '<' expression
 {
 	$$ = new_binary_expression('<',$1,$3);
+
 	$$->temp = newTemp();
 	$$->code = binaryOperation("cmp_LT", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
-
 	$$->code = concatCode(subexpression_code, $$->code);
 };
 
@@ -587,33 +685,54 @@ expression: expression '<' expression
 
 
 
-
-
-
-
-
-
-
-
-
+expression: expression '^' expression{$$ = new_binary_expression('^',$1,$3); };
 
 
 
 
 //Ternários
-expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };
-      
+expression: expression'?'expression':'expression{ $$ =  new_ternary_expression('?', $1,$3,$5); };   
 expression : literal_id {$$ = $1;};
+
+
+
+
+
+
+
+
+dimension_exp_list: '['expression']' dimension_exp_list
+{
+	$$ = new_expression_list_node($2,$4);
+	$$->code = concatCode($2->code, $4->code);
+	printf("list %s\n",$$->code);
+}
+| '['expression']' {$$ = $2;}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //era expression
 literal_id:  TK_IDENTIFICADOR
 { 
+
 	$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
 	SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
 	$$->ast_valor_lexico.nature = id_info.nature;
 
 
-	if(id_info.nature == FUNCTION){
+	if(id_info.nature == FUNCTION)
+	{
 	    printf("Semantical error line %d, column %d : ERR_FUNCTION\n",$<valor_lexico>1.line,$<valor_lexico>1.column);
 	    exit(ERR_FUNCTION);
 	}
@@ -622,8 +741,19 @@ literal_id:  TK_IDENTIFICADOR
 	$$->code = storeVariableToTemp($$->temp, id_info.depth, id_info.position);
 
 	printf("code id: %s\n",$$->code);
+
 }
-| function_call {$$ = $1;}
+| function_call 
+{
+	$$ = $1;
+}
+
+| vector 
+{
+	$$ = $1;
+}
+
+
 
 |TK_LIT_INT
 { 
@@ -632,27 +762,28 @@ literal_id:  TK_IDENTIFICADOR
 	$$->temp = newTemp();
 	$$->code = loadValueToTemp($<valor_lexico>1.value.intvalue, $$->temp);
 
-	printf("code %s\n",$$->code);
+	//printf("code %s\n",$$->code);
 
 }
-|TK_LIT_FLOAT
-{ 
+|TK_LIT_FLOAT{ 
 	$1.var_type = TYPE_FLOAT;
 	$$ = new_leaf_node('f',$<valor_lexico>1);
 }
-|TK_LIT_CHAR
-{ 
-	$1.var_type = TYPE_CHAR;
+|TK_LIT_CHAR{ 
+
+$1.var_type = TYPE_CHAR;
 	$$ = new_leaf_node('c',$<valor_lexico>1);
 }
-|TK_LIT_STRING
-{ 
+|TK_LIT_STRING{ 
 	$1.var_type = TYPE_STRING;
 	$$ = new_leaf_node('s',$<valor_lexico>1);
 }
-|TK_LIT_TRUE{$$ = new_leaf_node('T',$<valor_lexico>1);}
-|TK_LIT_FALSE{$$ = new_leaf_node('F',$<valor_lexico>1);};
-
+|TK_LIT_TRUE{ 
+	$$ = new_leaf_node('T',$<valor_lexico>1);
+}
+|TK_LIT_FALSE{ 
+	$$ = new_leaf_node('F',$<valor_lexico>1);
+};
 
 
 

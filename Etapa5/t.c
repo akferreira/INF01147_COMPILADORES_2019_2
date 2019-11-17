@@ -1,1 +1,7 @@
-int main () { int x; x = x&x;}
+
+
+int foo(){
+    int x;
+    x=x+x;
+    
+}

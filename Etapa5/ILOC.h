@@ -19,41 +19,29 @@ struct operacao
 };
 typedef struct operacao OPERACAO;
 
-struct nodo
-{
-    char* instrucao;
-    struct nodo* proximo;
-};
-typedef struct  nodo LISTA_INSTRUCOES;
 
 
-
-
-void Imprimir_codigo();
 void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operando2);
 SYMBOL_INFO lookup(ast_node *entrada);
 
 
-char *Or_CC_Operation(char *reg1, char *reg2, char *dest);
-char *AND_CC_Operation(char *reg1, char *reg2, char *dest);
-char *loadMemRegToReg(char *reg1, char *reg2);
-char* newTemp();
+int countLines(char *string, int size);
+
 char * gerar_label();
-char *storeVariableRegOffsetToTemp(char *temp,char *regoffset,int depth);
+char* newTemp();
+char* newLabel();
 char* concatCode(char *dest, char *source);
-char *storeTempToVariableRegOffset(char *temp,char *regoffset,int depth);
+
+char *loadMemRegToReg(char *reg1, char *reg2);
 char *storeTempToVariable(char *temp, int depth, int position);
 char *storeVariableToTemp(char *temp, int depth, int position);
+char *desvio_lbl_jumpI(char* lbl_destino);
+char *storeVariableRegOffsetToTemp(char *temp,char *regoffset,int depth);
+char *storeTempToVariableRegOffset(char *temp,char *regoffset,int depth);
+char *Or_CC_Operation(char *reg1, char *reg2, char *dest);
 char* loadValueToTemp(int value, char *temp);
-int countLines(char *string, int size);
+char *AND_CC_Operation(char *reg1, char *reg2, char *dest);
 char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest);
-
-char *copyRegToReg(char *reg1, char *reg2);
-
-void inserir_instrucao(LISTA_INSTRUCOES** lista_instrucoes, char* nova_instrucao);
-int contar_instrucoes(LISTA_INSTRUCOES* lista_instrucoes);
-
 char *binaryOperationInteger(char *operation, char *reg1, int value, char *dest);
 
-char *Testar_desviar_cbr(char* exp, char* lbl_T, char* lbl_F);
-char *desvio_lbl_jumpI(char* lbl_destino);
+char *copyRegToReg(char *reg1, char *reg2);

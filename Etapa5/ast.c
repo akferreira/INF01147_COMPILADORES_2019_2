@@ -5,17 +5,23 @@
 #include "ast.h"
 #include "parser.tab.h"
 #include "symbol_table.h"
+#include "ILOC.h"
 #include <string.h>
 
 extern void *arvore;
 extern SYMBOL_STACK *semantic_stack; 
+extern int countLabel;
 
 int returning_own_function = 0;
 int return_type = -1;
 int line,column;
 
 void libera (void *arvore){
-    //printf("erase\n");
+    
+    ast_node *raiz = arvore;
+    printf("Código final!\n%s\n",raiz->code);
+    printf("total instruções %d\n",countLines(raiz->code,strlen(raiz->code)));
+    printf("Ultima label L%d",countLabel);
     erase_tree(arvore);
     clean_stack(semantic_stack);
     
@@ -54,6 +60,7 @@ ast_node* new_empty_node(){
         new_node->father = NULL;
         new_node->temp = NULL;
         new_node->code = NULL;
+        new_node->label = NULL;
          new_node->vector_position = NULL;
         
         
@@ -316,32 +323,31 @@ ast_node* new_unary_expression(int node_type, ast_node *expression){
 }
 
 ast_node* new_assignment_node(ast_node *dest, ast_node *source, int initialization){
-    //printf("assignment node \n");
-  //  printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
+//         printf("assignment node \n");
+//     printf("Dest %s\n",dest->ast_valor_lexico.value.str_value);
     
     if(dest == NULL || source == NULL){
         return NULL;
     }
     ast_node *new_node = new_empty_node();
     
-    //printf("used nat %d\t\n",dest->ast_valor_lexico.nature);
+//     printf("used nat %d\t\n",dest->ast_valor_lexico.nature);
     
     
     
     SYMBOL_INFO dest_symbol = retrieve_symbol(dest->ast_valor_lexico);
     
-    //printf("nat %d\n",dest_symbol.nature);
-   // printf("size %d\n",dest_symbol.size);
+//     printf("nat %d\n",dest_symbol.nature);
+//     printf("size %d\n",dest_symbol.size);
     
     if(dest_symbol.nature == VECTOR && dest->ast_valor_lexico.nature != VECTOR){
         printf("Semantical error line %d, column %d : ERR_VECTOR\n",dest->ast_valor_lexico.line,dest->ast_valor_lexico.column);
         exit(ERR_VECTOR);
     }
     
-     if(dest_symbol.nature == VECTOR){
-         printf("%p\n",dest_symbol.vector_dimension);
-        printf("vector dest %d\n",calculate_vector_position(dest_symbol.vector_dimension,dest->vector_position));   
-     }
+//      if(dest_symbol.nature == VECTOR){
+//         printf("vector dest %d\n",calculate_vector_position(dest_symbol.vector_dimension,dest->vector_position));   
+//      }
 //         int max_vector_size = (dest_symbol.size/ get_size(dest->ast_valor_lexico))-1;
 //         
 //         if(dest->vector_position > max_vector_size || dest->vector_position < 0){
@@ -773,16 +779,18 @@ ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *cu
    
     
     if(arvore == NULL){
-        
         ast_node* temp_node = new_empty_node();
         temp_node->node_type = node_type;
         arvore = temp_node;
+        ast_root = arvore;
         
         
         
        if(current_global_node != NULL)  insert_child(arvore,current_global_node);
         if(next_global_nodes != NULL) insert_child(arvore,next_global_nodes);
         return ast_root;
+       
+       
         
         
         
@@ -793,7 +801,7 @@ ast_node* new_global_grammar_node(int node_type,ast_node *ast_root, ast_node *cu
         
         //if(next_global_nodes != NULL) insert_child(ast_root,next_global_nodes);
         
-        
+        ast_root = arvore;
         return ast_root;
         
         

@@ -66,6 +66,10 @@ typedef struct _ast_node {
     
     char *temp;
     char *code;
+    char *label;
+    
+    char *true;
+    char *false;
     
     
     struct _ast_node *first_child;

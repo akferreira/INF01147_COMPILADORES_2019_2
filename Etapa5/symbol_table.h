@@ -82,6 +82,8 @@ void clean_stack(SYMBOL_STACK *stack);
 
 int create_new_scope();
 int exit_scope();
+
+int get_last_position_toptable();
 void insert_function_entry(VALOR_LEXICO lexical);
 int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimension);
 int insert_parameters_function(VALOR_LEXICO argument);
@@ -89,12 +91,16 @@ ARG_LIST* retrieve_arg_list(char *function_name);
 SYMBOL_INFO retrieve_symbol(VALOR_LEXICO lexical);
 
 int get_size(VALOR_LEXICO lexical);
+int get_size2(SYMBOL_INFO info);
 int check_symbol(VALOR_LEXICO lexical);
 int check_type_compatibility(int type1, int type2);
 int check_return_type_compatibility(int type1, int type2);
 int check_assignment_type_compatibility(int type1, int type2);
 int check_parameter_type_compatibility(int type1, int type2);
 int type_coercion(int type1, int type2);
+
+
+
 
 int calculate_vector_position(ARRAY_DIMENSIONS *vector_dimension, ARRAY_DIMENSIONS *indexes);
 int calculate_vector_size(ARRAY_DIMENSIONS *vector_dimension);

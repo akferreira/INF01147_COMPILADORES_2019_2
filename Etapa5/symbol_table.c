@@ -203,6 +203,26 @@ void copy_lexical_to_symbol(SYMBOL_INFO *symbol, VALOR_LEXICO lexical){
     
 }
 
+int get_last_position_toptable(){
+    SYMBOL_TABLE* top_table = semantic_stack->symbol_table;
+    printf("top %p\n",top_table);
+    if(top_table == NULL) return 0;
+    
+    else{
+        SYMBOL_TABLE* current_table = top_table;
+        while(current_table->next != NULL) current_table = current_table->next;
+         printf("cur %p\n",current_table);
+        
+        if(current_table->symbol_info){
+            printf("cur %d\n",current_table->symbol_info->position);
+            return current_table->symbol_info->position;
+        }
+        else return -1;
+        
+    }
+}
+
+
 void insert_function_entry(VALOR_LEXICO lexical){
     
     initialize_stack();
@@ -226,23 +246,59 @@ int calculate_vector_size(ARRAY_DIMENSIONS *vector_dimension){
     
 }
 
+
+
+
+
 int calculate_vector_position(ARRAY_DIMENSIONS *vector_dimension,ARRAY_DIMENSIONS *indexes){
     if(vector_dimension == NULL) return -1;
     //INCOMPATIBLE_VECTOR_DIMENSIONS
     
     int position = 0;
-    int previous_size = 1;
-    while(vector_dimension->next){
+    int previous_size = 0;
+    
+    int d = indexes->dsize;
+    int size = vector_dimension->dsize;
+    
+   // vector_dimension = vector_dimension->next;
+  //  indexes = indexes->next;
+    
+    while(vector_dimension){
         if(indexes == NULL) return INCOMPATIBLE_VECTOR_DIMENSIONS;
+
+        printf("size d %d\t",previous_size);
         
+        //printf("%p\n",vector_dimension->next);
         
         position += vector_dimension->dsize * indexes->dsize *previous_size;
         previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
+        printf("df %d\n",previous_size);
         vector_dimension = vector_dimension->next;
         indexes = indexes->next;
     }
     
     return previous_size;
+    
+    
+//     static int depth = 0;
+//     printf("%p\n",indexes);
+//     
+//     //if(indexes == NULL || vector_dimension == NULL) return 0;
+//     
+//     if(indexes->next == NULL){
+//         depth++;
+//         printf("i%d %d\n",depth,indexes->dsize);
+//         return indexes->dsize;
+//     }
+//     
+//     else{
+//         int d = calculate_vector_position(vector_dimension->next,indexes->next);
+//         
+//         depth++;
+//         printf("i%d : %d * %d + %d\n",depth,d,vector_dimension->dsize,indexes->dsize);
+//         
+//         return (d * vector_dimension->dsize + indexes->dsize );
+//     }
     
     
 }
@@ -269,7 +325,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimensi
             top_table->symbol_info->depth = semantic_stack->depth;
             
             if(vector_dimension == NULL){
-                //printf("aaa\n");
+                printf("aaa\n");
                 top_table->symbol_info->size = get_size(lexical);
                 top_table->symbol_info->vector_dimension = NULL;
             }
@@ -293,7 +349,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimensi
     }
     
     else{
-       ///printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+       printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
