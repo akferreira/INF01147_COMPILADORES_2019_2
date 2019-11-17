@@ -52,3 +52,8 @@ char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest);
 
 void inserir_instrucao(LISTA_INSTRUCOES** lista_instrucoes, char* nova_instrucao);
 int contar_instrucoes(LISTA_INSTRUCOES* lista_instrucoes);
+
+
+
+char *Testar_desviar_cbr(char* exp, char* lbl_T, char* lbl_F);
+char *desvio_lbl_jumpI(char* lbl_destino);

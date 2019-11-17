@@ -194,21 +194,7 @@ char *storeVariableToTemp(char *temp, int depth, int position)
 
 }
 
-char* loadValueToTemp(int value, char *temp)
-{
-    if(temp == NULL) return NULL;
 
-    char *buffer = malloc(LOAD_INST_SIZE);
-
-    if(buffer == NULL) return NULL;
-
-    int cx = snprintf(buffer, LOAD_INST_SIZE-1, "loadI %d => %s\n",value,temp);
-
-//      printf("size %lu\n",sizeof(buffer));
-//      printf("lenght %lu\n",strlen(buffer));
-    return buffer;
-
-}
 
 char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest)
 {
@@ -226,6 +212,48 @@ char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest)
     return buffer;
 }
 
+char *Testar_desviar_cbr(char* exp, char* lbl_T, char* lbl_F)
+{
+    char *buffer = malloc(OP_INST_SIZE);
+
+    if((lbl_T == NULL)||(lbl_F == NULL))
+        return NULL;
+
+
+        int c1 = snprintf(buffer, OP_INST_SIZE-1, "cbr %s -> %s, %s\n",exp,lbl_T,lbl_F);
+
+
+        return buffer;
+    }
+
+char *desvio_lbl_jumpI(char* lbl_destino)
+{
+    char *buffer = malloc(OP_INST_SIZE);
+    if(lbl_destino == NULL)
+        return NULL;
+    int c1 = snprintf(buffer, OP_INST_SIZE-1, "jumpI %s\n",lbl_destino);
+
+
+    return buffer;
+
+}
+
+
+char* loadValueToTemp(int value, char *temp)
+{
+    if(temp == NULL) return NULL;
+
+    char *buffer = malloc(LOAD_INST_SIZE);
+
+    if(buffer == NULL) return NULL;
+
+    int cx = snprintf(buffer, LOAD_INST_SIZE-1, "loadI %d => %s\n",value,temp);
+
+//      printf("size %lu\n",sizeof(buffer));
+//      printf("lenght %lu\n",strlen(buffer));
+    return buffer;
+
+}
 
 
 
