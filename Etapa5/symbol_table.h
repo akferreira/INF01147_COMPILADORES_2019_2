@@ -1,9 +1,10 @@
 #ifndef SYMBOL_TABLE_H_INCLUDED
 #define SYMBOL_TABLE_H_INCLUDED
 
-#include "ast.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include "ast.h"
 
 enum nature {
     LITERAL,

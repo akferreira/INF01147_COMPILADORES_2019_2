@@ -15,13 +15,14 @@
 
 
 %{
-
+#define DEBUG 0
 //#include "main.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include "ast.h"
 #include "symbol_table.h"
 #include "ILOC.h"
+
 
 extern void *arvore;
 extern int get_line_number (void);
@@ -94,8 +95,8 @@ int yyparse (void);
 
 %right '!''#'
 
-
-
+%left TK_OC_OR
+%left TK_OC_AND 
 %left TK_OC_EQ
 %left TK_OC_LE TK_OC_GE
 
@@ -104,7 +105,7 @@ int yyparse (void);
 %left  TK_OC_SR TK_OC_SL '<' '>'
 %left   '+' '-'
 %left  '*' '/' '%'
-%left TK_OC_AND TK_OC_OR
+
 
 
 %right '^'
@@ -273,7 +274,7 @@ function_declaration: TK_PR_STATIC function_id enter_scope  '('function_paramete
 {
 $$ = new_static_function_declaration_node('M',$2,$5,$7);
 char *l0 = malloc(10);
-strcpy(l0,"L0:");
+strcpy(l0,"L0: ");
 
 $$->label = l0;
 char *first_inst = malloc(50);
@@ -291,7 +292,7 @@ $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
 if($$ != NULL && $6 != NULL ){
     
     char *l0 = malloc(10);
-    strcpy(l0,"L0:");
+    strcpy(l0,"L0: ");
 
     $$->label = l0;
 
@@ -436,15 +437,15 @@ $$ = new_assignment_node($1,$3,0);
 
 //printf("assign %p , %p\n",$1,$3);
 SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
-//printf("assignment code : %s\n",$3->code);
-//printf("assignment code2 : %s\n",$$->code);
 
 if(id_info.nature == VECTOR){
     $$->code = concatCode($1->code, storeTempToVariableRegOffset($3->temp,$1->temp,id_info.depth));
 }
 
 else {
-$$->code = concatCode(loadMemRegToReg($3->temp,$3->temp),storeTempToVariable($3->temp, id_info.depth, id_info.position));
+    if($3->ast_valor_lexico.nature == VECTOR) $$->code = concatCode(loadMemRegToReg($3->temp,$3->temp),storeTempToVariable($3->temp, id_info.depth, id_info.position));
+    
+    else $$->code = concatCode($$->code,storeTempToVariable($3->temp, id_info.depth, id_info.position));
 
 // $$->code = concatCode( storeTempToVariable($3->temp, id_info.depth, id_info.position);
 }
@@ -477,13 +478,54 @@ command_return: TK_PR_RETURN expression { $$ = new_return_command_node('R',$<val
 
 //If Statement
 if_statement: TK_PR_IF '(' expression ')' command_block null_node {
+
 $$ = new_ifelse_node(':',$3,$5,$6);
-$$->code = concatCode($3->code,$5->code);
+$$->code = $3->code;
+
+char *true_block_label = newLabel();
+char *false_block_label = newLabel();
+
+$$->code = concatCode($$->code,true_block_label);
+$$->code = concatCode($$->code,strdup(": "));
+$$->code = concatCode($$->code,$5->code);
+$$->code = concatCode($$->code,false_block_label);
+$$->code = concatCode($$->code,strdup(": nop\n"));
+
+
+
+
+LISTA_REMENDOS *lr_tempt = $3->true;
+LISTA_REMENDOS *lr_tempf = $3->false;
+if(DEBUG) fprintf( stderr,"%p // %p\n",$3->true, $3->false);
+
+while(lr_tempt){
+if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
+$$->code = strrep($$->code, lr_tempt->remendo, true_block_label);
+lr_tempt = lr_tempt->next;
+
+}
+
+while(lr_tempf){
+if(DEBUG) fprintf( stderr, "label false exp %s\n",lr_tempf->remendo);
+$$->code = strrep($$->code, lr_tempf->remendo, false_block_label);
+lr_tempf = lr_tempf->next;
+
+}
+
+if(DEBUG) fprintf( stderr, "if code\n%s\n",$$->code);
 
 
 };
 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {
 
+LISTA_REMENDOS *lr_tempt = $3->true;
+if(DEBUG) fprintf( stderr,"%p // %p\n",$3->true, $3->false);
+
+while(lr_tempt){
+if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
+lr_tempt = lr_tempt->next;
+
+}
 $$ = new_ifelse_node(':',$3,$5,$7);
 $$->code = concatCode($3->code,$5->code);
 $$->code = concatCode($$->code,$7->code);
@@ -597,7 +639,37 @@ expression: expression TK_OC_OR expression
 	
 
 	$$->temp = newTemp();
-	$$->code =Or_CC_Operation($1->temp, $3->temp, $$->temp);	
+	
+	
+	char *cc_label = $1->false->remendo;
+	char *old_label = $1->false->remendo;
+	
+	$$->false = $3->false;
+	$$->true = concatRemendo($1->true, $3->true);
+	//$1->false = replaceRemendo($1->false, cc_label);
+	
+	
+	
+	
+	
+// 	fprintf( stderr, "orleft %s\n",$1->true->remendo);
+	if(DEBUG) fprintf( stderr, "orleft %s \t%s\n",$1->false->remendo,cc_label);
+// 	fprintf( stderr, "orright %s\n",$3->true->remendo);
+// 	fprintf( stderr, "orright %s\n",$3->false->remendo);
+
+    $$->code = concatCode($$->code, $1->code);
+	$$->code = concatCode($$->code, cc_label);
+	$$->code = concatCode($$->code, strdup(": "));
+	$$->code = concatCode($$->code, $3->code);
+	//$$->code = replace_str(old_label,$$->code, cc_label);
+	if(DEBUG) fprintf( stderr, "%s\n\n\n",$$->code);
+	
+	
+	
+	//$$->code = concatCode($$->code, Or_CC_Operation($1->temp, $3->temp, $$->temp));
+	
+	
+	
 };
 
 expression: expression TK_OC_AND expression
@@ -605,7 +677,18 @@ expression: expression TK_OC_AND expression
 	$$ = new_binary_expression('&',$1,$3);
 	
 	$$->temp = newTemp();
-	$$->code =AND_CC_Operation($1->temp, $3->temp, $$->temp);
+	char *cc_label = $1->true->remendo;
+	$$->true = $3->true;
+	$$->false = concatRemendo($1->false, $3->false);
+	//$1->true = replaceRemendo($1->true, cc_label);
+	//$$->code =AND_CC_Operation($1->temp, $3->temp, $$->temp);
+	
+	    $$->code = concatCode($$->code, $1->code);
+	$$->code = concatCode($$->code, cc_label);
+	$$->code = concatCode($$->code, strdup(": "));
+	$$->code = concatCode($$->code, $3->code);
+	
+	if(DEBUG) fprintf( stderr, "%s\n\n\n",$$->code);
 
 };
 
@@ -620,11 +703,33 @@ expression: expression TK_OC_AND expression
 expression: expression TK_OC_EQ expression
 {
 	$$ = new_binary_expression(TK_OC_EQ,$1,$3);
-
+	
+//     fprintf( stderr, "exp left %s\n\n",$1->code);
 	$$->temp = newTemp();
-	$$->code = binaryOperation("cmp_NE", $1->temp, $3->temp,$$->temp);
-	char *subexpression_code  = concatCode($1->code, $3->code);
-	$$->code = concatCode(subexpression_code, $$->code);
+	$$->code = concatCode($$->code, $1->code);
+	$$->code = concatCode($$->code, $3->code);
+	$$->code = concatCode($$->code, binaryOperation("cmp_NE", $1->temp, $3->temp,$$->temp));
+	$$->code = concatCode($$->code, strdup("cbr "));
+	$$->code = concatCode($$->code, $$->temp);
+	$$->code = concatCode($$->code, strdup(" -> "));
+	
+	$$->true = remendo();
+	$$->false = remendo();
+	
+	$$->code = concatCode($$->code, $$->true->remendo);
+	$$->code = concatCode($$->code, strdup(", "));
+	$$->code = concatCode($$->code, $$->false->remendo);
+	$$->code = concatCode($$->code, strdup("\n"));
+	
+// 	fprintf( stderr, "%s\n",$$->true->remendo);
+// 	fprintf( stderr, "%s\n",$$->false->remendo);
+	
+	/*
+    char *subexpression_code  = concatCode($1->code, $3->code);
+    $$->code = concatCode(subexpression_code,$$->code);*/
+    
+//     fprintf( stderr, "exp right %s\n\n",$3->code);
+//     fprintf( stderr, "%s\n\n\n",$$->code);
     
 
 };

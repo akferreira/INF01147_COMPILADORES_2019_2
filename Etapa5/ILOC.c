@@ -46,6 +46,53 @@ char* newTemp(){
     
 }
 
+LISTA_REMENDOS *remendo(){
+    static int cc = 0;
+    cc++;
+    
+    LISTA_REMENDOS *new = malloc(sizeof(LISTA_REMENDOS));
+    
+    if(new == NULL) return NULL;
+    
+    new->remendo = malloc(TEMP_NAME_SIZE);
+    
+    
+    
+    
+    if( new->remendo == NULL) return NULL;
+    
+    int cx = snprintf( new->remendo, TEMP_NAME_SIZE-1, "cc%d",cc);
+
+    return new;
+    
+    
+}
+
+LISTA_REMENDOS *concatRemendo(LISTA_REMENDOS *l1, LISTA_REMENDOS *l2){
+    if(l1 == NULL) return l2;
+    LISTA_REMENDOS *l1_temp = l1;
+    
+    while(l1_temp->next) l1_temp = l1_temp->next;
+    
+    l1_temp->next = l2;
+    
+    return l1;
+    
+    
+    
+}
+
+LISTA_REMENDOS *replaceRemendo(LISTA_REMENDOS *l1, char *novo_remendo){
+     if(l1 == NULL) return NULL;
+    LISTA_REMENDOS *l1_temp = l1;
+    
+    while(l1_temp) {
+        l1_temp->remendo = novo_remendo;
+        l1_temp = l1_temp->next;
+    }
+    
+    return l1;
+}
 
 
 
@@ -61,7 +108,7 @@ void Imprimir_codigo(char *codigo, int size)
     
     printf("loadI %d => rbss\n", numero_instrucoes + 5 + 1);
     //instrucoes do codigo + inicializacao rfs, rsp, rbss e halt e jumpI l0
-    printf("jumpI => L0\n");
+    printf("jumpI -> L0\n");
 
     printf("%s",codigo);
 
@@ -109,7 +156,7 @@ int countLines(char *string, int size){
 
 char* newLabel(){
     char *buffer = malloc(TEMP_NAME_SIZE);
-    snprintf(buffer,TEMP_NAME_SIZE-1, "L%d:  ", countLabel);
+    snprintf(buffer,TEMP_NAME_SIZE-1, "L%d", countLabel);
     countLabel++;
     return buffer;
     
@@ -122,6 +169,8 @@ char* concatCode(char *dest, char *source){
     }
     
     int lenght = strlen(dest)+strlen(source)+1;
+    
+    
     
     dest = realloc(dest, lenght);
     if(dest == NULL) return NULL;
@@ -415,4 +464,67 @@ char *AND_CC_Operation(char *reg1, char *reg2, char *dest)
 
 
 
+
+
+char *strrep(const char *s1, const char *s2, const char *s3)
+{
+    if (!s1 || !s2 || !s3)
+        return 0;
+    size_t s1_len = strlen(s1);
+    if (!s1_len)
+        return (char *)s1;
+    size_t s2_len = strlen(s2);
+    if (!s2_len)
+        return (char *)s1;
+
+    /*
+     * Two-pass approach: figure out how much space to allocate for
+     * the new string, pre-allocate it, then perform replacement(s).
+     */
+
+    size_t count = 0;
+    const char *p = s1;
+    do {
+        p = strstr(p, s2);
+        if (p) {
+            p += s2_len;
+            ++count;
+        }
+    } while (p);
+
+    if (!count)
+        return (char *)s1;
+
+   
+    size_t s1_without_s2_len = s1_len - count * s2_len;
+    size_t s3_len = strlen(s3);
+    size_t s1_with_s3_len = s1_without_s2_len + count * s3_len;
+    if (s3_len &&
+        ((s1_with_s3_len <= s1_without_s2_len) || (s1_with_s3_len + 1 == 0)))
+        /* Overflow. */
+        return 0;
+    
+    char *s1_with_s3 = (char *)malloc(s1_with_s3_len + 1); /* w/ terminator */
+    if (!s1_with_s3)
+        /* ENOMEM, but no good way to signal it. */
+        return 0;
+    
+    char *dst = s1_with_s3;
+    const char *start_substr = s1;
+    size_t i;
+    for (i = 0; i != count; ++i) {
+        const char *end_substr = strstr(start_substr, s2);
+        size_t substr_len = end_substr - start_substr;
+        memcpy(dst, start_substr, substr_len);
+        dst += substr_len;
+        memcpy(dst, s3, s3_len);
+        dst += s3_len;
+        start_substr = end_substr + s2_len;
+    }
+
+    /* copy remainder of s1, including trailing '\0' */
+    size_t remains = s1_len - (start_substr - s1) + 1;
+    memcpy(dst, start_substr, remains);
+    return s1_with_s3;
+}
 

@@ -57,6 +57,13 @@ typedef struct _dimensions{
 } ARRAY_DIMENSIONS;
 
 
+typedef struct _lista_remendos{
+    char *remendo;
+    struct _lista_remendos* next;
+    
+} LISTA_REMENDOS;
+
+
 
 
 typedef struct _ast_node {
@@ -68,8 +75,8 @@ typedef struct _ast_node {
     char *code;
     char *label;
     
-    char *true;
-    char *false;
+    LISTA_REMENDOS *true;
+    LISTA_REMENDOS *false;
     
     
     struct _ast_node *first_child;
