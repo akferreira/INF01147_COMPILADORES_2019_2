@@ -364,8 +364,18 @@ new_command_list_node($1,$3);
 $$->code = concatCode($1->code, $3->code);
 }
 | loops command_list {
+printf("loop\n");
 $$ = new_command_list_node($1,$2);
-$$->code = concatCode($1->code, $2->code);
+
+char *code1 = NULL;
+char *code2 = NULL;
+
+if($1) code1 = $1->code;
+if($2) code2 = $2->code;
+
+$$->code = concatCode(code1, code2);
+printf("loop\n");
+
 }
 |{$$ = get_null();};
 
@@ -561,7 +571,32 @@ if(DEBUG) fprintf( stderr, "if code\n%s\n",$$->code);
  command_block_loop: command;
 
 loops: loop_for | loop_while; 
-loop_while:TK_PR_WHILE'('expression')' command_block_loop {$$ = new_loop_while_node('w',$3,$5);};
+loop_while:TK_PR_WHILE'('expression')' command_block {
+$$ = new_loop_while_node('w',$3,$5);
+char *true_block_label = $3->true->remendo;
+char *false_block_label = $3->false->remendo;
+char *loop_start = newLabel();
+char *loop_start1 = strdup(loop_start);
+
+
+printf("loop start %s\n",loop_start);
+$$->code = concatCode($$->code,loop_start);
+$$->code = concatCode($$->code,strdup(": "));
+printf("concat exp\n");
+$$->code = concatCode($$->code, $3->code);
+$$->code = concatCode($$->code,true_block_label);
+$$->code = concatCode($$->code,strdup(": "));
+printf("concat block\n");
+$$->code = concatCode($$->code,$5->code);
+$$->code = concatCode($$->code,strdup("jumpI -> "));
+printf("%s\n",loop_start1);
+$$->code = concatCode($$->code,loop_start1);
+$$->code = concatCode($$->code,strdup("\n"));
+$$->code = concatCode($$->code,false_block_label);
+$$->code = concatCode($$->code,strdup(": "));
+printf("concat end\n");
+
+};
 loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop {$$ = new_loop_for_node('j',$3,$5,$7,$9);};
 
 loop_for_command_list:

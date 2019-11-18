@@ -1,34 +1,34 @@
+loop start L2
+concat exp
+concat block
+L2
+concat end
+loop
+loop
 loadI 1024 => rfp
 loadI 1024 => rsp
-loadI 35 => rbss
-jumpI -> L6
-L6 : addI rsp, 4 => rsp
+loadI 28 => rbss
+jumpI -> L3
+L3 : addI rsp, 4 => rsp
 loadI 6 => r1
 storeAI r1 => rfp, 0 
 loadI 6 => r2
 storeAI r2 => rfp, 4 
-loadAI rfp, 0 => r3  
+L2: loadAI rfp, 0 => r3  
 loadAI rfp, 4 => r4  
 cmp_GT r3, r4 => r5
 cbr r5 -> L0, L1
-L1: loadAI rfp, 4 => r6  
-loadAI rfp, 0 => r7  
-cmp_NE r6, r7 => r8
-cbr r8 -> L0, L3
-L3: loadAI rfp, 0 => r10  
-loadAI rfp, 4 => r11  
-cmp_NE r10, r11 => r12
-cbr r12 -> L0, L5
-L0: loadI 2 => r14
-loadI 2 => r15
-loadI 2 => r16
-i2i r14 => r17
-multI r17, 3 => r17
-add r17, r15 => r17
-multI r17, 4 => r17
-add r17, r16 => r17
-multI r17, 4 => r17
-loadA0 rbss, r17 => r17  
-load r17 => r17
-storeAI r17 => rfp, 4 
-L5: halt
+L0: loadI 2 => r6
+loadI 2 => r7
+loadI 2 => r8
+i2i r6 => r9
+multI r9, 3 => r9
+add r9, r7 => r9
+multI r9, 4 => r9
+add r9, r8 => r9
+multI r9, 4 => r9
+loadA0 rbss, r9 => r9  
+load r9 => r9
+storeAI r9 => rfp, 4 
+jumpI -> L2
+L1: halt

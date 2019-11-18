@@ -130,7 +130,7 @@ Gramática
    72 loops: loop_for
    73      | loop_while
 
-   74 loop_while: TK_PR_WHILE '(' expression ')' command_block_loop
+   74 loop_while: TK_PR_WHILE '(' expression ')' command_block
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' loop_for_command_list ')' command_block_loop
 
@@ -299,7 +299,7 @@ function_parameters_argument (91)
 function_command_block (92)
     à esquerda: 31, à direita: 23 24
 command_block (93)
-    à esquerda: 32, à direita: 34 67 68
+    à esquerda: 32, à direita: 34 67 68 74
 command_list (94)
     à esquerda: 33 34 35 36, à direita: 31 32 33 34 35
 command (95)
@@ -331,7 +331,7 @@ command_return (107)
 if_statement (108)
     à esquerda: 67 68, à direita: 37
 command_block_loop (109)
-    à esquerda: 69 70 71, à direita: 69 74 75
+    à esquerda: 69 70 71, à direita: 69 75
 loops (110)
     à esquerda: 72 73, à direita: 35
 loop_while (111)
@@ -853,7 +853,7 @@ Estado 48
 
 Estado 49
 
-   74 loop_while: TK_PR_WHILE . '(' expression ')' command_block_loop
+   74 loop_while: TK_PR_WHILE . '(' expression ')' command_block
 
     '('  deslocar, e ir ao estado 80
 
@@ -1254,7 +1254,7 @@ Estado 79
 
 Estado 80
 
-   74 loop_while: TK_PR_WHILE '(' . expression ')' command_block_loop
+   74 loop_while: TK_PR_WHILE '(' . expression ')' command_block
 
     TK_LIT_INT        deslocar, e ir ao estado 81
     TK_LIT_FLOAT      deslocar, e ir ao estado 82
@@ -2098,7 +2098,7 @@ Estado 129
 
 Estado 130
 
-   74 loop_while: TK_PR_WHILE '(' expression . ')' command_block_loop
+   74 loop_while: TK_PR_WHILE '(' expression . ')' command_block
    91 expression: expression . '+' expression
    92           | expression . '-' expression
    93           | expression . '*' expression
@@ -3030,39 +3030,12 @@ Estado 172
 
 Estado 173
 
-   74 loop_while: TK_PR_WHILE '(' expression ')' . command_block_loop
+   74 loop_while: TK_PR_WHILE '(' expression ')' . command_block
 
-    TK_PR_INT         deslocar, e ir ao estado 1
-    TK_PR_FLOAT       deslocar, e ir ao estado 2
-    TK_PR_BOOL        deslocar, e ir ao estado 3
-    TK_PR_CHAR        deslocar, e ir ao estado 4
-    TK_PR_STRING      deslocar, e ir ao estado 5
-    TK_PR_IF          deslocar, e ir ao estado 48
-    TK_PR_INPUT       deslocar, e ir ao estado 50
-    TK_PR_OUTPUT      deslocar, e ir ao estado 51
-    TK_PR_RETURN      deslocar, e ir ao estado 52
-    TK_PR_CONST       deslocar, e ir ao estado 53
-    TK_PR_STATIC      deslocar, e ir ao estado 54
-    TK_PR_BREAK       deslocar, e ir ao estado 56
-    TK_PR_CONTINUE    deslocar, e ir ao estado 57
-    TK_IDENTIFICADOR  deslocar, e ir ao estado 58
-    '{'               deslocar, e ir ao estado 202
+    $padrão  reduzir usando a regra 1 (enter_scope)
 
-    primitive_type         ir ao estado 60
-    identifier             ir ao estado 61
-    simple_identifier      ir ao estado 62
-    vector                 ir ao estado 63
-    command                ir ao estado 203
-    modifiers              ir ao estado 67
-    local_var_declaration  ir ao estado 68
-    function_call          ir ao estado 69
-    assignment_command     ir ao estado 70
-    input_command          ir ao estado 71
-    output_command         ir ao estado 72
-    shift_command          ir ao estado 73
-    command_return         ir ao estado 74
-    if_statement           ir ao estado 75
-    command_block_loop     ir ao estado 204
+    enter_scope    ir ao estado 59
+    command_block  ir ao estado 202
 
 
 Estado 174
@@ -3476,7 +3449,7 @@ Estado 188
     '%'        deslocar, e ir ao estado 150
     '^'        deslocar, e ir ao estado 151
     '?'        deslocar, e ir ao estado 152
-    ':'        deslocar, e ir ao estado 205
+    ':'        deslocar, e ir ao estado 203
 
 
 Estado 189
@@ -3548,7 +3521,7 @@ Estado 191
     simple_identifier  ir ao estado 96
     vector             ir ao estado 97
     function_call      ir ao estado 98
-    expression         ir ao estado 206
+    expression         ir ao estado 204
     literal_id         ir ao estado 100
 
 
@@ -3573,7 +3546,7 @@ Estado 192
     local_var_declaration  ir ao estado 155
     assignment_command     ir ao estado 156
     shift_command          ir ao estado 157
-    loop_for_command_list  ir ao estado 207
+    loop_for_command_list  ir ao estado 205
     loop_for_command       ir ao estado 159
 
 
@@ -3586,7 +3559,7 @@ Estado 193
 
     $padrão  reduzir usando a regra 107 (dimension_exp_list)
 
-    dimension_exp_list  ir ao estado 208
+    dimension_exp_list  ir ao estado 206
 
 
 Estado 194
@@ -3595,7 +3568,7 @@ Estado 194
 
     $padrão  reduzir usando a regra 2 (exit_scope)
 
-    exit_scope  ir ao estado 209
+    exit_scope  ir ao estado 207
 
 
 Estado 195
@@ -3651,7 +3624,7 @@ Estado 199
     simple_identifier    ir ao estado 96
     vector               ir ao estado 97
     function_call        ir ao estado 98
-    call_parameter_list  ir ao estado 210
+    call_parameter_list  ir ao estado 208
     expression           ir ao estado 168
     literal_id           ir ao estado 100
 
@@ -3668,67 +3641,21 @@ Estado 201
    67 if_statement: TK_PR_IF '(' expression ')' command_block . null_node
    68             | TK_PR_IF '(' expression ')' command_block . TK_PR_ELSE command_block
 
-    TK_PR_ELSE  deslocar, e ir ao estado 211
+    TK_PR_ELSE  deslocar, e ir ao estado 209
 
     $padrão  reduzir usando a regra 3 (null_node)
 
-    null_node  ir ao estado 212
+    null_node  ir ao estado 210
 
 
 Estado 202
 
-   69 command_block_loop: '{' . command_block_loop '}'
-   70                   | '{' . '}'
-
-    TK_PR_INT         deslocar, e ir ao estado 1
-    TK_PR_FLOAT       deslocar, e ir ao estado 2
-    TK_PR_BOOL        deslocar, e ir ao estado 3
-    TK_PR_CHAR        deslocar, e ir ao estado 4
-    TK_PR_STRING      deslocar, e ir ao estado 5
-    TK_PR_IF          deslocar, e ir ao estado 48
-    TK_PR_INPUT       deslocar, e ir ao estado 50
-    TK_PR_OUTPUT      deslocar, e ir ao estado 51
-    TK_PR_RETURN      deslocar, e ir ao estado 52
-    TK_PR_CONST       deslocar, e ir ao estado 53
-    TK_PR_STATIC      deslocar, e ir ao estado 54
-    TK_PR_BREAK       deslocar, e ir ao estado 56
-    TK_PR_CONTINUE    deslocar, e ir ao estado 57
-    TK_IDENTIFICADOR  deslocar, e ir ao estado 58
-    '{'               deslocar, e ir ao estado 202
-    '}'               deslocar, e ir ao estado 213
-
-    primitive_type         ir ao estado 60
-    identifier             ir ao estado 61
-    simple_identifier      ir ao estado 62
-    vector                 ir ao estado 63
-    command                ir ao estado 203
-    modifiers              ir ao estado 67
-    local_var_declaration  ir ao estado 68
-    function_call          ir ao estado 69
-    assignment_command     ir ao estado 70
-    input_command          ir ao estado 71
-    output_command         ir ao estado 72
-    shift_command          ir ao estado 73
-    command_return         ir ao estado 74
-    if_statement           ir ao estado 75
-    command_block_loop     ir ao estado 214
-
-
-Estado 203
-
-   71 command_block_loop: command .
-
-    $padrão  reduzir usando a regra 71 (command_block_loop)
-
-
-Estado 204
-
-   74 loop_while: TK_PR_WHILE '(' expression ')' command_block_loop .
+   74 loop_while: TK_PR_WHILE '(' expression ')' command_block .
 
     $padrão  reduzir usando a regra 74 (loop_while)
 
 
-Estado 205
+Estado 203
 
   104 expression: expression '?' expression ':' . expression
 
@@ -3751,11 +3678,11 @@ Estado 205
     simple_identifier  ir ao estado 96
     vector             ir ao estado 97
     function_call      ir ao estado 98
-    expression         ir ao estado 215
+    expression         ir ao estado 211
     literal_id         ir ao estado 100
 
 
-Estado 206
+Estado 204
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression . ':' loop_for_command_list ')' command_block_loop
    91 expression: expression . '+' expression
@@ -3787,69 +3714,55 @@ Estado 206
     '%'        deslocar, e ir ao estado 150
     '^'        deslocar, e ir ao estado 151
     '?'        deslocar, e ir ao estado 152
-    ':'        deslocar, e ir ao estado 216
+    ':'        deslocar, e ir ao estado 212
 
 
-Estado 207
+Estado 205
 
    76 loop_for_command_list: loop_for_command ',' loop_for_command_list .
 
     $padrão  reduzir usando a regra 76 (loop_for_command_list)
 
 
-Estado 208
+Estado 206
 
   106 dimension_exp_list: '[' expression ']' dimension_exp_list .
 
     $padrão  reduzir usando a regra 106 (dimension_exp_list)
 
 
-Estado 209
+Estado 207
 
    32 command_block: enter_scope '{' command_list '}' exit_scope .
 
     $padrão  reduzir usando a regra 32 (command_block)
 
 
-Estado 210
+Estado 208
 
    56 call_parameter_list: expression ',' call_parameter_list .
 
     $padrão  reduzir usando a regra 56 (call_parameter_list)
 
 
-Estado 211
+Estado 209
 
    68 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE . command_block
 
     $padrão  reduzir usando a regra 1 (enter_scope)
 
     enter_scope    ir ao estado 59
-    command_block  ir ao estado 217
+    command_block  ir ao estado 213
 
 
-Estado 212
+Estado 210
 
    67 if_statement: TK_PR_IF '(' expression ')' command_block null_node .
 
     $padrão  reduzir usando a regra 67 (if_statement)
 
 
-Estado 213
-
-   70 command_block_loop: '{' '}' .
-
-    $padrão  reduzir usando a regra 70 (command_block_loop)
-
-
-Estado 214
-
-   69 command_block_loop: '{' command_block_loop . '}'
-
-    '}'  deslocar, e ir ao estado 218
-
-
-Estado 215
+Estado 211
 
    91 expression: expression . '+' expression
    92           | expression . '-' expression
@@ -3873,7 +3786,7 @@ Estado 215
     $padrão  reduzir usando a regra 104 (expression)
 
 
-Estado 216
+Estado 212
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' . loop_for_command_list ')' command_block_loop
 
@@ -3894,32 +3807,25 @@ Estado 216
     local_var_declaration  ir ao estado 155
     assignment_command     ir ao estado 156
     shift_command          ir ao estado 157
-    loop_for_command_list  ir ao estado 219
+    loop_for_command_list  ir ao estado 214
     loop_for_command       ir ao estado 159
 
 
-Estado 217
+Estado 213
 
    68 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block .
 
     $padrão  reduzir usando a regra 68 (if_statement)
 
 
-Estado 218
-
-   69 command_block_loop: '{' command_block_loop '}' .
-
-    $padrão  reduzir usando a regra 69 (command_block_loop)
-
-
-Estado 219
+Estado 214
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' loop_for_command_list . ')' command_block_loop
 
-    ')'  deslocar, e ir ao estado 220
+    ')'  deslocar, e ir ao estado 215
 
 
-Estado 220
+Estado 215
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' loop_for_command_list ')' . command_block_loop
 
@@ -3937,13 +3843,13 @@ Estado 220
     TK_PR_BREAK       deslocar, e ir ao estado 56
     TK_PR_CONTINUE    deslocar, e ir ao estado 57
     TK_IDENTIFICADOR  deslocar, e ir ao estado 58
-    '{'               deslocar, e ir ao estado 202
+    '{'               deslocar, e ir ao estado 216
 
     primitive_type         ir ao estado 60
     identifier             ir ao estado 61
     simple_identifier      ir ao estado 62
     vector                 ir ao estado 63
-    command                ir ao estado 203
+    command                ir ao estado 217
     modifiers              ir ao estado 67
     local_var_declaration  ir ao estado 68
     function_call          ir ao estado 69
@@ -3953,11 +3859,78 @@ Estado 220
     shift_command          ir ao estado 73
     command_return         ir ao estado 74
     if_statement           ir ao estado 75
-    command_block_loop     ir ao estado 221
+    command_block_loop     ir ao estado 218
 
 
-Estado 221
+Estado 216
+
+   69 command_block_loop: '{' . command_block_loop '}'
+   70                   | '{' . '}'
+
+    TK_PR_INT         deslocar, e ir ao estado 1
+    TK_PR_FLOAT       deslocar, e ir ao estado 2
+    TK_PR_BOOL        deslocar, e ir ao estado 3
+    TK_PR_CHAR        deslocar, e ir ao estado 4
+    TK_PR_STRING      deslocar, e ir ao estado 5
+    TK_PR_IF          deslocar, e ir ao estado 48
+    TK_PR_INPUT       deslocar, e ir ao estado 50
+    TK_PR_OUTPUT      deslocar, e ir ao estado 51
+    TK_PR_RETURN      deslocar, e ir ao estado 52
+    TK_PR_CONST       deslocar, e ir ao estado 53
+    TK_PR_STATIC      deslocar, e ir ao estado 54
+    TK_PR_BREAK       deslocar, e ir ao estado 56
+    TK_PR_CONTINUE    deslocar, e ir ao estado 57
+    TK_IDENTIFICADOR  deslocar, e ir ao estado 58
+    '{'               deslocar, e ir ao estado 216
+    '}'               deslocar, e ir ao estado 219
+
+    primitive_type         ir ao estado 60
+    identifier             ir ao estado 61
+    simple_identifier      ir ao estado 62
+    vector                 ir ao estado 63
+    command                ir ao estado 217
+    modifiers              ir ao estado 67
+    local_var_declaration  ir ao estado 68
+    function_call          ir ao estado 69
+    assignment_command     ir ao estado 70
+    input_command          ir ao estado 71
+    output_command         ir ao estado 72
+    shift_command          ir ao estado 73
+    command_return         ir ao estado 74
+    if_statement           ir ao estado 75
+    command_block_loop     ir ao estado 220
+
+
+Estado 217
+
+   71 command_block_loop: command .
+
+    $padrão  reduzir usando a regra 71 (command_block_loop)
+
+
+Estado 218
 
    75 loop_for: TK_PR_FOR '(' loop_for_command_list ':' expression ':' loop_for_command_list ')' command_block_loop .
 
     $padrão  reduzir usando a regra 75 (loop_for)
+
+
+Estado 219
+
+   70 command_block_loop: '{' '}' .
+
+    $padrão  reduzir usando a regra 70 (command_block_loop)
+
+
+Estado 220
+
+   69 command_block_loop: '{' command_block_loop . '}'
+
+    '}'  deslocar, e ir ao estado 221
+
+
+Estado 221
+
+   69 command_block_loop: '{' command_block_loop '}' .
+
+    $padrão  reduzir usando a regra 69 (command_block_loop)
