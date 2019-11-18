@@ -19,7 +19,11 @@ int line,column;
 void libera (void *arvore){
     
     ast_node *raiz = arvore;
-    Imprimir_codigo(raiz->code,strlen(raiz->code));
+    
+    if(raiz != NULL && raiz->code != NULL) {
+        Imprimir_codigo(raiz->code,strlen(raiz->code));
+    
+    }
     erase_tree(arvore);
     clean_stack(semantic_stack);
     

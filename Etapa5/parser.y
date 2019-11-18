@@ -283,14 +283,18 @@ $$->code = concatCode($$->label,$7->code);
 function_declaration: function_id enter_scope '('function_parameters_list')' function_command_block {
 //insert_function_entry($<valor_lexico>2);
 $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
-$$->label = newLabel();
 
-char *first_inst = malloc(50);
-strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
-$$->label = concatCode($$->label, first_inst );
+if($$ != NULL && $6 != NULL ){
+    printf("ok\n");
+    
+    $$->label = newLabel();
 
-$$->code = concatCode($$->label,$6->code);
-
+    char *first_inst = malloc(50);
+    strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
+    $$->label = concatCode($$->label, first_inst );
+    
+    $$->code = concatCode($$->label,$6->code);
+}
 //printf("function\n%s",$$->code);
 };
 
@@ -319,7 +323,11 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 
 function_command_block: '{'command_list'}' exit_scope { 
 $$ = new_command_block_node('{',$2);
-$$->code = concatCode($2->code, $$->code);
+
+if($2 != NULL) $$->code = concatCode($2->code, $$->code);
+else if($$ != NULL) $$->code = NULL;
+
+
 };
 
 
