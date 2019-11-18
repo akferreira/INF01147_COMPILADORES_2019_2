@@ -1,6 +1,6 @@
 loadI 1024 => rfp
 loadI 1024 => rsp
-loadI 32 => rbss
+loadI 49 => rbss
 jumpI -> L0
 L0: addI rsp, 4 => rsp
 loadI 6 => r1
@@ -15,6 +15,20 @@ cc1: loadAI rfp, 0 => r6
 loadAI rfp, 4 => r7  
 cmp_NE r6, r7 => r8
 cbr r8 -> cc3, cc2
+loadI 2 => r10
+loadI 2 => r11
+loadI 2 => r12
+i2i r10 => r13
+multI r13, 3 => r13
+add r13, r11 => r13
+multI r13, 4 => r13
+add r13, r12 => r13
+multI r13, 4 => r13
+loadA0 rbss, r13 => r13  
+load r13 => r13
+storeAI r13 => rfp, 4 
+loadI 6 => r14
+storeAI r14 => rfp, 4 
 cc3: loadI 2 => r10
 loadI 2 => r11
 loadI 2 => r12
@@ -27,5 +41,8 @@ multI r13, 4 => r13
 loadA0 rbss, r13 => r13  
 load r13 => r13
 storeAI r13 => rfp, 4 
-cc2: nop
+cc2: loadI 6 => r14
+storeAI r14 => rfp, 4 
+loadI 5 => r15
+storeAI r15 => rfp, 0 
 halt

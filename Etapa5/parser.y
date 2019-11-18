@@ -528,7 +528,6 @@ $$->code = concatCode($$->code,true_block_label);
 $$->code = concatCode($$->code,strdup(": "));
 $$->code = concatCode($$->code,$5->code);
 $$->code = concatCode($$->code,false_block_label);
-$$->code = concatCode($$->code,strdup(": nop\n"));
 $$->code = concatCode($$->code,strdup(": "));
 $$->code = concatCode($$->code,$7->code);
 
@@ -553,10 +552,8 @@ lr_tempf = lr_tempf->next;
 
 if(DEBUG) fprintf( stderr, "if code\n%s\n",$$->code);
 
-}
 
-char *true_block_label = $3->true->remendo;
-char *false_block_label = $3->false->remendo;
+
 };
 
 //Loops
