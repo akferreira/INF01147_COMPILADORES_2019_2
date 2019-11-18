@@ -55,6 +55,9 @@ char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest);
 char *binaryOperationInteger(char *operation, char *reg1, int value, char *dest);
 char *copyRegToReg(char *reg1, char *reg2);
 
+
+ast_node *GenerateCompOPCode(ast_node *B, ast_node *b1, ast_node *b2, char *comp);
+
 /*
  * strrep.c - C substring replacement.
  *

@@ -706,30 +706,10 @@ expression: expression TK_OC_EQ expression
 	
 //     fprintf( stderr, "exp left %s\n\n",$1->code);
 	$$->temp = newTemp();
-	$$->code = concatCode($$->code, $1->code);
-	$$->code = concatCode($$->code, $3->code);
-	$$->code = concatCode($$->code, binaryOperation("cmp_NE", $1->temp, $3->temp,$$->temp));
-	$$->code = concatCode($$->code, strdup("cbr "));
-	$$->code = concatCode($$->code, $$->temp);
-	$$->code = concatCode($$->code, strdup(" -> "));
-	
 	$$->true = remendo();
 	$$->false = remendo();
 	
-	$$->code = concatCode($$->code, $$->true->remendo);
-	$$->code = concatCode($$->code, strdup(", "));
-	$$->code = concatCode($$->code, $$->false->remendo);
-	$$->code = concatCode($$->code, strdup("\n"));
-	
-// 	fprintf( stderr, "%s\n",$$->true->remendo);
-// 	fprintf( stderr, "%s\n",$$->false->remendo);
-	
-	/*
-    char *subexpression_code  = concatCode($1->code, $3->code);
-    $$->code = concatCode(subexpression_code,$$->code);*/
-    
-//     fprintf( stderr, "exp right %s\n\n",$3->code);
-//     fprintf( stderr, "%s\n\n\n",$$->code);
+	$$ = GenerateCompOPCode($$, $1, $3, strdup("cmp_NE"));
     
 
 };
@@ -738,13 +718,17 @@ expression: expression TK_OC_LE expression
 
 
 	$$ = new_binary_expression(TK_OC_LE,$1,$3);
-
-	$$->temp = newTemp();
-	$$->code = binaryOperation("cmp_LE", $1->temp, $3->temp,$$->temp);
-	char *subexpression_code  = concatCode($1->code, $3->code);
-
-	$$->code = concatCode(subexpression_code, $$->code);
-	printf("LE code:\n: %s\n",$$->code);
+    $$->temp = newTemp();
+	$$->true = remendo();
+	$$->false = remendo();
+	
+	$$ = GenerateCompOPCode($$, $1, $3, strdup("cmp_LE"));
+// 	$$->temp = newTemp();
+// 	$$->code = binaryOperation("cmp_LE", $1->temp, $3->temp,$$->temp);
+// 	char *subexpression_code  = concatCode($1->code, $3->code);
+// 
+// 	$$->code = concatCode(subexpression_code, $$->code);
+// 	printf("LE code:\n: %s\n",$$->code);
 };
 
 expression: expression TK_OC_GE expression

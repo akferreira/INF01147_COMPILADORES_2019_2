@@ -464,6 +464,23 @@ char *AND_CC_Operation(char *reg1, char *reg2, char *dest)
 
 
 
+ast_node *GenerateCompOPCode(ast_node *B, ast_node *b1, ast_node *b2, char *comp){
+    
+    B->code = concatCode(B->code, b1->code);
+	B->code = concatCode(B->code, b2->code);
+	B->code = concatCode(B->code, binaryOperation(comp, b1->temp, b2->temp,B->temp));
+	B->code = concatCode(B->code, strdup("cbr "));
+	B->code = concatCode(B->code, B->temp);
+	B->code = concatCode(B->code, strdup(" -> "));
+	
+	
+	B->code = concatCode(B->code, B->true->remendo);
+	B->code = concatCode(B->code, strdup(", "));
+	B->code = concatCode(B->code, B->false->remendo);
+	B->code = concatCode(B->code, strdup("\n"));
+    
+    return B;
+}
 
 
 char *strrep(const char *s1, const char *s2, const char *s3)
