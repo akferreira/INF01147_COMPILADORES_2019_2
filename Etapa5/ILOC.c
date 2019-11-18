@@ -58,13 +58,12 @@ void Imprimir_codigo(char *codigo, int size)
 
     printf("loadI %d => rfp\n", stackForm);
     printf("loadI %d => rsp\n", stackForm);
+    
+    printf("loadI %d => rbss\n", numero_instrucoes + 5 + 1);
     //instrucoes do codigo + inicializacao rfs, rsp, rbss e halt e jumpI l0
     printf("jumpI => L0\n");
-    printf("loadI %d => rbss\n", numero_instrucoes + 5 + 1);
 
-    printf("%s:\n", gerar_label());
-
-    printf("%s\n",codigo);
+    printf("%s",codigo);
 
 
 
@@ -127,11 +126,9 @@ char* newLabel(){
     
 }
 char* concatCode(char *dest, char *source){
-    printf("%p <= %p\n",dest,source);
     
     if(dest == NULL ) return source;
     if(source == NULL) {
-        printf("source null\n");
         return dest;
     }
     

@@ -195,7 +195,6 @@ identifier: simple_identifier {$$ = $1;}
 
 simple_identifier: TK_IDENTIFICADOR {$$ = new_leaf_node(ID_NODE,$<valor_lexico>1);}
 vector: TK_IDENTIFICADOR dimension_exp_list{
-printf("array %s\n",$<valor_lexico>1.value.str_value);
 
 $$ = new_leaf_node(ID_NODE,$<valor_lexico>1);
 
@@ -220,14 +219,14 @@ while(node){
     
     if(first_dimension_flag) {
         $$->code = concatCode($$->code,copyRegToReg(node->temp,$$->temp));
-        printf("%s =  %s\n",$$->temp,node->temp);
+//         printf("%s =  %s\n",$$->temp,node->temp);
     }
     
     else{
         $$->code = concatCode($$->code,binaryOperationInteger("multI",$$->temp, d->dsize,$$->temp));
         $$->code = concatCode($$->code,binaryOperation("add",$$->temp, node->temp,$$->temp));
-        printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
-        printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
+//         printf("%s = %s * %d\t",$$->temp,$$->temp,d->dsize);
+//         printf("%s = %s + %s\n",$$->temp,$$->temp,node->temp);
     }
     
     first_dimension_flag = 0;
@@ -254,20 +253,15 @@ $$->code = concatCode($$->code,storeVariableRegOffsetToTemp($$->temp,$$->temp, i
 }
 
 vector_dimensions: '['TK_LIT_INT']' vector_dimensions {
-printf("vector %d\n", $<valor_lexico>2.value.intvalue);
 $$ = malloc(sizeof(ARRAY_DIMENSIONS));
 $$->dsize = $<valor_lexico>2.value.intvalue;
 $$->next = $4;
-printf("p:%p -> %p\n",$$,$$->next);
 
 }
 | '['TK_LIT_INT']'{
-printf("vector %d\n", $<valor_lexico>2.value.intvalue);
 $$ = malloc(sizeof(ARRAY_DIMENSIONS));
 $$->dsize = $<valor_lexico>2.value.intvalue;
 $$->next = NULL;
-
-printf("p:%p\n",$$);
 
 };
 

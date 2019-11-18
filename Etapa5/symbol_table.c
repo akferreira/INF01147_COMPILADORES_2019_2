@@ -4,7 +4,7 @@
 #include <string.h>
 
 extern int returning_own_function;
-
+int debug = 0;
 extern int line,column;
 
 SYMBOL_STACK *semantic_stack = NULL;
@@ -211,10 +211,8 @@ int get_last_position_toptable(){
     else{
         SYMBOL_TABLE* current_table = top_table;
         while(current_table->next != NULL) current_table = current_table->next;
-         printf("cur %p\n",current_table);
         
         if(current_table->symbol_info){
-            printf("cur %d\n",current_table->symbol_info->position);
             return current_table->symbol_info->position;
         }
         else return -1;
@@ -265,14 +263,11 @@ int calculate_vector_position(ARRAY_DIMENSIONS *vector_dimension,ARRAY_DIMENSION
     
     while(vector_dimension){
         if(indexes == NULL) return INCOMPATIBLE_VECTOR_DIMENSIONS;
-
-        printf("size d %d\t",previous_size);
         
         //printf("%p\n",vector_dimension->next);
         
         position += vector_dimension->dsize * indexes->dsize *previous_size;
         previous_size = previous_size * vector_dimension->dsize + indexes->dsize;
-        printf("df %d\n",previous_size);
         vector_dimension = vector_dimension->next;
         indexes = indexes->next;
     }
@@ -325,18 +320,17 @@ int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimensi
             top_table->symbol_info->depth = semantic_stack->depth;
             
             if(vector_dimension == NULL){
-                printf("aaa\n");
+                if(debug) printf("aaa\n");
                 top_table->symbol_info->size = get_size(lexical);
                 top_table->symbol_info->vector_dimension = NULL;
+                if(debug) printf("bbb\n");
             }
             
             else{
                 int size = 0;
                 int dimension_size= calculate_vector_size(vector_dimension);
                 top_table->symbol_info->vector_dimension = vector_dimension;
-                printf("%p\t",top_table);
                 top_table->symbol_info->size = get_size(lexical)*dimension_size;
-                printf("%s,%d----\n",top_table->symbol_info->name,top_table->symbol_info->size);
                 
                 
             }
@@ -349,7 +343,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimensi
     }
     
     else{
-       printf("Non first %s//%s\n",semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value);
+       
         
         //checa se a primeira entrada da tabela já é declaração repetida ou não
         if(strcmp(semantic_stack->symbol_table->symbol_info->name,lexical.value.str_value) == 0){
