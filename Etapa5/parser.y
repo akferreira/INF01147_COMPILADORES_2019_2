@@ -285,7 +285,6 @@ function_declaration: function_id enter_scope '('function_parameters_list')' fun
 $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
 
 if($$ != NULL && $6 != NULL ){
-    printf("ok\n");
     
     $$->label = newLabel();
 
