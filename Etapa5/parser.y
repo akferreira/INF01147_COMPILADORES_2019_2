@@ -326,17 +326,6 @@ function_parameters_argument:primitive_type TK_IDENTIFICADOR {$$ = new_nonconst_
 function_command_block: '{'command_list'}' exit_scope { 
 $$ = new_command_block_node('{',$2);
 $$->code = concatCode($2->code, $$->code);
-printf("block___%d\n",get_last_position_toptable());
-
-//printf("command block code:\n%s",$$->code);
-
-printf("%d Instructions\n",countLines($$->code,strlen($$->code)));
-
-
-printf("------------------------------\n");
-Imprimir_codigo($$->code,strlen($$->code));
-printf("------------------------------\n");
-
 };
 
 
@@ -344,9 +333,6 @@ printf("------------------------------\n");
 command_block: enter_scope '{'command_list'}' exit_scope { 
 $$ = new_command_block_node('{',$3);
 $$->code = concatCode($3->code, $$->code);
-//printf("block___%p\n",$$->code);
-
-printf("command block code:\n%s",$$->code);
 };
 
 command_list: 
@@ -367,7 +353,6 @@ $$->code = concatCode(code1, code2);
 }
 |command_block';' command_list {
 new_command_list_node($1,$3);
-//printf("block concat\n");
 $$->code = concatCode($1->code, $3->code);
 }
 | loops command_list {
@@ -417,8 +402,6 @@ local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization 
 
         $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
         $$->code = concatCode($3->code, $$->code);
-        
-        //printf("local decl code : %s",$$->code);
     }
 
 };
@@ -706,7 +689,6 @@ dimension_exp_list: '['expression']' dimension_exp_list
 {
 	$$ = new_expression_list_node($2,$4);
 	$$->code = concatCode($2->code, $4->code);
-	printf("list %s\n",$$->code);
 }
 | '['expression']' {$$ = $2;}
 

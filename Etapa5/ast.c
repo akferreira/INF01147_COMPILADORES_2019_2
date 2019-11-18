@@ -19,9 +19,7 @@ int line,column;
 void libera (void *arvore){
     
     ast_node *raiz = arvore;
-    printf("Código final!\n%s\n",raiz->code);
-    printf("total instruções %d\n",countLines(raiz->code,strlen(raiz->code)));
-    printf("Ultima label L%d",countLabel);
+    Imprimir_codigo(raiz->code,strlen(raiz->code));
     erase_tree(arvore);
     clean_stack(semantic_stack);
     
