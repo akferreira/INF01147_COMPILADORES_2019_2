@@ -465,6 +465,9 @@ char *AND_CC_Operation(char *reg1, char *reg2, char *dest)
 
 
 ast_node *GenerateCompOPCode(ast_node *B, ast_node *b1, ast_node *b2, char *comp){
+    B->temp = newTemp();
+	B->true = remendo();
+	B->false = remendo();
     
     B->code = concatCode(B->code, b1->code);
 	B->code = concatCode(B->code, b2->code);

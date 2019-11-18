@@ -482,8 +482,8 @@ if_statement: TK_PR_IF '(' expression ')' command_block null_node {
 $$ = new_ifelse_node(':',$3,$5,$6);
 $$->code = $3->code;
 
-char *true_block_label = newLabel();
-char *false_block_label = newLabel();
+char *true_block_label = $3->true->remendo;
+char *false_block_label = $3->false->remendo;
 
 $$->code = concatCode($$->code,true_block_label);
 $$->code = concatCode($$->code,strdup(": "));
@@ -517,19 +517,46 @@ if(DEBUG) fprintf( stderr, "if code\n%s\n",$$->code);
 
 };
 if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {
-
-LISTA_REMENDOS *lr_tempt = $3->true;
-if(DEBUG) fprintf( stderr,"%p // %p\n",$3->true, $3->false);
-
-while(lr_tempt){
-if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
-lr_tempt = lr_tempt->next;
-
-}
 $$ = new_ifelse_node(':',$3,$5,$7);
 $$->code = concatCode($3->code,$5->code);
 $$->code = concatCode($$->code,$7->code);
 
+char *true_block_label = $3->true->remendo;
+char *false_block_label = $3->false->remendo;
+
+$$->code = concatCode($$->code,true_block_label);
+$$->code = concatCode($$->code,strdup(": "));
+$$->code = concatCode($$->code,$5->code);
+$$->code = concatCode($$->code,false_block_label);
+$$->code = concatCode($$->code,strdup(": nop\n"));
+$$->code = concatCode($$->code,strdup(": "));
+$$->code = concatCode($$->code,$7->code);
+
+
+LISTA_REMENDOS *lr_tempt = $3->true;
+LISTA_REMENDOS *lr_tempf = $3->false;
+if(DEBUG) fprintf( stderr,"%p // %p\n",$3->true, $3->false);
+
+while(lr_tempt){
+if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
+$$->code = strrep($$->code, lr_tempt->remendo, true_block_label);
+lr_tempt = lr_tempt->next;
+
+}
+
+while(lr_tempf){
+if(DEBUG) fprintf( stderr, "label false exp %s\n",lr_tempf->remendo);
+$$->code = strrep($$->code, lr_tempf->remendo, false_block_label);
+lr_tempf = lr_tempf->next;
+
+}
+
+if(DEBUG) fprintf( stderr, "if code\n%s\n",$$->code);
+
+}
+
+char *true_block_label = $3->true->remendo;
+char *false_block_label = $3->false->remendo;
 };
 
 //Loops
@@ -648,10 +675,6 @@ expression: expression TK_OC_OR expression
 	$$->true = concatRemendo($1->true, $3->true);
 	//$1->false = replaceRemendo($1->false, cc_label);
 	
-	
-	
-	
-	
 // 	fprintf( stderr, "orleft %s\n",$1->true->remendo);
 	if(DEBUG) fprintf( stderr, "orleft %s \t%s\n",$1->false->remendo,cc_label);
 // 	fprintf( stderr, "orright %s\n",$3->true->remendo);
@@ -663,13 +686,6 @@ expression: expression TK_OC_OR expression
 	$$->code = concatCode($$->code, $3->code);
 	//$$->code = replace_str(old_label,$$->code, cc_label);
 	if(DEBUG) fprintf( stderr, "%s\n\n\n",$$->code);
-	
-	
-	
-	//$$->code = concatCode($$->code, Or_CC_Operation($1->temp, $3->temp, $$->temp));
-	
-	
-	
 };
 
 expression: expression TK_OC_AND expression
@@ -703,43 +719,21 @@ expression: expression TK_OC_AND expression
 expression: expression TK_OC_EQ expression
 {
 	$$ = new_binary_expression(TK_OC_EQ,$1,$3);
-	
-//     fprintf( stderr, "exp left %s\n\n",$1->code);
-	$$->temp = newTemp();
-	$$->true = remendo();
-	$$->false = remendo();
-	
 	$$ = GenerateCompOPCode($$, $1, $3, strdup("cmp_NE"));
     
 
 };
 expression: expression TK_OC_LE expression
 {
-
-
 	$$ = new_binary_expression(TK_OC_LE,$1,$3);
-    $$->temp = newTemp();
-	$$->true = remendo();
-	$$->false = remendo();
-	
 	$$ = GenerateCompOPCode($$, $1, $3, strdup("cmp_LE"));
-// 	$$->temp = newTemp();
-// 	$$->code = binaryOperation("cmp_LE", $1->temp, $3->temp,$$->temp);
-// 	char *subexpression_code  = concatCode($1->code, $3->code);
-// 
-// 	$$->code = concatCode(subexpression_code, $$->code);
-// 	printf("LE code:\n: %s\n",$$->code);
 };
 
 expression: expression TK_OC_GE expression
 {
 	
 	$$ = new_binary_expression(TK_OC_GE,$1,$3);
-
-	$$->temp = newTemp();
-	$$->code = binaryOperation("cmp_GE", $1->temp, $3->temp,$$->temp);
-	char *subexpression_code  = concatCode($1->code, $3->code);
-	$$->code = concatCode(subexpression_code, $$->code);
+	$$ = GenerateCompOPCode($$, $1, $3, strdup("cmp_GE"));
 };
 
 
@@ -748,21 +742,13 @@ expression: expression TK_OC_GE expression
 expression: expression '>' expression
 {
 	$$ = new_binary_expression('>',$1,$3);
-
-	$$->temp = newTemp();
-	$$->code = binaryOperation("cmp_GT", $1->temp, $3->temp,$$->temp);
-	char *subexpression_code  = concatCode($1->code, $3->code);
-	$$->code = concatCode(subexpression_code, $$->code);
+	$$ = GenerateCompOPCode($$, $1, $3, strdup("cmp_GT"));
 };
 
 expression: expression '<' expression
 {
 	$$ = new_binary_expression('<',$1,$3);
-
-	$$->temp = newTemp();
-	$$->code = binaryOperation("cmp_LT", $1->temp, $3->temp,$$->temp);
-	char *subexpression_code  = concatCode($1->code, $3->code);
-	$$->code = concatCode(subexpression_code, $$->code);
+	$$ = GenerateCompOPCode($$, $1, $3, strdup("cmp_LT"));
 };
 
 
