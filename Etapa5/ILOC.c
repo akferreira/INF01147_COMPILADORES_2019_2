@@ -17,7 +17,7 @@ typedef struct  _symbol_info{
 
 */
 
-int countLabel = 0;
+int countLabel = 1;
 
 int  count_Label =0;
 
@@ -87,17 +87,6 @@ void Imprimir_codigo(char *codigo, int size)
 
 
 
-
-char * gerar_label()
-{
-    char *label = (char*) malloc(sizeof(char));
-   
-
-    snprintf(label,4, "L%d", countLabel);
-    count_Label ++;
-
-    return label;
-}
 
 
 
@@ -308,6 +297,8 @@ char *desvio_lbl_jumpI(char* lbl_destino)
 
 char *Or_CC_Operation(char *reg1, char *reg2, char *dest)
 {
+    
+    printf("debug: %s %s %s\n",reg1,reg2,dest);
     char *buffer = malloc(OP_INST_SIZE);
 
     char *lbl_true = malloc(OP_INST_SIZE);
@@ -329,10 +320,10 @@ char *Or_CC_Operation(char *reg1, char *reg2, char *dest)
 
 
 
-    lbl_true = gerar_label();
-    lbl_false = gerar_label();
-    lbl_aux1 = gerar_label();
-    lbl_aux2 = gerar_label();
+    lbl_true = newLabel();
+    lbl_false = newLabel();
+    lbl_aux1 = newLabel();
+    lbl_aux2 = newLabel();
 
 
     buffer_l1 = Testar_desviar_cbr(reg1, lbl_true, lbl_aux1);
@@ -359,7 +350,7 @@ char *Or_CC_Operation(char *reg1, char *reg2, char *dest)
 
 
 
-    printf("%s", buffer);
+    //printf("%s", buffer);
     return buffer;
 }
 
@@ -392,10 +383,10 @@ char *AND_CC_Operation(char *reg1, char *reg2, char *dest)
 
 
 
-    lbl_true = gerar_label();
-    lbl_false = gerar_label();
-    lbl_aux1 = gerar_label();
-    lbl_aux2 = gerar_label();
+    lbl_true = newLabel();
+    lbl_false = newLabel();
+    lbl_aux1 = newLabel();
+    lbl_aux2 = newLabel();
 
 
     buffer_l1 = Testar_desviar_cbr(reg1, lbl_aux1, lbl_false);

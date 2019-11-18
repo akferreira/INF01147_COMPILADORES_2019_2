@@ -12,11 +12,10 @@ Terminals unused in grammar
     TK_PR_END
     TK_PR_DEFAULT
     TK_OC_NE
-    TK_OC_AND
-    TK_OC_OR
     TK_OC_FORWARD_PIPE
     TK_OC_BASH_PIPE
     TOKEN_ERRO
+    '|'
     UNARY_QUESTION_MARK
 
 
@@ -158,8 +157,8 @@ Grammar
    93           | expression '*' expression
    94           | expression '/' expression
    95           | expression '%' expression
-   96           | expression '|' expression
-   97           | expression '&' expression
+   96           | expression TK_OC_OR expression
+   97           | expression TK_OC_AND expression
    98           | expression TK_OC_EQ expression
    99           | expression TK_OC_LE expression
   100           | expression TK_OC_GE expression
@@ -189,7 +188,7 @@ Terminals, with rules where they appear
     '!' (33) 86
     '#' (35) 90
     '%' (37) 95
-    '&' (38) 87 97
+    '&' (38) 87
     '(' (40) 23 24 55 67 68 74 75 83
     ')' (41) 23 24 55 67 68 74 75 83
     '*' (42) 88 93
@@ -207,7 +206,7 @@ Terminals, with rules where they appear
     ']' (93) 21 22 106 107
     '^' (94) 103
     '{' (123) 31 32 69 70
-    '|' (124) 96
+    '|' (124)
     '}' (125) 31 32 69 70
     error (256)
     TK_PR_INT <valor_lexico> (258) 12
@@ -241,8 +240,8 @@ Terminals, with rules where they appear
     TK_OC_GE (286) 100
     TK_OC_EQ (287) 98
     TK_OC_NE (288)
-    TK_OC_AND (289)
-    TK_OC_OR (290)
+    TK_OC_AND (289) 97
+    TK_OC_OR (290) 96
     TK_OC_SL (291) 63
     TK_OC_SR (292) 64
     TK_OC_FORWARD_PIPE (293)
@@ -1618,8 +1617,8 @@ State 99
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -1628,20 +1627,20 @@ State 99
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 60 (input_command)
 
@@ -1670,8 +1669,8 @@ State 102
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -1680,21 +1679,21 @@ State 102
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ','       shift, and go to state 153
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ','        shift, and go to state 153
 
     $default  reduce using rule 61 (output_command)
 
@@ -1707,8 +1706,8 @@ State 103
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -1717,20 +1716,20 @@ State 103
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 66 (command_return)
 
@@ -2107,8 +2106,8 @@ State 129
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2117,21 +2116,21 @@ State 129
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ')'       shift, and go to state 172
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ')'        shift, and go to state 172
 
 
 State 130
@@ -2142,8 +2141,8 @@ State 130
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2152,21 +2151,21 @@ State 130
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ')'       shift, and go to state 173
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ')'        shift, and go to state 173
 
 
 State 131
@@ -2177,8 +2176,8 @@ State 131
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2187,20 +2186,20 @@ State 131
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 86 (expression)
 
@@ -2213,8 +2212,8 @@ State 132
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2223,20 +2222,20 @@ State 132
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 90 (expression)
 
@@ -2249,8 +2248,8 @@ State 133
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2270,8 +2269,8 @@ State 134
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2291,8 +2290,8 @@ State 135
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2312,8 +2311,8 @@ State 136
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2333,8 +2332,8 @@ State 137
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2357,8 +2356,8 @@ State 138
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2367,21 +2366,21 @@ State 138
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ')'       shift, and go to state 174
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ')'        shift, and go to state 174
 
 
 State 139
@@ -2467,7 +2466,7 @@ State 141
 
 State 142
 
-   96 expression: expression '|' . expression
+   97 expression: expression TK_OC_AND . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -2494,7 +2493,7 @@ State 142
 
 State 143
 
-   97 expression: expression '&' . expression
+   96 expression: expression TK_OC_OR . expression
 
     TK_LIT_INT        shift, and go to state 81
     TK_LIT_FLOAT      shift, and go to state 82
@@ -2843,8 +2842,8 @@ State 160
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2855,21 +2854,21 @@ State 160
   106 dimension_exp_list: '[' expression . ']' dimension_exp_list
   107                   | '[' expression . ']'
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ']'       shift, and go to state 193
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ']'        shift, and go to state 193
 
 
 State 161
@@ -2923,8 +2922,8 @@ State 165
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2933,20 +2932,20 @@ State 165
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 59 (assignment_command)
 
@@ -2959,8 +2958,8 @@ State 166
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -2969,20 +2968,20 @@ State 166
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 65 (shift_command)
 
@@ -3003,8 +3002,8 @@ State 168
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3013,21 +3012,21 @@ State 168
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ','       shift, and go to state 199
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ','        shift, and go to state 199
 
     $default  reduce using rule 57 (call_parameter_list)
 
@@ -3117,8 +3116,8 @@ State 175
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
    99           | expression TK_OC_LE expression .
@@ -3128,17 +3127,17 @@ State 175
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '|'  shift, and go to state 142
-    '&'  shift, and go to state 143
-    '<'  shift, and go to state 144
-    '>'  shift, and go to state 145
-    '+'  shift, and go to state 146
-    '-'  shift, and go to state 147
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 99 (expression)
 
@@ -3150,8 +3149,8 @@ State 176
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3161,17 +3160,17 @@ State 176
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '|'  shift, and go to state 142
-    '&'  shift, and go to state 143
-    '<'  shift, and go to state 144
-    '>'  shift, and go to state 145
-    '+'  shift, and go to state 146
-    '-'  shift, and go to state 147
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 100 (expression)
 
@@ -3183,8 +3182,8 @@ State 177
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    98           | expression TK_OC_EQ expression .
    99           | expression . TK_OC_LE expression
@@ -3194,19 +3193,19 @@ State 177
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 98 (expression)
 
@@ -3218,9 +3217,9 @@ State 178
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   96           | expression '|' expression .
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
+   97           | expression TK_OC_AND expression .
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3229,18 +3228,10 @@ State 178
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '&'  shift, and go to state 143
-    '<'  shift, and go to state 144
-    '>'  shift, and go to state 145
-    '+'  shift, and go to state 146
-    '-'  shift, and go to state 147
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
     '^'  shift, and go to state 151
     '?'  shift, and go to state 152
 
-    $default  reduce using rule 96 (expression)
+    $default  reduce using rule 97 (expression)
 
 
 State 179
@@ -3250,9 +3241,9 @@ State 179
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
-   97           | expression '&' expression .
+   96           | expression . TK_OC_OR expression
+   96           | expression TK_OC_OR expression .
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3261,17 +3252,10 @@ State 179
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '<'  shift, and go to state 144
-    '>'  shift, and go to state 145
-    '+'  shift, and go to state 146
-    '-'  shift, and go to state 147
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
     '^'  shift, and go to state 151
     '?'  shift, and go to state 152
 
-    $default  reduce using rule 97 (expression)
+    $default  reduce using rule 96 (expression)
 
 
 State 180
@@ -3281,8 +3265,8 @@ State 180
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3292,13 +3276,15 @@ State 180
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '+'  shift, and go to state 146
-    '-'  shift, and go to state 147
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 102 (expression)
 
@@ -3310,8 +3296,8 @@ State 181
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3321,13 +3307,15 @@ State 181
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '+'  shift, and go to state 146
-    '-'  shift, and go to state 147
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 101 (expression)
 
@@ -3340,8 +3328,8 @@ State 182
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3350,11 +3338,13 @@ State 182
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 91 (expression)
 
@@ -3367,8 +3357,8 @@ State 183
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3377,11 +3367,13 @@ State 183
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '*'  shift, and go to state 148
-    '/'  shift, and go to state 149
-    '%'  shift, and go to state 150
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 92 (expression)
 
@@ -3394,8 +3386,8 @@ State 184
    93           | expression '*' expression .
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3404,8 +3396,10 @@ State 184
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 93 (expression)
 
@@ -3418,8 +3412,8 @@ State 185
    94           | expression . '/' expression
    94           | expression '/' expression .
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3428,8 +3422,10 @@ State 185
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 94 (expression)
 
@@ -3442,8 +3438,8 @@ State 186
    94           | expression . '/' expression
    95           | expression . '%' expression
    95           | expression '%' expression .
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3452,8 +3448,10 @@ State 186
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    '^'  shift, and go to state 151
-    '?'  shift, and go to state 152
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
 
     $default  reduce using rule 95 (expression)
 
@@ -3465,8 +3463,8 @@ State 187
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3489,8 +3487,8 @@ State 188
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3500,21 +3498,21 @@ State 188
   104           | expression . '?' expression ':' expression
   104           | expression '?' expression . ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ':'       shift, and go to state 205
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ':'        shift, and go to state 205
 
 
 State 189
@@ -3534,8 +3532,8 @@ State 190
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3544,21 +3542,21 @@ State 190
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ','       shift, and go to state 153
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ','        shift, and go to state 153
 
     $default  reduce using rule 82 (expression_list)
 
@@ -3801,8 +3799,8 @@ State 206
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression
@@ -3811,21 +3809,21 @@ State 206
   103           | expression . '^' expression
   104           | expression . '?' expression ':' expression
 
-    TK_OC_LE  shift, and go to state 139
-    TK_OC_GE  shift, and go to state 140
-    TK_OC_EQ  shift, and go to state 141
-    '|'       shift, and go to state 142
-    '&'       shift, and go to state 143
-    '<'       shift, and go to state 144
-    '>'       shift, and go to state 145
-    '+'       shift, and go to state 146
-    '-'       shift, and go to state 147
-    '*'       shift, and go to state 148
-    '/'       shift, and go to state 149
-    '%'       shift, and go to state 150
-    '^'       shift, and go to state 151
-    '?'       shift, and go to state 152
-    ':'       shift, and go to state 216
+    TK_OC_LE   shift, and go to state 139
+    TK_OC_GE   shift, and go to state 140
+    TK_OC_EQ   shift, and go to state 141
+    TK_OC_AND  shift, and go to state 142
+    TK_OC_OR   shift, and go to state 143
+    '<'        shift, and go to state 144
+    '>'        shift, and go to state 145
+    '+'        shift, and go to state 146
+    '-'        shift, and go to state 147
+    '*'        shift, and go to state 148
+    '/'        shift, and go to state 149
+    '%'        shift, and go to state 150
+    '^'        shift, and go to state 151
+    '?'        shift, and go to state 152
+    ':'        shift, and go to state 216
 
 
 State 207
@@ -3894,8 +3892,8 @@ State 215
    93           | expression . '*' expression
    94           | expression . '/' expression
    95           | expression . '%' expression
-   96           | expression . '|' expression
-   97           | expression . '&' expression
+   96           | expression . TK_OC_OR expression
+   97           | expression . TK_OC_AND expression
    98           | expression . TK_OC_EQ expression
    99           | expression . TK_OC_LE expression
   100           | expression . TK_OC_GE expression

@@ -3,11 +3,8 @@ int abc;
 int y[10][3][4];
 
 int foo(int mnm , int muj ){
-    int a;
-    int b;
+    int a <= 6;
     int c;
-    int d;
-    a = y[1][2][a + 5];
-    y[1][2][a * 5] = 2;
+    c = a + 5;
     
 }

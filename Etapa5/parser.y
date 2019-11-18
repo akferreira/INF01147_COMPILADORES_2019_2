@@ -104,6 +104,7 @@ int yyparse (void);
 %left  TK_OC_SR TK_OC_SL '<' '>'
 %left   '+' '-'
 %left  '*' '/' '%'
+%left TK_OC_AND TK_OC_OR
 
 
 %right '^'
@@ -271,7 +272,10 @@ $$->next = NULL;
 function_declaration: TK_PR_STATIC function_id enter_scope  '('function_parameters_list')' function_command_block 
 {
 $$ = new_static_function_declaration_node('M',$2,$5,$7);
-$$->label = newLabel();
+char *l0 = malloc(10);
+strcpy(l0,"L0:");
+
+$$->label = l0;
 char *first_inst = malloc(50);
 strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
 $$->label = concatCode($$->label, first_inst );
@@ -286,7 +290,10 @@ $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
 
 if($$ != NULL && $6 != NULL ){
     
-    $$->label = newLabel();
+    char *l0 = malloc(10);
+    strcpy(l0,"L0:");
+
+    $$->label = l0;
 
     char *first_inst = malloc(50);
     strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
@@ -469,8 +476,19 @@ shift_command: identifier shift expression { $$ = new_shift_command_node('X',$1,
 command_return: TK_PR_RETURN expression { $$ = new_return_command_node('R',$<valor_lexico>1,$2);};
 
 //If Statement
-if_statement: TK_PR_IF '(' expression ')' command_block null_node {$$ = new_ifelse_node(':',$3,$5,$6);};
-if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = new_ifelse_node(':',$3,$5,$7);};
+if_statement: TK_PR_IF '(' expression ')' command_block null_node {
+$$ = new_ifelse_node(':',$3,$5,$6);
+$$->code = concatCode($3->code,$5->code);
+
+
+};
+if_statement: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {
+
+$$ = new_ifelse_node(':',$3,$5,$7);
+$$->code = concatCode($3->code,$5->code);
+$$->code = concatCode($$->code,$7->code);
+
+};
 
 //Loops
  command_block_loop: '{'command_block_loop'}' {$$ = $2;};
@@ -573,7 +591,7 @@ expression: expression '%' expression{$$ = new_binary_expression('%',$1,$3); };
 
 
 
-expression: expression '|' expression
+expression: expression TK_OC_OR expression
 {
 	$$ = new_binary_expression('|',$1,$3);
 	
@@ -582,7 +600,7 @@ expression: expression '|' expression
 	$$->code =Or_CC_Operation($1->temp, $3->temp, $$->temp);	
 };
 
-expression: expression '&' expression
+expression: expression TK_OC_AND expression
 {
 	$$ = new_binary_expression('&',$1,$3);
 	
@@ -606,9 +624,8 @@ expression: expression TK_OC_EQ expression
 	$$->temp = newTemp();
 	$$->code = binaryOperation("cmp_NE", $1->temp, $3->temp,$$->temp);
 	char *subexpression_code  = concatCode($1->code, $3->code);
-
 	$$->code = concatCode(subexpression_code, $$->code);
-
+    
 
 };
 expression: expression TK_OC_LE expression
@@ -622,7 +639,7 @@ expression: expression TK_OC_LE expression
 	char *subexpression_code  = concatCode($1->code, $3->code);
 
 	$$->code = concatCode(subexpression_code, $$->code);
-	//printf("LE code:\n: %s\n",$$->code);
+	printf("LE code:\n: %s\n",$$->code);
 };
 
 expression: expression TK_OC_GE expression
