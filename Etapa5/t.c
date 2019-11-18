@@ -1,7 +1,1 @@
-
-
-int foo(){
-    int x;
-    x=x+x;
-    
-}
+int main () {  }

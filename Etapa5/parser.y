@@ -89,12 +89,7 @@ int yyparse (void);
 /*Menos Prioritário*/
 
 //https://en.cppreference.com/w/c/language/operator_precedence
-/*unary precedence
-%right '+' '-'
-       '!'
-       '*'
-       '&'
-*/
+
 
 
 %right '!''#'
@@ -156,21 +151,22 @@ null_node: {$$ = get_null();};
 
 //programa:
 program: /* empty */{$$ = get_null();};
-program: grammars program  {
-$$ =  new_global_grammar_node('|',arvore,$1,$2);
+program: grammars program  
+{
+	$$ =  new_global_grammar_node('|',arvore,$1,$2);
 
 
 
 
-char *code1,*code2;
-if($1 == NULL) code1 = NULL;
-else code1 = $1->code;
+	char *code1,*code2;
+	if($1 == NULL) code1 = NULL;
+	else code1 = $1->code;
 
 
-if($2 == NULL) code2 = NULL;
-else code2 = $2->code;
+	if($2 == NULL) code2 = NULL;
+	else code2 = $2->code;
 
-$$->code = concatCode(code1,code2);
+	$$->code = concatCode(code1,code2);
 
 };
 
@@ -332,9 +328,14 @@ $$ = new_command_block_node('{',$2);
 $$->code = concatCode($2->code, $$->code);
 printf("block___%d\n",get_last_position_toptable());
 
-printf("command block code:\n%s",$$->code);
+//printf("command block code:\n%s",$$->code);
 
 printf("%d Instructions\n",countLines($$->code,strlen($$->code)));
+
+
+printf("------------------------------\n");
+Imprimir_codigo($$->code,strlen($$->code));
+printf("------------------------------\n");
 
 };
 
@@ -343,7 +344,7 @@ printf("%d Instructions\n",countLines($$->code,strlen($$->code)));
 command_block: enter_scope '{'command_list'}' exit_scope { 
 $$ = new_command_block_node('{',$3);
 $$->code = concatCode($3->code, $$->code);
-printf("block___%p\n",$$->code);
+//printf("block___%p\n",$$->code);
 
 printf("command block code:\n%s",$$->code);
 };
@@ -366,7 +367,7 @@ $$->code = concatCode(code1, code2);
 }
 |command_block';' command_list {
 new_command_list_node($1,$3);
-printf("block concat\n");
+//printf("block concat\n");
 $$->code = concatCode($1->code, $3->code);
 }
 | loops command_list {
@@ -402,7 +403,7 @@ local_var_declaration:  modifiers primitive_type TK_IDENTIFICADOR local_var_init
         $$->code = storeTempToVariable($4->temp, id_info.depth, id_info.position);
         $$->code = concatCode($4->code, $$->code);
 
-        printf("local decl code : %s",$$->code);
+        //printf("local decl code : %s",$$->code);
     }
 
 };
@@ -417,7 +418,7 @@ local_var_declaration: primitive_type TK_IDENTIFICADOR local_var_initialization 
         $$->code = storeTempToVariable($3->temp, id_info.depth, id_info.position);
         $$->code = concatCode($3->code, $$->code);
         
-        printf("local decl code : %s",$$->code);
+        //printf("local decl code : %s",$$->code);
     }
 
 };
@@ -439,13 +440,13 @@ call_parameter_list:expression ',' call_parameter_list {$$ = new_expression_list
 
 //Comando de Atribuição
 assignment_command: identifier '=' expression { 
-printf("assign %p , %p\n",$1,$3);
+//printf("assign %p , %p\n",$1,$3);
 $$ = new_assignment_node($1,$3,0);
 
-printf("assign %p , %p\n",$1,$3);
+//printf("assign %p , %p\n",$1,$3);
 SYMBOL_INFO id_info = retrieve_symbol($<valor_lexico>1);
-printf("assignment code : %s\n",$3->code);
-printf("assignment code2 : %s\n",$$->code);
+//printf("assignment code : %s\n",$3->code);
+//printf("assignment code2 : %s\n",$$->code);
 
 if(id_info.nature == VECTOR){
     $$->code = concatCode($1->code, storeTempToVariableRegOffset($3->temp,$1->temp,id_info.depth));
@@ -637,7 +638,7 @@ expression: expression TK_OC_LE expression
 	char *subexpression_code  = concatCode($1->code, $3->code);
 
 	$$->code = concatCode(subexpression_code, $$->code);
-	printf("LE code:\n: %s\n",$$->code);
+	//printf("LE code:\n: %s\n",$$->code);
 };
 
 expression: expression TK_OC_GE expression
@@ -740,7 +741,7 @@ literal_id:  TK_IDENTIFICADOR
 	$$->temp = newTemp();
 	$$->code = storeVariableToTemp($$->temp, id_info.depth, id_info.position);
 
-	printf("code id: %s\n",$$->code);
+	//printf("code id: %s\n",$$->code);
 
 }
 | function_call 

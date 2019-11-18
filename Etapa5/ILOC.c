@@ -21,67 +21,16 @@ int countLabel = 0;
 
 int  count_Label =0;
 
-/*
-
-void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operando2)
-{
-    OPERACAO op;
-    printf("op1 pos: %d, op2 pos : %d\n",operando1.position,operando2.position);
-//     newTemp();
-//     newTemp();
-//     newTemp();
-    
-    switch (operandor)
-    {
-    case '+':
-        op.operandor = "add";
-        op.operando1 = "r1";
-        op.operando2 = "r2";
-        op.destino = "r3";
-        printf("%s      %s, %s   =>  %s\n",op.operandor,operando1.name,operando2.name,op.destino);
-
-        //return op;
-   /* case '-':
-        op.operandor = "sub";
-        op.operando1 = "r1";
-        op.operando2 = "r2";
-        op.destino = "r3";
-
-        //return op;
-    case '*':
-        op.operandor = "mult";
-        op.operando1 = "r1";
-        op.operando2 = "r2";
-        op.destino = "r3";
-
-        //return op;
-    case '/':
-        op.operandor = "div";
-        op.operando1 = "r1";
-        op.operando2 = "r2";
-        op.destino = "r3";
-
-        //return op;
-    default:
-        printf("a");
-        break;
-        //op.operandor ="";
-        //op.operando1 = "";
-        //op.operando2 = "";
-        //op.destino = "";
-
-        //return op;
-    }
-}
 
 
 
-SYMBOL_INFO lookup(ast_node *entrada){
 
 
-    return retrieve_symbol(entrada->ast_valor_lexico);
-}
-*/
+
+
+
+
+
 char* newTemp(){
     static int temp = 0;
     temp++;
@@ -96,6 +45,44 @@ char* newTemp(){
     return buffer;
     
 }
+
+
+
+
+
+
+void Imprimir_codigo(char *codigo, int size)
+{
+    int stackForm = 1024;
+    int numero_instrucoes = countLines(codigo, size);
+
+    printf("loadI %d => rfp\n", stackForm);
+    printf("loadI %d => rsp\n", stackForm);
+    //instrucoes do codigo + inicializacao rfs, rsp, rbss e halt e jumpI l0
+    printf("jumpI => L0\n");
+    printf("loadI %d => rbss\n", numero_instrucoes + 5 + 1);
+
+    printf("%s:\n", gerar_label());
+
+    printf("%s\n",codigo);
+
+
+
+
+    printf("halt\n");
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -119,7 +106,7 @@ int countLines(char *string, int size){
     int count = 0;
     int newline = '\n';
     
-    printf("counting\n");
+    //printf("counting\n");
     
     while(count < size && (*string) != '\0'){
         if(*string == newline) ++count;

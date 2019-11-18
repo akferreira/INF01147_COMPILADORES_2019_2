@@ -21,17 +21,16 @@ typedef struct operacao OPERACAO;
 
 
 
-void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operando2);
-SYMBOL_INFO lookup(ast_node *entrada);
+//void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operando2);
+//SYMBOL_INFO lookup(ast_node *entrada);
 
 
 int countLines(char *string, int size);
-
+void Imprimir_codigo(char *codigo, int size);
 char * gerar_label();
 char* newTemp();
 char* newLabel();
 char* concatCode(char *dest, char *source);
-
 char *loadMemRegToReg(char *reg1, char *reg2);
 char *storeTempToVariable(char *temp, int depth, int position);
 char *storeVariableToTemp(char *temp, int depth, int position);
@@ -43,5 +42,4 @@ char* loadValueToTemp(int value, char *temp);
 char *AND_CC_Operation(char *reg1, char *reg2, char *dest);
 char *binaryOperation(char *operation, char *reg1, char *reg2, char *dest);
 char *binaryOperationInteger(char *operation, char *reg1, int value, char *dest);
-
 char *copyRegToReg(char *reg1, char *reg2);
