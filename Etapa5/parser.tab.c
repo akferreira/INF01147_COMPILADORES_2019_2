@@ -2212,9 +2212,9 @@ char *false_block_label = (yyvsp[-3].ast_node)->false->remendo;
 (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,strdup(": "));
 (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,(yyvsp[-1].ast_node)->code);
 (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,false_block_label);
-(yyval.ast_node)->code = concatCode((yyval.ast_node)->code,strdup(": nop\n"));
+(yyval.ast_node)->code = concatCode((yyval.ast_node)->code,strdup(": "));
 
-
+if(DEBUG) fprintf( stderr,"%p // %p\n",(yyvsp[-3].ast_node)->true, (yyvsp[-3].ast_node)->false);
 
 
 LISTA_REMENDOS *lr_tempt = (yyvsp[-3].ast_node)->true;

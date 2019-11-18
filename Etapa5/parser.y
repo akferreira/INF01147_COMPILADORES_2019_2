@@ -489,9 +489,9 @@ $$->code = concatCode($$->code,true_block_label);
 $$->code = concatCode($$->code,strdup(": "));
 $$->code = concatCode($$->code,$5->code);
 $$->code = concatCode($$->code,false_block_label);
-$$->code = concatCode($$->code,strdup(": nop\n"));
+$$->code = concatCode($$->code,strdup(": "));
 
-
+if(DEBUG) fprintf( stderr,"%p // %p\n",$3->true, $3->false);
 
 
 LISTA_REMENDOS *lr_tempt = $3->true;
