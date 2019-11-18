@@ -538,11 +538,11 @@ static const yytype_uint16 yyrline[] =
      381,   381,   381,   381,   381,   382,   384,   385,   390,   391,
      392,   394,   398,   412,   424,   428,   433,   435,   436,   437,
      441,   469,   471,   472,   478,   479,   481,   484,   487,   526,
-     567,   568,   569,   571,   571,   574,   596,   618,   621,   622,
-     624,   624,   624,   636,   637,   641,   643,   644,   645,   646,
-     647,   648,   649,   657,   669,   679,   689,   699,   712,   740,
-     766,   773,   779,   789,   795,   812,   818,   819,   828,   833,
-     849,   869,   874,   881,   891,   895,   900,   904,   907
+     567,   568,   569,   571,   571,   574,   615,   656,   659,   660,
+     662,   662,   662,   674,   675,   679,   681,   682,   683,   684,
+     685,   686,   687,   695,   707,   717,   727,   737,   750,   778,
+     804,   811,   817,   827,   833,   850,   856,   857,   866,   871,
+     887,   907,   912,   919,   929,   933,   938,   942,   945
 };
 #endif
 
@@ -2326,12 +2326,31 @@ char *loop_start1 = strdup(loop_start);
 (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,false_block_label);
 (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,strdup(": "));
 
+LISTA_REMENDOS *lr_tempt = (yyvsp[-3].ast_node)->true;
+LISTA_REMENDOS *lr_tempf = (yyvsp[-3].ast_node)->false;
+if(DEBUG) fprintf( stderr,"%p // %p\n",(yyvsp[-3].ast_node)->true, (yyvsp[-3].ast_node)->false);
+
+while(lr_tempt){
+if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
+(yyval.ast_node)->code = strrep((yyval.ast_node)->code, lr_tempt->remendo, true_block_label);
+lr_tempt = lr_tempt->next;
+
 }
-#line 2331 "parser.tab.c" /* yacc.c:1646  */
+
+while(lr_tempf){
+if(DEBUG) fprintf( stderr, "label false exp %s\n",lr_tempf->remendo);
+(yyval.ast_node)->code = strrep((yyval.ast_node)->code, lr_tempf->remendo, false_block_label);
+lr_tempf = lr_tempf->next;
+
+}
+
+
+}
+#line 2350 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 596 "parser.y" /* yacc.c:1646  */
+#line 615 "parser.y" /* yacc.c:1646  */
     {
 (yyval.ast_node) = new_loop_while_node('w',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 char *true_block_label = (yyvsp[-2].ast_node)->true->remendo;
@@ -2353,84 +2372,103 @@ char *loop_start1 = strdup(loop_start);
 (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,false_block_label);
 (yyval.ast_node)->code = concatCode((yyval.ast_node)->code,strdup(": "));
 
+LISTA_REMENDOS *lr_tempt = (yyvsp[-2].ast_node)->true;
+LISTA_REMENDOS *lr_tempf = (yyvsp[-2].ast_node)->false;
+if(DEBUG) fprintf( stderr,"%p // %p\n",(yyvsp[-2].ast_node)->true, (yyvsp[-2].ast_node)->false);
+
+while(lr_tempt){
+if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
+(yyval.ast_node)->code = strrep((yyval.ast_node)->code, lr_tempt->remendo, true_block_label);
+lr_tempt = lr_tempt->next;
+
 }
-#line 2358 "parser.tab.c" /* yacc.c:1646  */
+
+while(lr_tempf){
+if(DEBUG) fprintf( stderr, "label false exp %s\n",lr_tempf->remendo);
+(yyval.ast_node)->code = strrep((yyval.ast_node)->code, lr_tempf->remendo, false_block_label);
+lr_tempf = lr_tempf->next;
+
+}
+
+
+}
+#line 2396 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 618 "parser.y" /* yacc.c:1646  */
+#line 656 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_loop_for_node('j',(yyvsp[-6].ast_node),(yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2364 "parser.tab.c" /* yacc.c:1646  */
+#line 2402 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 621 "parser.y" /* yacc.c:1646  */
+#line 659 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_command_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2370 "parser.tab.c" /* yacc.c:1646  */
+#line 2408 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 636 "parser.y" /* yacc.c:1646  */
+#line 674 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2376 "parser.tab.c" /* yacc.c:1646  */
+#line 2414 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 637 "parser.y" /* yacc.c:1646  */
+#line 675 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));}
-#line 2382 "parser.tab.c" /* yacc.c:1646  */
+#line 2420 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 641 "parser.y" /* yacc.c:1646  */
+#line 679 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 2388 "parser.tab.c" /* yacc.c:1646  */
+#line 2426 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 643 "parser.y" /* yacc.c:1646  */
+#line 681 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 2394 "parser.tab.c" /* yacc.c:1646  */
+#line 2432 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 644 "parser.y" /* yacc.c:1646  */
+#line 682 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) = new_unary_expression('-',(yyvsp[0].ast_node));}
-#line 2400 "parser.tab.c" /* yacc.c:1646  */
+#line 2438 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 645 "parser.y" /* yacc.c:1646  */
+#line 683 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) = new_unary_expression('!',(yyvsp[0].ast_node)); }
-#line 2406 "parser.tab.c" /* yacc.c:1646  */
+#line 2444 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 646 "parser.y" /* yacc.c:1646  */
+#line 684 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) = new_unary_expression('@',(yyvsp[0].ast_node)); }
-#line 2412 "parser.tab.c" /* yacc.c:1646  */
+#line 2450 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 647 "parser.y" /* yacc.c:1646  */
+#line 685 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_unary_expression('$',(yyvsp[0].ast_node)); }
-#line 2418 "parser.tab.c" /* yacc.c:1646  */
+#line 2456 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 648 "parser.y" /* yacc.c:1646  */
+#line 686 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_unary_expression('~',(yyvsp[0].ast_node)); }
-#line 2424 "parser.tab.c" /* yacc.c:1646  */
+#line 2462 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 649 "parser.y" /* yacc.c:1646  */
+#line 687 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_unary_expression('#',(yyvsp[0].ast_node)); }
-#line 2430 "parser.tab.c" /* yacc.c:1646  */
+#line 2468 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 658 "parser.y" /* yacc.c:1646  */
+#line 696 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('+',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node)->temp = newTemp();
@@ -2441,11 +2479,11 @@ char *loop_start1 = strdup(loop_start);
 	//printf("Add code:\t: %s\n",$$->code);
 	
 }
-#line 2445 "parser.tab.c" /* yacc.c:1646  */
+#line 2483 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 670 "parser.y" /* yacc.c:1646  */
+#line 708 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('-',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); 
 	(yyval.ast_node)->temp = newTemp();
@@ -2455,11 +2493,11 @@ char *loop_start1 = strdup(loop_start);
 
 	//printf("sub code:\t: %s\n",$$->code);
 }
-#line 2459 "parser.tab.c" /* yacc.c:1646  */
+#line 2497 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 680 "parser.y" /* yacc.c:1646  */
+#line 718 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('*',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node)->temp = newTemp();
@@ -2469,11 +2507,11 @@ char *loop_start1 = strdup(loop_start);
 
 	//printf("mul code:\t: %s\n",$$->code);
 }
-#line 2473 "parser.tab.c" /* yacc.c:1646  */
+#line 2511 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 690 "parser.y" /* yacc.c:1646  */
+#line 728 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('/',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); 
 	(yyval.ast_node)->temp = newTemp();
@@ -2483,17 +2521,17 @@ char *loop_start1 = strdup(loop_start);
 
 	//printf("div code:\t: %s\n",$$->code);
 }
-#line 2487 "parser.tab.c" /* yacc.c:1646  */
+#line 2525 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 699 "parser.y" /* yacc.c:1646  */
+#line 737 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_binary_expression('%',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2493 "parser.tab.c" /* yacc.c:1646  */
+#line 2531 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 713 "parser.y" /* yacc.c:1646  */
+#line 751 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('|',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	
@@ -2520,11 +2558,11 @@ char *loop_start1 = strdup(loop_start);
 	//$$->code = replace_str(old_label,$$->code, cc_label);
 	if(DEBUG) fprintf( stderr, "%s\n\n\n",(yyval.ast_node)->code);
 }
-#line 2524 "parser.tab.c" /* yacc.c:1646  */
+#line 2562 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 741 "parser.y" /* yacc.c:1646  */
+#line 779 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('&',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	
@@ -2541,92 +2579,92 @@ char *loop_start1 = strdup(loop_start);
 	if(DEBUG) fprintf( stderr, "%s\n\n\n",(yyval.ast_node)->code);
 
 }
-#line 2545 "parser.tab.c" /* yacc.c:1646  */
+#line 2583 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 767 "parser.y" /* yacc.c:1646  */
+#line 805 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression(TK_OC_EQ,(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node) = GenerateCompOPCode((yyval.ast_node), (yyvsp[-2].ast_node), (yyvsp[0].ast_node), strdup("cmp_NE"));
     
 
 }
-#line 2556 "parser.tab.c" /* yacc.c:1646  */
+#line 2594 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 774 "parser.y" /* yacc.c:1646  */
+#line 812 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression(TK_OC_LE,(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node) = GenerateCompOPCode((yyval.ast_node), (yyvsp[-2].ast_node), (yyvsp[0].ast_node), strdup("cmp_LE"));
 }
-#line 2565 "parser.tab.c" /* yacc.c:1646  */
+#line 2603 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 780 "parser.y" /* yacc.c:1646  */
+#line 818 "parser.y" /* yacc.c:1646  */
     {
 	
 	(yyval.ast_node) = new_binary_expression(TK_OC_GE,(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node) = GenerateCompOPCode((yyval.ast_node), (yyvsp[-2].ast_node), (yyvsp[0].ast_node), strdup("cmp_GE"));
 }
-#line 2575 "parser.tab.c" /* yacc.c:1646  */
+#line 2613 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 790 "parser.y" /* yacc.c:1646  */
+#line 828 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('>',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node) = GenerateCompOPCode((yyval.ast_node), (yyvsp[-2].ast_node), (yyvsp[0].ast_node), strdup("cmp_GT"));
 }
-#line 2584 "parser.tab.c" /* yacc.c:1646  */
+#line 2622 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 796 "parser.y" /* yacc.c:1646  */
+#line 834 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_binary_expression('<',(yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node) = GenerateCompOPCode((yyval.ast_node), (yyvsp[-2].ast_node), (yyvsp[0].ast_node), strdup("cmp_LT"));
 }
-#line 2593 "parser.tab.c" /* yacc.c:1646  */
+#line 2631 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 812 "parser.y" /* yacc.c:1646  */
+#line 850 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = new_binary_expression('^',(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2599 "parser.tab.c" /* yacc.c:1646  */
+#line 2637 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 818 "parser.y" /* yacc.c:1646  */
+#line 856 "parser.y" /* yacc.c:1646  */
     { (yyval.ast_node) =  new_ternary_expression('?', (yyvsp[-4].ast_node),(yyvsp[-2].ast_node),(yyvsp[0].ast_node)); }
-#line 2605 "parser.tab.c" /* yacc.c:1646  */
+#line 2643 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 819 "parser.y" /* yacc.c:1646  */
+#line 857 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = (yyvsp[0].ast_node);}
-#line 2611 "parser.tab.c" /* yacc.c:1646  */
+#line 2649 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 829 "parser.y" /* yacc.c:1646  */
+#line 867 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = new_expression_list_node((yyvsp[-2].ast_node),(yyvsp[0].ast_node));
 	(yyval.ast_node)->code = concatCode((yyvsp[-2].ast_node)->code, (yyvsp[0].ast_node)->code);
 }
-#line 2620 "parser.tab.c" /* yacc.c:1646  */
+#line 2658 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 833 "parser.y" /* yacc.c:1646  */
+#line 871 "parser.y" /* yacc.c:1646  */
     {(yyval.ast_node) = (yyvsp[-1].ast_node);}
-#line 2626 "parser.tab.c" /* yacc.c:1646  */
+#line 2664 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 850 "parser.y" /* yacc.c:1646  */
+#line 888 "parser.y" /* yacc.c:1646  */
     { 
 
 	(yyval.ast_node) = new_leaf_node(ID_NODE,(yyvsp[0].valor_lexico));
@@ -2646,27 +2684,27 @@ char *loop_start1 = strdup(loop_start);
 	//printf("code id: %s\n",$$->code);
 
 }
-#line 2650 "parser.tab.c" /* yacc.c:1646  */
+#line 2688 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 870 "parser.y" /* yacc.c:1646  */
+#line 908 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = (yyvsp[0].ast_node);
 }
-#line 2658 "parser.tab.c" /* yacc.c:1646  */
+#line 2696 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 112:
-#line 875 "parser.y" /* yacc.c:1646  */
+#line 913 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.ast_node) = (yyvsp[0].ast_node);
 }
-#line 2666 "parser.tab.c" /* yacc.c:1646  */
+#line 2704 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 113:
-#line 882 "parser.y" /* yacc.c:1646  */
+#line 920 "parser.y" /* yacc.c:1646  */
     { 
 	(yyvsp[0].valor_lexico).var_type = TYPE_INT;
 	(yyval.ast_node) = new_leaf_node('d',(yyvsp[0].valor_lexico));
@@ -2676,55 +2714,55 @@ char *loop_start1 = strdup(loop_start);
 	//printf("code %s\n",$$->code);
 
 }
-#line 2680 "parser.tab.c" /* yacc.c:1646  */
+#line 2718 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 114:
-#line 891 "parser.y" /* yacc.c:1646  */
+#line 929 "parser.y" /* yacc.c:1646  */
     { 
 	(yyvsp[0].valor_lexico).var_type = TYPE_FLOAT;
 	(yyval.ast_node) = new_leaf_node('f',(yyvsp[0].valor_lexico));
 }
-#line 2689 "parser.tab.c" /* yacc.c:1646  */
+#line 2727 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 115:
-#line 895 "parser.y" /* yacc.c:1646  */
+#line 933 "parser.y" /* yacc.c:1646  */
     { 
 
 (yyvsp[0].valor_lexico).var_type = TYPE_CHAR;
 	(yyval.ast_node) = new_leaf_node('c',(yyvsp[0].valor_lexico));
 }
-#line 2699 "parser.tab.c" /* yacc.c:1646  */
+#line 2737 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 900 "parser.y" /* yacc.c:1646  */
+#line 938 "parser.y" /* yacc.c:1646  */
     { 
 	(yyvsp[0].valor_lexico).var_type = TYPE_STRING;
 	(yyval.ast_node) = new_leaf_node('s',(yyvsp[0].valor_lexico));
 }
-#line 2708 "parser.tab.c" /* yacc.c:1646  */
+#line 2746 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 904 "parser.y" /* yacc.c:1646  */
+#line 942 "parser.y" /* yacc.c:1646  */
     { 
 	(yyval.ast_node) = new_leaf_node('T',(yyvsp[0].valor_lexico));
 }
-#line 2716 "parser.tab.c" /* yacc.c:1646  */
+#line 2754 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 118:
-#line 907 "parser.y" /* yacc.c:1646  */
+#line 945 "parser.y" /* yacc.c:1646  */
     { 
 	(yyval.ast_node) = new_leaf_node('F',(yyvsp[0].valor_lexico));
 }
-#line 2724 "parser.tab.c" /* yacc.c:1646  */
+#line 2762 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2728 "parser.tab.c" /* yacc.c:1646  */
+#line 2766 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2959,5 +2997,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 915 "parser.y" /* yacc.c:1906  */
+#line 953 "parser.y" /* yacc.c:1906  */
 

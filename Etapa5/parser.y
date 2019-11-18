@@ -592,6 +592,25 @@ $$->code = concatCode($$->code,strdup("\n"));
 $$->code = concatCode($$->code,false_block_label);
 $$->code = concatCode($$->code,strdup(": "));
 
+LISTA_REMENDOS *lr_tempt = $3->true;
+LISTA_REMENDOS *lr_tempf = $3->false;
+if(DEBUG) fprintf( stderr,"%p // %p\n",$3->true, $3->false);
+
+while(lr_tempt){
+if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
+$$->code = strrep($$->code, lr_tempt->remendo, true_block_label);
+lr_tempt = lr_tempt->next;
+
+}
+
+while(lr_tempf){
+if(DEBUG) fprintf( stderr, "label false exp %s\n",lr_tempf->remendo);
+$$->code = strrep($$->code, lr_tempf->remendo, false_block_label);
+lr_tempf = lr_tempf->next;
+
+}
+
+
 }
 loop_while:TK_PR_WHILE'('expression')' command_block {
 $$ = new_loop_while_node('w',$3,$5);
@@ -613,6 +632,25 @@ $$->code = concatCode($$->code,loop_start1);
 $$->code = concatCode($$->code,strdup("\n"));
 $$->code = concatCode($$->code,false_block_label);
 $$->code = concatCode($$->code,strdup(": "));
+
+LISTA_REMENDOS *lr_tempt = $3->true;
+LISTA_REMENDOS *lr_tempf = $3->false;
+if(DEBUG) fprintf( stderr,"%p // %p\n",$3->true, $3->false);
+
+while(lr_tempt){
+if(DEBUG) fprintf( stderr, "label true exp %s\n",lr_tempt->remendo);
+$$->code = strrep($$->code, lr_tempt->remendo, true_block_label);
+lr_tempt = lr_tempt->next;
+
+}
+
+while(lr_tempf){
+if(DEBUG) fprintf( stderr, "label false exp %s\n",lr_tempf->remendo);
+$$->code = strrep($$->code, lr_tempf->remendo, false_block_label);
+lr_tempf = lr_tempf->next;
+
+}
+
 
 };
 loop_for:TK_PR_FOR'('loop_for_command_list':'expression':'loop_for_command_list')'command_block_loop {$$ = new_loop_for_node('j',$3,$5,$7,$9);};
