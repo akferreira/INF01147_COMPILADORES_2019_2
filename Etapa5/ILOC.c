@@ -17,9 +17,9 @@ typedef struct  _symbol_info{
 
 */
 
-int countLabel = 1;
+int countLabel = 0;
 
-int  count_Label =0;
+int  count_Label = 0;
 
 
 
@@ -61,8 +61,8 @@ LISTA_REMENDOS *remendo(){
     
     if( new->remendo == NULL) return NULL;
     
-    int cx = snprintf( new->remendo, TEMP_NAME_SIZE-1, "cc%d",cc);
-
+    int cx = snprintf( new->remendo, TEMP_NAME_SIZE-1, "L%d",countLabel);
+	countLabel++;
     return new;
     
     
@@ -108,7 +108,7 @@ void Imprimir_codigo(char *codigo, int size)
     
     printf("loadI %d => rbss\n", numero_instrucoes + 5 + 1);
     //instrucoes do codigo + inicializacao rfs, rsp, rbss e halt e jumpI l0
-    printf("jumpI -> L0\n");
+    printf("jumpI -> L%d\n",countLabel-1);
 
     printf("%s",codigo);
 

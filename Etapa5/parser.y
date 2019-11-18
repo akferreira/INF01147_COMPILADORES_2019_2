@@ -291,13 +291,12 @@ $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
 
 if($$ != NULL && $6 != NULL ){
     
-    char *l0 = malloc(10);
-    strcpy(l0,"L0: ");
+    char *l0 = newLabel();
 
     $$->label = l0;
 
     char *first_inst = malloc(50);
-    strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
+    strncpy(first_inst, " : addI rsp, 4 => rsp\n",50);
     $$->label = concatCode($$->label, first_inst );
     
     $$->code = concatCode($$->label,$6->code);
