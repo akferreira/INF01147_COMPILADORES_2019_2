@@ -5,7 +5,7 @@ int main()
   int b;
   a = 1;
   b = 234;
-  if (a > 0) then {
+  if (a > 0) {
     b = 393;
-  };
+  }
 }

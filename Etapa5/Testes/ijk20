@@ -10,9 +10,9 @@ int main()
   b = 0;
   c = 2;
   d = 3;
-  if (a < b && c < d) then {
+  if (a < b && c < d) {
      x = 293;
   }else{
      x = 325;
-  };
+  }
 }

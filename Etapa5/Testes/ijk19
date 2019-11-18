@@ -10,7 +10,7 @@ int main()
   b = 1;
   c = 2;
   d = 3;
-  if (a < b || c < d) then {
+  if (a < b || c < d){
      x = 293;
-  };
+  }
 }
