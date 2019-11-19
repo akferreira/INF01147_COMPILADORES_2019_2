@@ -593,7 +593,7 @@ ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_t
     //return NULL;
     ast_node *parameter_node = new_leaf_node('i',identifier);
     
-    printf("%s ++++\n",parameter_node->ast_valor_lexico.value.str_value);
+    
     return parameter_node;
     
     

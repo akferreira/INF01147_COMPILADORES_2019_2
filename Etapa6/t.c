@@ -7,3 +7,8 @@ int mult (int z, int w)
   x = z * w;
   return x;
 }
+
+int main(){
+    int x;
+    x = mult(5,4);
+}

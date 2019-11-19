@@ -318,11 +318,11 @@ if(initial_local_var_position != 0){
     loop = loop->next_sibling;
     }
     
-    printf("total parameters size : %d\n",parameters_total_size);
+    //printf("total parameters size : %d\n",parameters_total_size);
     
     int first_local_var_position = id_size + parameters_total_size + 12;
     
-     printf("first local var: %d\n",first_local_var_position);
+  //   printf("first local var: %d\n",first_local_var_position);
      
       
      
@@ -332,7 +332,7 @@ if(initial_local_var_position != 0){
      
     $$->code = concatCode($$->label,activation_register); 
    
-     printf("code : %s\n",code);
+     //printf("code : %s\n",code);
     $$->code = concatCode($$->code, code);
     
     char *reg_retorno = newTemp();
@@ -343,7 +343,7 @@ if(initial_local_var_position != 0){
     $$->code = concatCode($$->code, binaryOperationInteger("loadAI", "rfp" , OFFSET_RSP, reg_rsp));
     $$->code = concatCode($$->code, binaryOperationInteger("loadAI", "rfp" , OFFSET_RFP, reg_rfp));
     $$->code = concatCode($$->code, copyRegToReg(reg_rsp,"rsp") );
-    $$->code = concatCode($$->code, copyRegToReg(reg_rsp,"rfp") );
+    $$->code = concatCode($$->code, copyRegToReg(reg_rfp,"rfp") );
     $$->code = concatCode($$->code, jumpReg(reg_retorno));
 
 }
@@ -381,9 +381,9 @@ function_parameters_list: {$$ = get_null();}
 
 |function_parameters_argument {$$ = $1;}
 
-|function_parameters_argument','function_parameters_list { $$ = new_parameter_list_node($1,$3);  fprintf(stderr, "heeeeey\n");};
+|function_parameters_argument','function_parameters_list { $$ = new_parameter_list_node($1,$3);};
 function_parameters_argument:TK_PR_CONST primitive_type TK_IDENTIFICADOR { $$ = new_const_parameter_node('p',$2,$<valor_lexico>3);};
-function_parameters_argument:primitive_type TK_IDENTIFICADOR {      $$ = new_nonconst_parameter_node('p',$1,$<valor_lexico>2); printf("%s param\n", $$->ast_valor_lexico.value.str_value); };
+function_parameters_argument:primitive_type TK_IDENTIFICADOR {      $$ = new_nonconst_parameter_node('p',$1,$<valor_lexico>2); };
 
 
 
@@ -396,7 +396,7 @@ else if($$ != NULL) $$->code = NULL;
 
 $$->temp = malloc(strlen("r999999"));
 sprintf($$->temp, "r%d", tempCount-1);
-printf("r%d <> \n%s\n", tempCount-1, $2->code);
+// printf("r%d <> \n%s\n", tempCount-1, $2->code);
 
 
 };
@@ -503,9 +503,48 @@ local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
 
 //Chamada de Função
 
-function_call: simple_identifier '(' call_parameter_list ')'{ $$ = new_function_call_node(FUNCTION_CALL_NODE,$1,$3);};
+function_call: simple_identifier '(' call_parameter_list ')'{ 
+$$ = new_function_call_node(FUNCTION_CALL_NODE,$1,$3);
 
-call_parameter_list:expression ',' call_parameter_list {$$ = new_expression_list_node($1,$3);};
+int expression_line_count = countLines($3->code,strlen($3->code));
+
+char * regRetornoAddr = newTemp();
+
+$$->code = concatCode($3->code, $$->code);
+$$->code = concatCode($$->code, binaryOperationInteger("addI","rsp",4, "rsp") );
+$$->code = concatCode($$->code, binaryOperationInteger("addI","rpc",expression_line_count*2 + 4, regRetornoAddr) );
+$$->code = concatCode($$->code, storeTempToRegOffset(regRetornoAddr, "rsp", OFFSET_RETURN_ADDR));
+$$->code = concatCode($$->code, storeTempToRegOffset("rsp", "rsp", OFFSET_RSP));
+$$->code = concatCode($$->code, storeTempToRegOffset("rfp", "rsp", OFFSET_RFP));
+
+
+int numParameter = 0;
+
+ast_node *loop_exp = $3;
+
+while(loop_exp){
+
+$$->code = concatCode($$->code, storeTempToRegOffset(loop_exp->temp, "rsp", OFFSET_FIRSTVAR + numParameter * get_size(loop_exp->ast_valor_lexico) ));
+printf("Reg exp %s\n", loop_exp->temp);
+loop_exp = loop_exp->next_sibling;
+numParameter++;
+}
+
+};
+
+call_parameter_list:expression ',' call_parameter_list {
+$$ = new_expression_list_node($1,$3);
+char *code = NULL;
+if($3) code = $3->code;
+printf("code 1:%s\n code 2 %s\n",$1->code,code);
+
+
+
+if($3)$$->code = concatCode($3->code, $$->code);
+
+
+
+};
 | expression 
 | {$$ = get_null();};
 
@@ -574,7 +613,6 @@ $$->temp = $2->temp;
 }
 
 $$->code = concatCode($$->code,storeTempToVariable($2->temp, 1, OFFSET_RETURN));
-printf("return %s\n",$2->temp);
 
 };
 

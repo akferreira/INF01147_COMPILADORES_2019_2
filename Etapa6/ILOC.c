@@ -248,6 +248,20 @@ char *storeTempToVariableRegOffset(char *temp,char *regoffset,int depth){
     
 }
 
+char *storeTempToRegOffset(char *temp,char *reg , int offset){
+    if(temp == NULL) return NULL;
+     char *buffer = malloc(STORE_INST_SIZE);
+    
+     if(buffer == NULL) return NULL;
+     
+    int cx = snprintf(buffer, STORE_INST_SIZE-1, "storeAI   %s => %s, %d \n",temp,reg,offset);
+     return buffer;
+    
+
+    
+    
+}
+
 
 
 char *storeVariableToTemp(char *temp, int depth, int position){

@@ -52,8 +52,10 @@ char *loadMemRegToReg(char *reg1, char *reg2);
 char *storeTempToVariable(char *temp, int depth, int position);
 char *storeVariableToTemp(char *temp, int depth, int position);
 char *desvio_lbl_jumpI(char* lbl_destino);
+
 char *storeVariableRegOffsetToTemp(char *temp,char *regoffset,int depth);
 char *storeTempToVariableRegOffset(char *temp,char *regoffset,int depth);
+char *storeTempToRegOffset(char *temp,char *reg , int offset);
 char *Or_CC_Operation(char *reg1, char *reg2, char *dest);
 char* loadValueToTemp(int value, char *temp);
 char *AND_CC_Operation(char *reg1, char *reg2, char *dest);
