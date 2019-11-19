@@ -276,65 +276,76 @@ $$->next = NULL;
 function_declaration: TK_PR_STATIC function_id enter_scope  '('function_parameters_list')' function_command_block 
 {
 $$ = new_static_function_declaration_node('M',$2,$5,$7);
-char *l0 = malloc(10);
-strcpy(l0,"L0: ");
+char *label = getFunctionLabel($2.value.str_value);
+$$->label = concatCode(label, ": ");
 
-$$->label = l0;
-char *first_inst = malloc(50);
-strncpy(first_inst, "addI rsp, 4 => rsp\n",50);
-$$->label = concatCode($$->label, first_inst );
-$$->code = concatCode($$->label,$7->code);
+if(initial_local_var_position != 0){
+    int parameters_total_size = 0;
+    ast_node *loop = $5;
+    while(loop){
+        parameters_total_size += get_size(loop->ast_valor_lexico);
+        loop = loop->next_sibling;
+    }
+    
+    
+    int first_local_var_position = parameters_total_size + OFFSET_FIRSTVAR;
+     
+    char *activation_register = concatCode(copyRegToReg("rsp", "rfp"),binaryOperationInteger("addI", "rsp" , first_local_var_position, "rsp"));
+    char *code = strdup($7->code);
+     
+    $$->code = concatCode($$->label,activation_register); 
+    $$->code = concatCode($$->code, code);
+    
+    char *reg_retorno = newTemp();
+    char *reg_rsp = newTemp();
+    char *reg_rfp = newTemp();
+    
+    $$->code =  concatCode($$->code, binaryOperationInteger("loadAI", "rfp" , OFFSET_RETURN_ADDR, reg_retorno));
+    $$->code = concatCode($$->code, binaryOperationInteger("loadAI", "rfp" , OFFSET_RSP, reg_rsp));
+    $$->code = concatCode($$->code, binaryOperationInteger("loadAI", "rfp" , OFFSET_RFP, reg_rfp));
+    $$->code = concatCode($$->code, copyRegToReg(reg_rsp,"rsp") );
+    $$->code = concatCode($$->code, copyRegToReg(reg_rfp,"rfp") );
+    $$->code = concatCode($$->code, jumpReg(reg_retorno));
+
+}
+
+
+
+else if($$ != NULL && $7 != NULL ){
+    char *first_inst = malloc(50);
+    strncpy(first_inst, " : addI rsp, 4 => rsp\n",50);
+    $$->label = concatCode($$->label, first_inst );
+    $$->code = concatCode($$->label,$7->code);
+}
 
 
 
 };
+
 function_declaration: function_id enter_scope '('function_parameters_list')' function_command_block {
 
- char *label = getFunctionLabel($1.value.str_value);
- 
+char *label = getFunctionLabel($1.value.str_value);
  //fprintf(stderr, "\n%s FUNCTION. Label : %s\n",$1.value.str_value,label);
-$$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
 
+$$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
+$$->label = concatCode(label, ": ");
 
 if(initial_local_var_position != 0){
-
-    $$->label = concatCode(label, ": ");
-    
-    
-    
+    printf("label\n");
     int parameters_total_size = 0;
-    int id_size = 4;
-    
-    
     ast_node *loop = $4;
-    //if(loop) fprintf(stderr, "%s loop\n",loop->ast_valor_lexico.value.str_value);
-    
-    
-    
     while(loop){
-    
-    //fprintf(stderr, "%s : load %d\n", loop->ast_valor_lexico.value.str_value, parameters_total_size+12);
-    
-    parameters_total_size += get_size(loop->ast_valor_lexico);
-    
-    loop = loop->next_sibling;
+        parameters_total_size += get_size(loop->ast_valor_lexico);
+        loop = loop->next_sibling;
     }
     
-    //printf("total parameters size : %d\n",parameters_total_size);
     
-    int first_local_var_position = id_size + parameters_total_size + 12;
-    
-  //   printf("first local var: %d\n",first_local_var_position);
+    int first_local_var_position = parameters_total_size + OFFSET_FIRSTVAR;
      
-      
-     
-     char *activation_register = concatCode(copyRegToReg("rsp", "rfp"),binaryOperationInteger("addI", "rsp" , first_local_var_position, "rsp"));
-    
-     char *code = strdup($6->code);
+    char *activation_register = concatCode(copyRegToReg("rsp", "rfp"),binaryOperationInteger("addI", "rsp" , first_local_var_position, "rsp"));
+    char *code = strdup($6->code);
      
     $$->code = concatCode($$->label,activation_register); 
-   
-     //printf("code : %s\n",code);
     $$->code = concatCode($$->code, code);
     
     char *reg_retorno = newTemp();
@@ -353,16 +364,11 @@ if(initial_local_var_position != 0){
 
 
 else if($$ != NULL && $6 != NULL ){
-    
-    $$->label = concatCode(label, ": ");
-
     char *first_inst = malloc(50);
     strncpy(first_inst, " : addI rsp, 4 => rsp\n",50);
     $$->label = concatCode($$->label, first_inst );
-    
     $$->code = concatCode($$->label,$6->code);
 }
-//printf("function\n%s",$$->code);
 };
 
 //regra para definir o tipo do identificador da função

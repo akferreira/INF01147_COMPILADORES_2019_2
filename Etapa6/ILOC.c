@@ -107,7 +107,7 @@ void Imprimir_codigo(char *codigo, int size)
     
     printf("loadI %d => rbss\n", numero_instrucoes + 5 + 1);
     //instrucoes do codigo + inicializacao rfs, rsp, rbss e halt e jumpI l0
-    printf("jumpI -> L%d\n",countLabel-1);
+    printf("jumpI -> %s\n",getFunctionLabel("main"));
 
     printf("%s",codigo);
 
@@ -197,12 +197,11 @@ char* concatCode(char *dest, char *source){
     int lenght = strlen(dest)+strlen(source)+1;
     
     
-    
     dest = realloc(dest, lenght);
     if(dest == NULL) return NULL;
-    
+        
+
     dest =  strncat(dest,source,lenght);
-    
     
     
     return dest;
