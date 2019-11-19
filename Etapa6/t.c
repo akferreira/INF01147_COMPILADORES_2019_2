@@ -1,14 +1,17 @@
 int y[10];
 
+int f(){
+    return 5;
+}
+
 int mult (int z, int w)
 {
-  int b;
-  int x;
-  x = z * w;
-  return x;
+  return z * w;
 }
 
 int main(){
-    int x;
-    x = mult(5,4);
+    int x <= 2;
+    int y <= 4;
+    x = mult(x,y);
+    y = f();
 }

@@ -289,29 +289,31 @@ $$->code = concatCode($$->label,$7->code);
 
 };
 function_declaration: function_id enter_scope '('function_parameters_list')' function_command_block {
-//insert_function_entry($<valor_lexico>2);
+
+ char *label = getFunctionLabel($1.value.str_value);
+ 
+ //fprintf(stderr, "\n%s FUNCTION. Label : %s\n",$1.value.str_value,label);
 $$ = new_nonstatic_function_declaration_node('M',$1,$4,$6);
 
 
 if(initial_local_var_position != 0){
-    char *l0 = newLabel();
 
-    $$->label = concatCode(l0, ": ");
+    $$->label = concatCode(label, ": ");
     
-   
+    
     
     int parameters_total_size = 0;
     int id_size = 4;
     
     
     ast_node *loop = $4;
-    if(loop) fprintf(stderr, "%s loop\n",loop->ast_valor_lexico.value.str_value);
+    //if(loop) fprintf(stderr, "%s loop\n",loop->ast_valor_lexico.value.str_value);
     
     
     
     while(loop){
     
-    fprintf(stderr, "%s : load %d\n", loop->ast_valor_lexico.value.str_value, parameters_total_size+12);
+    //fprintf(stderr, "%s : load %d\n", loop->ast_valor_lexico.value.str_value, parameters_total_size+12);
     
     parameters_total_size += get_size(loop->ast_valor_lexico);
     
@@ -352,9 +354,7 @@ if(initial_local_var_position != 0){
 
 else if($$ != NULL && $6 != NULL ){
     
-    char *l0 = newLabel();
-
-    $$->label = l0;
+    $$->label = concatCode(label, ": ");
 
     char *first_inst = malloc(50);
     strncpy(first_inst, " : addI rsp, 4 => rsp\n",50);
@@ -373,6 +373,7 @@ $<valor_lexico>2.nature = FUNCTION;
 insert_function_entry($<valor_lexico>2);
 $$ = $<valor_lexico>2;
 free($1.value.str_value);
+addFunction(newLabel(), $$.value.str_value);
 
 };
 
@@ -505,14 +506,24 @@ local_var_initialization: TK_OC_LE literal_id{ $$ = $2;}
 
 function_call: simple_identifier '(' call_parameter_list ')'{ 
 $$ = new_function_call_node(FUNCTION_CALL_NODE,$1,$3);
+int expression_line_count;
+char *param_code = NULL;
 
-int expression_line_count = countLines($3->code,strlen($3->code));
+if($3) {
+    expression_line_count = countLines($3->code,strlen($3->code));
+    param_code = $3->code;
+}
+else expression_line_count = 0;
+
+
+
 
 char * regRetornoAddr = newTemp();
+$$->temp = newTemp();
 
-$$->code = concatCode($3->code, $$->code);
-$$->code = concatCode($$->code, binaryOperationInteger("addI","rsp",4, "rsp") );
-$$->code = concatCode($$->code, binaryOperationInteger("addI","rpc",expression_line_count*2 + 4, regRetornoAddr) );
+//$$->code = concatCode($$->code, binaryOperationInteger("addI","rsp",4, "rsp") );
+$$->code = concatCode($$->code, binaryOperationInteger("addI","rpc",expression_line_count*2 + 5, regRetornoAddr) );
+$$->code = concatCode($$->code, param_code);
 $$->code = concatCode($$->code, storeTempToRegOffset(regRetornoAddr, "rsp", OFFSET_RETURN_ADDR));
 $$->code = concatCode($$->code, storeTempToRegOffset("rsp", "rsp", OFFSET_RSP));
 $$->code = concatCode($$->code, storeTempToRegOffset("rfp", "rsp", OFFSET_RFP));
@@ -525,18 +536,19 @@ ast_node *loop_exp = $3;
 while(loop_exp){
 
 $$->code = concatCode($$->code, storeTempToRegOffset(loop_exp->temp, "rsp", OFFSET_FIRSTVAR + numParameter * get_size(loop_exp->ast_valor_lexico) ));
-printf("Reg exp %s\n", loop_exp->temp);
+// printf("Reg exp %s\n", loop_exp->temp);
 loop_exp = loop_exp->next_sibling;
 numParameter++;
 }
-
+$$->code = concatCode($$->code, jumpLabel( getFunctionLabel($1->ast_valor_lexico.value.str_value) ));
+$$->code = concatCode($$->code, binaryOperationInteger("loadAI", "rsp", OFFSET_RETURN,$$->temp));
 };
 
 call_parameter_list:expression ',' call_parameter_list {
 $$ = new_expression_list_node($1,$3);
 char *code = NULL;
 if($3) code = $3->code;
-printf("code 1:%s\n code 2 %s\n",$1->code,code);
+// printf("code 1:%s\n code 2 %s\n",$1->code,code);
 
 
 

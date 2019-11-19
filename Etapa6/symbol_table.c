@@ -233,10 +233,10 @@ void insert_function_entry(VALOR_LEXICO lexical){
     if(strcmp( lexical.value.str_value, "main") != 0) initial_local_var_position = OFFSET_FIRSTVAR;
     else initial_local_var_position = 0;
     
-    
+    char *name = strdup(lexical.value.str_value);
     
     insert_new_table_entry(lexical,NULL);
-    lexical.value.str_value = NULL;
+    lexical.value.str_value = name;
     
 }
 
@@ -327,7 +327,7 @@ int insert_new_table_entry(VALOR_LEXICO lexical,ARRAY_DIMENSIONS *vector_dimensi
         
         if(top_table->symbol_info != NULL){
             copy_lexical_to_symbol(top_table->symbol_info,lexical);
-            printf("%s -0 %d\n",lexical.value.str_value,initial_local_var_position);
+           // printf("%s -0 %d\n",lexical.value.str_value,initial_local_var_position);
             
             
             top_table->symbol_info->position = 0;

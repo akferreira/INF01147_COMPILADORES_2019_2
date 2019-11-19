@@ -29,10 +29,22 @@ struct operacao
 };
 typedef struct operacao OPERACAO;
 
+typedef struct _label_list{
+    char *label;
+    char *fname;
+    struct _label_list* next;
+    
+} LABEL_LIST;
+
+
+
+
 
 LISTA_REMENDOS *remendo();
 LISTA_REMENDOS *concatRemendo(LISTA_REMENDOS *l1, LISTA_REMENDOS *l2);
 LISTA_REMENDOS *replaceRemendo(LISTA_REMENDOS *l1, char *novo_remendo);
+
+
 
 //void operacoesBinaria(char operandor, SYMBOL_INFO operando1, SYMBOL_INFO operando2);
 //SYMBOL_INFO lookup(ast_node *entrada);
@@ -44,6 +56,8 @@ char * gerar_label();
 
 char* newTemp();
 char* newLabel();
+void addFunction(char *label, char *name);
+char *getFunctionLabel(char *name);
 
 
 
@@ -65,7 +79,7 @@ char *copyRegToReg(char *reg1, char *reg2);
 
 
 char *jumpReg(char *reg);
-
+char *jumpLabel(char *label);
 
 ast_node *GenerateCompOPCode(ast_node *B, ast_node *b1, ast_node *b2, char *comp);
 

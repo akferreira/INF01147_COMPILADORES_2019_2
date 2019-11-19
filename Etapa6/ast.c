@@ -612,7 +612,7 @@ ast_node* new_parameter_node(int node_type,int is_const,VALOR_LEXICO parameter_t
 
 
 ast_node* new_parameter_list_node(ast_node* current_parameters,ast_node *next_parameters){
-    fprintf(stderr, "%p---%p\n",current_parameters,next_parameters);
+    //fprintf(stderr, "%p---%p\n",current_parameters,next_parameters);
     
     if(next_parameters == NULL) return current_parameters;
     if(current_parameters == NULL) return next_parameters;

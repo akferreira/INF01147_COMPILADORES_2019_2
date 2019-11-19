@@ -25,7 +25,7 @@ int  count_Label = 0;
 int tempCount = 0;
 
 
-
+LABEL_LIST *funcoes = NULL;
 
 
 
@@ -140,16 +140,10 @@ int countLines(char *string, int size){
     int count = 0;
     int newline = '\n';
     
-    //printf("counting\n");
-    
     while(count < size && (*string) != '\0'){
         if(*string == newline) ++count;
-        
         string = string + 1;
-        
     }
-    
-    
     return count;
 }
 
@@ -160,6 +154,39 @@ char* newLabel(){
     return buffer;
     
 }
+
+void addFunction(char *label, char *name){
+    if(funcoes == NULL) {
+        funcoes = malloc(sizeof(LABEL_LIST));
+        funcoes->next = NULL;
+        funcoes->label = strdup(label);
+        funcoes->fname = strdup(name);
+    }
+    
+    else{
+        LABEL_LIST *temp = funcoes;
+        while(temp->next) temp = temp->next;
+        temp->next = malloc(sizeof(LABEL_LIST));
+        temp->next->label = strdup(label);
+         temp->next->fname = strdup(name);
+        temp->next->next = NULL;
+    }
+    
+}
+
+char *getFunctionLabel(char *name){
+    if(funcoes == NULL) return NULL;
+    
+    LABEL_LIST *temp = funcoes;
+    while(temp) {
+        if( strcmp(temp->fname,name) == 0) return strdup(temp->label);
+        temp = temp->next;
+    }
+    
+    return NULL;
+}
+
+
 char* concatCode(char *dest, char *source){
     
     if(dest == NULL ) return source;
@@ -366,6 +393,17 @@ char *jumpReg(char *reg){
 
     return buffer;
     
+    
+}
+
+char *jumpLabel(char *label){
+     char *buffer = malloc(OP_INST_SIZE);
+    if(label == NULL) return NULL;
+    
+    int c1 = snprintf(buffer, OP_INST_SIZE-1, "jumpI => %s\n",label);
+
+
+    return buffer;
     
 }
 
