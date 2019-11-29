@@ -4,9 +4,9 @@ int x;
 int fatorial (int n)
 {
     int temp;
-    if (n == 1) then {
+    if (n == 1) /*then*/ {
        return n;
-    };
+    }/*;*/
     temp = fatorial(n-1) * n;
     return temp;          
 }
