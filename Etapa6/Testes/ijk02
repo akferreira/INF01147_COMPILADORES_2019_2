@@ -1,6 +1,0 @@
-//Endereço de variáveis globais são um deslocamento =rbss=
-a int;
-int main()
-{
-  a = 923;
-}
