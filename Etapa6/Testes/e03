@@ -7,7 +7,7 @@ int fatorial (int n)
     if (n == 1) /*then*/ {
        return n;
     }/*;*/
-    temp = fatorial(n-1) * n;
+    temp = fatorial(n - 1) * n;
     return temp;          
 }
 

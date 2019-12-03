@@ -1,0 +1,6 @@
+Endereço de retorno: 0
+RSP: 4
+RFP: 8
+Valor retornado: 12
+Parâmetros formais (argumentos):16
+
